@@ -61,7 +61,7 @@ void VeLayoutChinh(string tenNguoiDung) {
     gotoxy(4, 2); cout << "User: " << tenNguoiDung;
     
     // 2. Khung Duoi-Trai
-    SetColor(0, 14); // Màu vàng
+    SetColor(0, 14); // Mau vang
     VeKhung(2, 5, 28, 23);
     gotoxy(10, 6); cout << "DANH MUC";
     gotoxy(3, 7); cout << "--------------------------";

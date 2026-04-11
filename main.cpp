@@ -4,7 +4,6 @@
 #include "saveload.h"
 #include "hamchinh.h"
 #include "flow.h"
-#include "hamcauhoi.h"
 
 using namespace std;
 
@@ -17,4 +16,6 @@ int main() {
 	Init(DANHSACHMONHOC, DANHSACHLOP, Root);
 	LoadLop(DANHSACHLOP);
 	flowChinh(DANHSACHLOP, DANHSACHMONHOC, Root);
+	SaveLop(DANHSACHLOP);
+	return 0;
 }

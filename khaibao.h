@@ -42,6 +42,7 @@ struct Lop {
 struct MonHoc {
     char maMH[MAX_MAMH];
     char tenMH[50];
+    int soTinChi;
 };
 
 struct CauHoi {

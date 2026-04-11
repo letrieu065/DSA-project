@@ -6,7 +6,6 @@
 #include "hamchinh.h"
 #include "dohoa.h"
 #include "ErrorCodes.h"
-#include "hamcauhoi.h"
 
 void hienLoi(int errorCode);
 
@@ -15,7 +14,7 @@ int flowDangNhap(DanhSachLop &dsLop);
 void flowQuanLyLop(DanhSachLop &dsLop);
 void flowQuanLySinhVien(DanhSachLop &dsLop);
 void flowGiaoVien(DanhSachLop &dsLop, DanhSachMonHoc &dsMH, PTR_CAUHOI &root);
-
+void inDanhSachSinhVien(Lop* lop, int x, int y);
 void flowChinh(DanhSachLop &dsLop, DanhSachMonHoc &dsMH, PTR_CAUHOI &root) {
     while (true) {
         int role = flowDangNhap(dsLop); 
@@ -79,7 +78,7 @@ void flowGiaoVien(DanhSachLop &dsLop, DanhSachMonHoc &dsMH, PTR_CAUHOI &root) {
         if (chon == 0) flowQuanLyLop(dsLop);
         else if (chon == 1) flowQuanLySinhVien(dsLop);
         else if (chon == 2) ;
-        else if (chon == 3) flowQuanLyCauHoi(root);
+        else if (chon == 3) ;
         else break; 
     }
 }
@@ -193,54 +192,197 @@ void flowQuanLySinhVien(DanhSachLop &dsLop) {
 
             // Bước 2: Vòng lặp nhập liên tục cho lớp đã chọn
             while (true) {
-                XoaVungContent();
-                gotoxy(40, 7); SetColor(0, 14); cout << "Lop: " << dsLop.nodes[index]->tenLop; SetColor(0, 7);
-                gotoxy(40, 8); cout << "(De trong Ma SV de dung nhap)";
+    XoaVungContent();
+    gotoxy(40, 7); SetColor(0, 14); cout << "Lop: " << dsLop.nodes[index]->tenLop; SetColor(0, 7);
+    gotoxy(40, 8); SetColor(0, 8); cout << "(Nhan ESC hoac de trong Ma SV de quay lai)"; SetColor(0, 7);
 
-                // Khởi tạo struct SV tạm để hứng dữ liệu từ bàn phím
-                SinhVien svMoi;
-                
-                gotoxy(40, 11); cout << "Ma SV: [               ]";
-                gotoxy(48, 11); string ma = NhapMa(MAX_MASV);
-                
-                if (ma == "") break; // Thoát vòng lặp nhập liên tục nếu để trống mã
+    // Dọn sạch phím thừa còn sót lại trong bộ nhớ đệm
+    while(kbhit()) _getch(); 
 
-                // Kiểm tra trùng mã toàn trường trước khi cho nhập tiếp
-                if (kiemTraTrungMaSinhVien(dsLop, (char*)ma.c_str())) {
-                    InThongBaoContent("Loi: Ma SV da ton tai!", 12, 50, 26);
-                    _getch();
-                    continue;
-                }
+    gotoxy(40, 11); cout << "Ma SV: [                ]";
+    gotoxy(50, 11); string ma = NhapMa(MAX_MASV); // Cột 50 để tránh đè chữ
+    
+    // Thoát nếu ma rỗng (Enter trắng hoặc ESC)
+    if (ma == "" || ma.empty()) break; 
 
-                // Nhập các thông tin còn lại
-                gotoxy(40, 13); cout << "Ho   : [                              ]";
-                gotoxy(40, 15); cout << "Ten  : [               ]";
-                gotoxy(40, 17); cout << "Phai : [     ] (Nam/Nu)";
+    if (kiemTraTrungMaSinhVien(dsLop, ma.c_str()) == ERR_SV_DUPLICATE) {
+        InThongBaoContent("Loi: Ma SV da ton tai!", 12, 50, 26);
+        _getch();
+        continue;
+    }
 
-                gotoxy(48, 13); string ho = NhapTen();
-                gotoxy(48, 15); string ten = NhapTen();
-                gotoxy(48, 17); string phai = NhapTen();
+    // NỚI RỘNG TỌA ĐỘ NHẬP ĐỂ KHÔNG BỊ TREO CON TRỎ
+    gotoxy(40, 13); cout << "Ho   : [                              ]";
+    gotoxy(48, 13); string ho = NhapTen();
+    
+    gotoxy(40, 15); cout << "Ten  : [                ]";
+    gotoxy(48, 15); string ten = NhapTen();
 
-                // Đổ dữ liệu vào struct tạm
-                strcpy(svMoi.maSV, ma.c_str());
-                strcpy(svMoi.ho, ho.c_str());
-                strcpy(svMoi.ten, ten.c_str());
-                strcpy(svMoi.phai, phai.c_str());
-                strcpy(svMoi.password, "123456"); // Pass mặc định
-                svMoi.headDiem = NULL;
+    gotoxy(40, 17); cout << "Phai : [     ] (Nam/Nu)";
+    gotoxy(48, 17); string phai = NhapTen();
 
-                // GỌI HÀM CỦA BẠN Ở ĐÂY
-                int res = themSinhVien(dsLop.nodes[index], svMoi);
-                
-                if (res == SUCCESS) {
-                    InThongBaoContent("Them thanh cong! Tiep tuc...", 10, 50, 26);
-                    SaveLop(dsLop); // Lưu lại file sau mỗi lần thêm
-                }
-                _getch();
-            }
+    // Đổ dữ liệu
+    SinhVien svMoi;
+    // Sử dụng snprintf cho an toàn như đã bàn
+    snprintf(svMoi.maSV, sizeof(svMoi.maSV), "%s", ma.c_str());
+    snprintf(svMoi.ho, sizeof(svMoi.ho), "%s", ho.c_str());
+    snprintf(svMoi.ten, sizeof(svMoi.ten), "%s", ten.c_str());
+    snprintf(svMoi.phai, sizeof(svMoi.phai), "%s", phai.c_str());
+    strcpy(svMoi.password, "123456");
+    svMoi.headDiem = NULL;
+
+    int res = themSinhVien(dsLop.nodes[index], svMoi);
+    
+    if (res == SUCCESS) {
+        InThongBaoContent("Them thanh cong! Tiep tuc...", 10, 50, 26);
+        SaveLop(dsLop); 
+    } else {
+        InThongBaoContent("Loi cap phat bo nho!", 12, 50, 26);
+    }
+    _getch();
+}
         }
         // ... (Sua, Xoa, Xem)
+    else if (chon == 1) {
+    gotoxy(40, 9);  cout << "Nhap Ma lop: [               ]";
+    gotoxy(54, 9);  string maLop = NhapMa(MAX_MALOP);
+
+    int index = timViTriLop(dsLop, maLop.c_str());
+    if (index == -1) {
+        InThongBaoContent(layThongBaoLoi(ERR_LOP_NOT_FOUND), 12, 50, 26);
+        _getch();
+        continue;
+    }
+
+    gotoxy(40, 11); cout << "Nhap Ma SV can sua: [               ]";
+    gotoxy(60, 11); string maSV = NhapMa(MAX_MASV);
+
+    // Tìm sinh viên trước để hiển thị thông tin cũ (tùy chọn)
+    SinhVien* svCu = timKiemSinhVien(dsLop.nodes[index], maSV.c_str());
+    if (svCu == NULL) {
+        InThongBaoContent(layThongBaoLoi(ERR_SV_NOT_FOUND), 12, 50, 26);
+        _getch();
+        continue;
+    }
+
+    // Hiển thị thông tin cũ (có thể in ra để người dùng biết)
+    gotoxy(40, 13); cout << "Ho hien tai : " << svCu->ho;
+    gotoxy(40, 14); cout << "Ten hien tai: " << svCu->ten;
+    gotoxy(40, 15); cout << "Phai hien tai: " << svCu->phai;
+
+    // Nhập dữ liệu mới (cho phép bỏ trống)
+    gotoxy(40, 17); cout << "Ho moi   (Enter de giu nguyen): ";
+    gotoxy(72, 17); string ho = NhapChuoiChu();
+    gotoxy(40, 18); cout << "Ten moi  (Enter de giu nguyen): ";
+    gotoxy(72, 18); string ten = NhapChuoiChu();
+    gotoxy(40, 19); cout << "Phai moi (Enter de giu nguyen): ";
+    gotoxy(72, 19); string phai = NhapChuoiChu();
+
+    // Tạo struct svMoi chỉ với các trường được nhập
+    SinhVien svMoi;
+    strcpy(svMoi.ho, ho.empty() ? "" : ho.c_str());   // Gửi chuỗi rỗng để hàm logic bỏ qua
+    strcpy(svMoi.ten, ten.empty() ? "" : ten.c_str());
+    strcpy(svMoi.phai, phai.empty() ? "" : phai.c_str());
+
+    int res = suaSinhVien(dsLop.nodes[index], maSV.c_str(), svMoi);
+    if (res == SUCCESS) {
+        InThongBaoContent("Sua thanh cong!", 10, 50, 26);
+        SaveLop(dsLop);
+    } else {
+        InThongBaoContent(layThongBaoLoi(res), 12, 50, 26);
+    }
+    _getch();
+}
+	else if (chon == 2) {
+    gotoxy(40, 9);  cout << "Nhap Ma lop: [               ]";
+    gotoxy(54, 9);  string maLop = NhapMa(MAX_MALOP);
+
+    int index = timViTriLop(dsLop, maLop.c_str());
+    if (index == -1) {
+        InThongBaoContent(layThongBaoLoi(ERR_LOP_NOT_FOUND), 12, 50, 26);
+        _getch();
+        continue;
+    }
+
+    gotoxy(40, 11); cout << "Nhap Ma SV can xoa: [               ]";
+    gotoxy(60, 11); string maSV = NhapMa(MAX_MASV);
+
+    // Kiểm tra tồn tại trước
+    SinhVien* sv = timKiemSinhVien(dsLop.nodes[index], maSV.c_str());
+    if (sv == NULL) {
+        InThongBaoContent(layThongBaoLoi(ERR_SV_NOT_FOUND), 12, 50, 26);
+        _getch();
+        continue;
+    }
+
+    // Hiển thị thông tin ngắn gọn
+    gotoxy(40, 13); cout << "Sinh vien: " << sv->ho << " " << sv->ten;
+    gotoxy(40, 15); cout << "Ban co chac muon xoa? (y/n): ";
+    char confirm = _getch();
+    if (confirm != 'y' && confirm != 'Y') {
+        InThongBaoContent("Da huy thao tac xoa.", 14, 50, 26);
+        _getch();
+        continue;
+    }
+
+    int res = xoaSinhVien(dsLop.nodes[index], maSV.c_str());
+    if (res == SUCCESS) {
+        InThongBaoContent("Xoa thanh cong!", 10, 50, 26);
+        SaveLop(dsLop);
+    } else {
+        InThongBaoContent(layThongBaoLoi(res), 12, 50, 26);
+    }
+    _getch();
+	}
+	else if (chon == 3) {
+        gotoxy(40, 9); cout << "Nhap Ma lop: [               ]";
+        gotoxy(54, 9); string maLop = NhapMa(MAX_MALOP);
+
+        int index = timViTriLop(dsLop, maLop.c_str());
+
+            if (index == -1) {
+                InThongBaoContent(layThongBaoLoi(ERR_LOP_NOT_FOUND), 12, 50, 26);
+				}
+            else {
+                XoaVungContent();
+                gotoxy(55, 7); SetColor(0, 11); cout << "--- DANH SACH SINH VIEN ---"; SetColor(0, 7);
+
+                inDanhSachSinhVien(dsLop.nodes[index], 30, 10);
+			}
+
+            _getch();
+			
+		}
+	}
+}
+void inDanhSachSinhVien(Lop* lop, int x, int y) {
+    if (lop == NULL) return;
+
+    SinhVien* p = lop->headSV;
+    int dong = y;
+
+    VeKhung(x-2, y-1, 70, demSoSV(lop) + 3);
+
+    gotoxy(x, y);      cout << "STT";
+    gotoxy(x+5, y);    cout << "Ma SV";
+    gotoxy(x+20, y);   cout << "Ho";
+    gotoxy(x+35, y);   cout << "Ten";
+    gotoxy(x+50, y);   cout << "Phai";
+
+    dong++;
+
+    int stt = 1;
+
+    while (p != NULL) {
+        gotoxy(x, dong);     cout << stt++;
+        gotoxy(x+5, dong);   cout << p->maSV;
+        gotoxy(x+20, dong);  cout << p->ho;
+        gotoxy(x+35, dong);  cout << p->ten;
+        gotoxy(x+50, dong);  cout << p->phai;
+
+        dong++;
+        p = p->next;
     }
 }
-
+		
 #endif

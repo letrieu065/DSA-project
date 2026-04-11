@@ -63,21 +63,25 @@ string NhapMa(int maxLength) {
     char ch;
     while (true) {
         ch = _getch();
-        
-        if ((isalnum(ch) || ch == '-' || ch == '_') && ma.length() < maxLength) {
+
+        if (ch == 13) { 
+            break; 
+        } 
+
+        if (ch == 27) {
+            return ""; 
+        }
+
+        if (ch == 8 && ma.length() > 0) {
+            ma.pop_back();
+            cout << "\b \b";
+        } 
+        else if ((isalnum(ch) || ch == '-' || ch == '_') && ma.length() < maxLength) {
             ch = toupper(ch); 
             ma += ch;
             cout << ch;
         } 
-        else if (ch == 8 && ma.length() > 0) {
-            ma.pop_back();
-            cout << "\b \b";
-        } 
-        else if (ch == 13 && ma.length() > 0) {
-            break;
-        }
     }
-    cout << endl;
     return ma;
 }
 
