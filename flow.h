@@ -6,6 +6,7 @@
 #include "hamchinh.h"
 #include "dohoa.h"
 #include "ErrorCodes.h"
+#include "hamcauhoi.h"
 
 void hienLoi(int errorCode);
 
@@ -78,7 +79,7 @@ void flowGiaoVien(DanhSachLop &dsLop, DanhSachMonHoc &dsMH, PTR_CAUHOI &root) {
         if (chon == 0) flowQuanLyLop(dsLop);
         else if (chon == 1) flowQuanLySinhVien(dsLop);
         else if (chon == 2) ;
-        else if (chon == 3) ;
+        else if (chon == 3) flowQuanLyCauHoi(root);
         else break; 
     }
 }

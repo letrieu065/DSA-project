@@ -4,6 +4,7 @@
 #include "saveload.h"
 #include "hamchinh.h"
 #include "flow.h"
+#include "hamcauhoi.h"
 
 using namespace std;
 
