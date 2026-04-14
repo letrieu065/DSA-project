@@ -199,7 +199,10 @@ string NhapMatKhau() {
     while (true) {
         ch = _getch();
 
-        //if (ch == 27) return false; 
+        if (ch == 27) {
+        	temp = "";
+        	return temp;
+		}
 
         if (ch == 13) { 
 		    if (temp.length() > 0) { 
@@ -365,5 +368,36 @@ void InCanhBaoCaps(int x, int y) {
         gotoxy(x, y); cout << "                             "; 
     }
     SetColor(0, 7); 
+}
+// Ham in danh sach sinh vien
+void inDanhSachSinhVien(Lop* lop, int x, int y) {
+    if (lop == NULL) return;
+
+    SinhVien* p = lop->headSV;
+    int dong = y;
+
+    VeKhung(x-2, y-1, 70, demSoSV(lop) + 3);
+
+    gotoxy(x, y);      cout << "STT";
+    gotoxy(x+5, y);    cout << "Ma SV";
+    gotoxy(x+20, y);   cout << "Ho";
+    gotoxy(x+35, y);   cout << "Ten";
+    gotoxy(x+50, y);   cout << "Phai";
+
+    dong++;
+
+    int stt = 1;
+
+    while (p != NULL) {
+        gotoxy(x, dong);     cout << stt++;
+        gotoxy(x+5, dong);   cout << p->maSV;
+        gotoxy(x+20, dong);  cout << p->ho;
+        gotoxy(x+35, dong);  cout << p->ten;
+        gotoxy(x+50, dong);  
+		cout << (p->phai == 1 ? "Nam" : "Nu");
+
+        dong++;
+        p = p->next;
+    }
 }
 #endif

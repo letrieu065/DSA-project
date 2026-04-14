@@ -261,4 +261,84 @@ bool kiemTraMonHocDaCoCauHoi(PTR_CAUHOI root, const char* maMH) {
 	return kiemTraMonHocDaCoCauHoi(root->left, maMH) ||
 	       kiemTraMonHocDaCoCauHoi(root->right, maMH);
 }
+
+// Cau hoi
+PTR_CAUHOI ThemCauHoi(PTR_CAUHOI root, CauHoi* node) {
+    if (root == NULL) return node;
+    if (node->id < root->id)
+        root->left = ThemCauHoi(root->left, node);
+    else
+        root->right = ThemCauHoi(root->right, node);
+    return root;
+}
+
+CauHoi* TimCauHoi(PTR_CAUHOI root, int id) {
+    if (root == NULL) return NULL;
+    if (id == root->id) return root;
+    if (id < root->id)  return TimCauHoi(root->left, id);
+    return TimCauHoi(root->right, id);
+}
+
+bool HieuChinhCauHoi(PTR_CAUHOI root, int id,
+                     const char* noiDung,
+                     const char* a, const char* b,
+                     const char* c, const char* d,
+                     char dapAn) {
+    CauHoi* node = TimCauHoi(root, id);
+    if (node == NULL) return false;
+
+    strcpy(node->noiDung, noiDung);
+    strcpy(node->a, a);
+    strcpy(node->b, b);
+    strcpy(node->c, c);
+    strcpy(node->d, d);
+    node->dapAn = dapAn;
+    return true;
+}
+
+CauHoi* LayNhoNhat(CauHoi* node) {
+    while (node->left != NULL)
+        node = node->left;
+    return node;
+}
+
+PTR_CAUHOI XoaCauHoi(PTR_CAUHOI root, int id) {
+    if (root == NULL) return NULL;
+
+    if (id < root->id) {
+        root->left = XoaCauHoi(root->left, id);
+    } else if (id > root->id) {
+        root->right = XoaCauHoi(root->right, id);
+    } else {
+        // Truong hop 1: Node la
+        if (root->left == NULL && root->right == NULL) {
+            delete root;
+            return NULL;
+        }
+        // Truong hop 2: Chi co 1 cay con
+        if (root->left == NULL) {
+            CauHoi* temp = root->right;
+            delete root;
+            return temp;
+        }
+        if (root->right == NULL) {
+            CauHoi* temp = root->left;
+            delete root;
+            return temp;
+        }
+        // Truong hop 3: Co 2 cay con
+        // Lay node trai nhat cua cay con phai de the mang
+        CauHoi* minNode = LayNhoNhat(root->right);
+        root->id = minNode->id;
+        strcpy(root->maMH,    minNode->maMH);
+        strcpy(root->noiDung, minNode->noiDung);
+        strcpy(root->a, minNode->a);
+        strcpy(root->b, minNode->b);
+        strcpy(root->c, minNode->c);
+        strcpy(root->d, minNode->d);
+        root->dapAn = minNode->dapAn;
+        root->right = XoaCauHoi(root->right, minNode->id);
+    }
+    return root;
+}
 #endif
