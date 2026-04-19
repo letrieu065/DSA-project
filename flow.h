@@ -29,12 +29,14 @@ void flowChinh(DanhSachLop &dsLop, DanhSachMonHoc &dsMH, PTR_CAUHOI &root) {
 }
 
 int flowDangNhap(DanhSachLop &dsLop) {
+    char user[16];
+    char pass[21];
+    SinhVien* svHienTai = NULL;
+    int role;
+
     while (true) {
         system("cls");
-    	cout << "TAB: hien mat khau";
-    	if (isCapsLockOn()) {
-    		gotoxy(45, 20); cout << "CapsLock dang bat";
-		}
+        cout << "TAB: hien mat khau";
         SetColor(0, 7);
         gotoxy(51, 10); cout << "DANG NHAP HE THONG";
         VeKhung(37, 11, 46, 8);
@@ -53,10 +55,13 @@ int flowDangNhap(DanhSachLop &dsLop) {
             continue;
         }
 
+        // *** HIỂN THỊ CẢNH BÁO CAPSLOCK ***
+        InCanhBaoCaps(40, 18);   // gọi hàm này trước khi nhập mật khẩu
+
         gotoxy(52, 16);
         string pass = NhapMatKhau(); 
+        
         int passCheck = xacThucMatKhau(role, pass, svHienTai);
-
         if (passCheck == SUCCESS) return role;
         else {
             InThongBaoContent(layThongBaoLoi(passCheck), 12, 45, 18);
@@ -65,7 +70,6 @@ int flowDangNhap(DanhSachLop &dsLop) {
         }
     }
 }
-
 void flowGiaoVien(DanhSachLop &dsLop, DanhSachMonHoc &dsMH, PTR_CAUHOI &root) {
     char menuChinh[5][50] = {"1. Quan Ly Lop", "2. Quan Ly Sinh Vien", "3. Quan Ly Mon Hoc", "4. Quan Ly Cau Hoi", "5. Dang Xuat"};
     
@@ -102,12 +106,16 @@ void flowQuanLyLop(DanhSachLop &dsLop) {
             gotoxy(40, 12); cout << "Nhap Ten Lop:                               ";
             
             gotoxy(55, 10); string ma = NhapMa(MAX_MALOP);
+            if (ma=="") continue;
+            
             gotoxy(55, 12); string ten = NhapTen();
+            if (ma=="") continue;
             
             int res = themLop(dsLop, (char*)ma.c_str(), (char*)ten.c_str());
             
             if (res == SUCCESS) {
                 InThongBaoContent("Them lop thanh cong!", 10, 50, 26);
+                SaveLop(dsLop);
             } else {
                 InThongBaoContent(layThongBaoLoi(res), 12, 50, 26);
             }
@@ -125,11 +133,12 @@ void flowQuanLyLop(DanhSachLop &dsLop) {
 			XoaVungContent();
         	gotoxy(55, 7); SetColor(0, 11); cout << "--- SUA LOP ---"; SetColor(0, 7);
         	gotoxy(40, 10); cout << "Nhap Ma Lop :                ";
+        	gotoxy(55, 10); string ma = NhapMa(MAX_MALOP);
+        	if (ma == "") continue;
+        	
             gotoxy(40, 12); cout << "Nhap Ten Lop:                               ";
-            
-            gotoxy(55, 10); string ma = NhapMa(MAX_MALOP);
             gotoxy(55, 12); string ten = NhapTen();
-            
+            if (ma == "") continue;
             int index = suaLop(dsLop, (char*)ma.c_str(), (char*)ten.c_str());
             
 			if (index == ERR_LOP_NOT_FOUND) {
@@ -145,8 +154,14 @@ void flowQuanLyLop(DanhSachLop &dsLop) {
 		else if (chon == 3) {
 			XoaVungContent();
         	gotoxy(55, 7); SetColor(0, 11); cout << "--- XOA LOP ---"; SetColor(0, 7);
-        	gotoxy(40, 10); cout << "Nhap Ma Lop :                ";
+        	gotoxy(40, 10); cout << "Nhap Ma Lop xoa:                ";
         	gotoxy(55, 10); string ma = NhapMa(MAX_MALOP);
+        	if (ma =="") continue;
+        	
+        	gotoxy(40, 12); SetColor(0, 14);
+        	cout << "Ban co chac muon xoa ? (Enter: Co, ESC: Huy) ";
+        	char confirm = _getch();
+        	if (confirm == 27) continue;
         	
         	int res = xoaLop(dsLop, (char*)ma.c_str());
         	
@@ -356,33 +371,60 @@ void flowQuanLySinhVien(DanhSachLop &dsLop) {
 	}
 }
 void inDanhSachSinhVien(Lop* lop, int x, int y) {
-    if (lop == NULL) return;
+   	if (lop == NULL || lop->headSV == NULL) {
+        InThongBaoContent("Lop chua co sinh vien!", 12, 50, 26);
+        return;
+    }
 
+    int soSV = demSoSV(lop); 
+    SinhVien** dsTam = new SinhVien*[soSV];
     SinhVien* p = lop->headSV;
-    int dong = y;
-
-    VeKhung(x-2, y-1, 70, demSoSV(lop) + 3);
-
-    gotoxy(x, y);      cout << "STT";
-    gotoxy(x+5, y);    cout << "Ma SV";
-    gotoxy(x+20, y);   cout << "Ho";
-    gotoxy(x+35, y);   cout << "Ten";
-    gotoxy(x+50, y);   cout << "Phai";
-
-    dong++;
-
-    int stt = 1;
-
-    while (p != NULL) {
-        gotoxy(x, dong);     cout << stt++;
-        gotoxy(x+5, dong);   cout << p->maSV;
-        gotoxy(x+20, dong);  cout << p->ho;
-        gotoxy(x+35, dong);  cout << p->ten;
-        gotoxy(x+50, dong);  cout << p->phai;
-
-        dong++;
+    for (int i = 0; i < soSV; i++) {
+        dsTam[i] = p;
         p = p->next;
     }
+
+    int soDongTrenTrang = 10;
+    int tongTrang = (soSV - 1) / soDongTrenTrang + 1;
+    int trangHienTai = 1;
+
+    while (true) {
+        XoaVungContent();
+        gotoxy(x + 28, y - 2); SetColor(0, 11); 
+		cout << "--- DANH SACH SINH VIEN ---"; SetColor(0, 7);
+    
+        gotoxy(x + 35, y - 1); 
+        cout << "Lop: " << lop->tenLop;
+
+		gotoxy(x + 10, y);     
+		cout << " STT | MA SV       | HO                  | TEN      | PHAI";
+        // 3. Đổ dữ liệu vào bảng
+        int batDau = (trangHienTai - 1) * soDongTrenTrang;
+        int ketThuc = (batDau + soDongTrenTrang > soSV) ? soSV : (batDau + soDongTrenTrang);
+
+        for (int i = batDau; i < ketThuc; i++) {
+            int row = y + 2 + (i - batDau);
+            gotoxy(x + 12, row);      cout << i + 1;
+            gotoxy(x + 15, row); cout << "| " << dsTam[i]->maSV;
+            gotoxy(x + 29, row); cout << "| " << dsTam[i]->ho;
+            gotoxy(x + 51, row); cout << "| " << dsTam[i]->ten;
+            gotoxy(x + 58, row); cout << "| " << dsTam[i]->phai;
+		}
+        // 4. In thông tin phân trang ở dưới cùng
+        gotoxy(x + 24, y + 14); 
+        SetColor(0, 14);
+        cout << "Trang " << trangHienTai << "/" << tongTrang << " (<- Trai, Phai ->, ESC: Thoat)";
+        SetColor(0, 7);
+        
+        char c = _getch();
+        if (c == 27) break; // ESC
+        if (c == -32 || c == 0) {
+        	c = _getch();
+        	if (c == 77 && trangHienTai < tongTrang) trangHienTai++; // Phai
+        	if (c == 75 && trangHienTai > 1) trangHienTai--;          // Trai
+		}
+    }
+    delete[] dsTam;
 }
 		
 #endif

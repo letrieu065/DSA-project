@@ -4,6 +4,7 @@
 #include "ErrorCodes.h"
 #include "khaibao.h"
 #include "dohoa.h"
+int demSoSinhVien(Lop* lop);
 int themMonHoc(DanhSachMonHoc &dsMH, MonHoc* mh);
 int suaMonHoc(DanhSachMonHoc &dsMH, const char* ma, const char* tenMoi, int tinChiMoi);
 int xoaMonHoc(DanhSachMonHoc &dsMH, const char* ma, PTR_CAUHOI root);

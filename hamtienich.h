@@ -121,41 +121,44 @@ void Init(DanhSachMonHoc &dsMH, DanhSachLop &dsLop, PTR_CAUHOI &root) {
     root = NULL;
 }
 
-
-// Ham dang nhap
-string NhapMatKhau() {
-    string temp = "";
-    char ch;
-    bool isHidden = true; 
-
-    while (true) {
-        ch = _getch();
-
-        //if (ch == 27) return false; 
-
-        if (ch == 13) { 
-            return temp;
-        } 
-        else if (ch == 9) { 
-            isHidden = !isHidden;
-            for (int i = 0; i < temp.length(); i++) cout << "\b \b"; 
-            for (int i = 0; i < temp.length(); i++) {
-                cout << (isHidden ? '*' : temp[i]); 
-            }
-        }
-        else if (ch == 8) { 
-            if (temp.length() > 0) {
-                temp.pop_back();
-                cout << "\b \b";
-            }
-        } 
-        else if (isprint(ch)) { 
-            temp += ch;
-            cout << (isHidden ? '*' : ch);
-        }
-    }
+bool isCapsLockOn() {
+    return (GetKeyState(VK_CAPITAL) & 0x0001) != 0;
 }
 
+void InCanhBaoCaps(int x, int y) {
+    if ((GetKeyState(VK_CAPITAL) & 0x0001) != 0) {
+        SetColor(0, 14); 
+        gotoxy(x, y); cout << "CANH BAO: CapsLock dang bat!  ";
+    } else {
+        gotoxy(x, y); cout << "                             "; 
+    }
+    SetColor(0, 7); 
+}
+// Ham dang nhap
+string NhapMatKhau() {
+    string pass = "";
+    char ch;
+    int x = 52, y = 16;
+    while (true) {
+        // Cập nhật cảnh báo CapsLock tại dòng 18, cột 40
+        InCanhBaoCaps(40, 18);
+
+        gotoxy(x + pass.length(), y);
+        ch = _getch();
+        if (ch == 13) break;          // Enter
+        else if (ch == 8) {           // Backspace
+            if (!pass.empty()) pass.pop_back();
+            gotoxy(x, y); cout << string(pass.length() + 1, ' ');
+            gotoxy(x, y); for (char c : pass) cout << '*';
+        } else if (ch == 9) {         // Tab – có thể hiện tạm mật khẩu
+            // tuỳ chọn
+        } else {
+            pass.push_back(ch);
+            cout << '*';
+        }
+    }
+    return pass;
+}
 int kiemTraTaiKhoan(DanhSachLop &dsLop, string user, SinhVien* &svFound) {
     if (user == "") return ERR_LOGIN_EMPTY;
     if (user == "GV") return 1;
@@ -275,19 +278,5 @@ int KiemTraInDanhSachLop(DanhSachLop dsLop) {
 	if (dsLop.soLuong == 0) return ERR_LOP_EMPTY;
 	
 	return SUCCESS;
-}
-
-bool isCapsLockOn() {
-    return (GetKeyState(VK_CAPITAL) & 0x0001) != 0;
-}
-
-void InCanhBaoCaps(int x, int y) {
-    if ((GetKeyState(VK_CAPITAL) & 0x0001) != 0) {
-        SetColor(0, 14); 
-        gotoxy(x, y); cout << "CANH BAO: CapsLock dang bat!  ";
-    } else {
-        gotoxy(x, y); cout << "                             "; 
-    }
-    SetColor(0, 7); 
 }
 #endif
