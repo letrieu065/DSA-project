@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include <conio.h>
+#include <windows.h>
 #include <cctype>
 #include <cstring>
 #include "khaibao.h"
@@ -189,50 +190,73 @@ void Init(DanhSachMonHoc &dsMH, DanhSachLop &dsLop, PTR_CAUHOI &root) {
     root = NULL;
 }
 
+bool isCapsLockOn() {
+    return (GetKeyState(VK_CAPITAL) & 0x0001) != 0;
+}
+
+void InCanhBaoCaps(int x, int y) {
+    if ((GetKeyState(VK_CAPITAL) & 0x0001) != 0) {
+        SetColor(0, 14); 
+        gotoxy(x, y); cout << "CANH BAO: CapsLock dang bat!  ";
+    } else {
+        gotoxy(x, y); cout << "                             "; 
+    }
+    SetColor(0, 7); 
+}
 
 // Ham dang nhap
 string NhapMatKhau() {
-    string temp = "";
+    string pass = "";
     char ch;
-    bool isHidden = true; 
+    int x = 52, y = 16;
+
+    bool lastCaps = isCapsLockOn();
+    InCanhBaoCaps(40, 18); // in lần đầu
 
     while (true) {
-        ch = _getch();
+        // chỉ update CapsLock khi thay đổi
+        bool currentCaps = isCapsLockOn();
+        if (currentCaps != lastCaps) {
+            InCanhBaoCaps(40, 18);
+            lastCaps = currentCaps;
+        }
 
-        if (ch == 27) {
-        	temp = "";
-        	return temp;
-		}
+        //  luôn giữ con trỏ đúng vị trí
+        gotoxy(x + pass.length(), y);
 
-        if (ch == 13) { 
-		    if (temp.length() > 0) { 
-		        return temp; 
-		    } else {
-		        continue; 
-		    }
-		}
-		if (ch == 0 || ch == -32 || ch == 224) {
-            getch();
-            continue; 
-        } 
-        else if (ch == 9) { 
-            isHidden = !isHidden;
-            for (int i = 0; i < temp.length(); i++) cout << "\b \b"; 
-            for (int i = 0; i < temp.length(); i++) {
-                cout << (isHidden ? '*' : temp[i]); 
+        if (_kbhit()) {
+            ch = _getch();
+
+            if (ch == 13) { // Enter
+                if (!pass.empty()) break;
+            }
+            else if (ch == 27) { // ESC
+                return "";
+            }
+            else if (ch == 8) { // Backspace
+                if (!pass.empty()) {
+                    pass.pop_back();
+
+                    int pos = x + pass.length();
+                    gotoxy(pos, y);
+                    cout << ' ';
+                    gotoxy(pos, y);
+                }
+            }
+            else if (ch >= 32 && ch <= 126 && pass.length() < 20) {
+                pass.push_back(ch);
+                cout << '*';
             }
         }
-        else if (ch == 8) { 
-            if (temp.length() > 0) {
-                temp.pop_back();
-                cout << "\b \b";
-            }
-        } 
-        else if (isprint(ch)) { 
-            temp += ch;
-            cout << (isHidden ? '*' : ch);
-        }
+
+        Sleep(20);
     }
+
+    // xóa cảnh báo sau khi nhập xong
+    gotoxy(40, 18);
+    cout << "                             ";
+
+    return pass;
 }
 
 int kiemTraTaiKhoan(DanhSachLop &dsLop, string user, SinhVien* &svFound) {
@@ -356,19 +380,6 @@ int KiemTraInDanhSachLop(DanhSachLop dsLop) {
 	return SUCCESS;
 }
 
-bool isCapsLockOn() {
-    return (GetKeyState(VK_CAPITAL) & 0x0001) != 0;
-}
-
-void InCanhBaoCaps(int x, int y) {
-    if ((GetKeyState(VK_CAPITAL) & 0x0001) != 0) {
-        SetColor(0, 14); 
-        gotoxy(x, y); cout << "CANH BAO: CapsLock dang bat!  ";
-    } else {
-        gotoxy(x, y); cout << "                             "; 
-    }
-    SetColor(0, 7); 
-}
 // Ham in danh sach sinh vien
 void inDanhSachSinhVien(Lop* lop, int x, int y) {
     if (lop == NULL) return;
