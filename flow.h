@@ -397,7 +397,7 @@ void flowQuanLyMonHoc(DanhSachMonHoc &dsMH) {
 	            
 	            gotoxy(55, 10); string ma = NhapMa(MAX_MAMH); if (ma == "") break;
 	            gotoxy(55, 12); string ten = NhapTen(); if (ten == "") break;
-	            gotoxy(55, 14); int stc = NhapSo(); if (stc = "") break;
+	            gotoxy(55, 14); int stc = NhapSo();
 			}
 		} 
 	}	
