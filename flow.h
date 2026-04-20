@@ -79,17 +79,11 @@ void flowGiaoVien(DanhSachLop &dsLop, DanhSachMonHoc &dsMH, PTR_CAUHOI &root) {
         
         int chon = MenuDong(menuChinh, 5, 4, 9); 
         
-        if (chon == 0) {
-		    flowQuanLyLop(dsLop);
-		} else if (chon == 1) {
-		    flowQuanLySinhVien(dsLop);
-		} else if (chon == 2) {
-		    flowQuanLyMonHoc(dsMH);
-		} else if (chon == 3) {
-		    flowQuanLyCauHoi(root);
-		} else {
-		    break;
-		}
+        if (chon == 0) flowQuanLyLop(dsLop);
+        else if (chon == 1) flowQuanLySinhVien(dsLop);
+        else if (chon == 2) flowQuanLyMonHoc(dsMH);
+        else if (chon == 3) flowQuanLyCauHoi(root);
+        else break; 
     }
 }
 
@@ -193,6 +187,7 @@ void flowQuanLySinhVien(DanhSachLop &dsLop) {
         int chon = MenuDong(menuCon, 5, 4, 9);
         if (chon == -1 || chon == 4) break; 
 
+        XoaVungContent();
         if (chon == 0) {
         	while (true) {
         		XoaVungContent();
@@ -381,7 +376,7 @@ void flowQuanLyMonHoc(DanhSachMonHoc &dsMH) {
     
     while (true) {
         XoaVungContent();
-        gotoxy(60, 2); SetColor(0, 10); cout << "QUAN LY MON HOC"; SetColor(0, 7);
+        gotoxy(60, 2); SetColor(0, 10); cout << "QUAN LY SINH VIEN"; SetColor(0, 7);
         
         int chon = MenuDong(menuCon, 5, 4, 9);
         if (chon == -1 || chon == 4) break;
@@ -400,9 +395,31 @@ void flowQuanLyMonHoc(DanhSachMonHoc &dsMH) {
 	            gotoxy(55, 14); int stc = NhapSo();
 			}
 		} 
+
+        if (chon == -1 || chon == 4) break; 
 	}	
 }
 
+void InOrderCauHoi(PTR_CAUHOI root, int &soThuTu, int x, int y) {
+    if (root == NULL) return;
+    InOrderCauHoi(root->left, soThuTu, x, y);
+
+    gotoxy(x, y + soThuTu * 3);
+    SetColor(0, 11);
+    cout << "[ID:" << root->id << "] [" << root->maMH << "] " << root->noiDung;
+    SetColor(0, 7);
+    gotoxy(x + 2, y + soThuTu * 3 + 1);
+    cout << "A." << root->a << "  B." << root->b
+         << "  C." << root->c << "  D." << root->d
+         << "  => Dap an: " << root->dapAn;
+
+    soThuTu++;
+    InOrderCauHoi(root->right, soThuTu, x, y);
+}
+
+// ============================================================
+// flowQuanLyCauHoi - Giao dien quan ly cau hoi (rap vao flowGiaoVien)
+// ============================================================
 void flowQuanLyCauHoi(PTR_CAUHOI &root) {
     char menuCon[5][50] = {
         "1. Them Cau Hoi",
