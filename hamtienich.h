@@ -23,15 +23,7 @@ int NhapSo() {
         if (isdigit(ch)) { 
             strNum += ch;
             cout << ch;
-        }
-        if (ch == 0 || ch == -32 || ch == 224) {
-            getch();
-            continue; 
-        }
-        if (ch == 27) {
-        	strNum = "";
-        	break;
-		}
+        } 
         else if (ch == 8 && strNum.length() > 0) { 
             strNum.pop_back(); 
             cout << "\b \b";   
@@ -53,15 +45,7 @@ string NhapChuoiChu() {
         if (isalpha(ch) || ch == ' ') { 
             str += ch;
             cout << ch;
-        }
-		if (ch == 0 || ch == -32 || ch == 224) {
-            getch();
-            continue; 
-        }
-        if (ch == 27) {
-        	str = "";
-        	break;
-		}
+        } 
         else if (ch == 8 && str.length() > 0) {
             str.pop_back();
             cout << "\b \b";
@@ -81,21 +65,13 @@ string NhapMa(int maxLength) {
         ch = _getch();
 
         if (ch == 13) { 
-		    if (ma.length() > 0) { 
-		        break; 
-		    } else {
-		        continue; 
-		    }
-		}
-		
-		if (ch == 0 || ch == -32 || ch == 224) {
-            getch(); 
-            continue; 
+            break; 
         } 
+
         if (ch == 27) {
-        	ma = "";
-        	break;
-		}
+            return ""; 
+        }
+
         if (ch == 8 && ma.length() > 0) {
             ma.pop_back();
             cout << "\b \b";
@@ -118,15 +94,7 @@ string NhapTen() {
         if (isprint(ch)) { 
             str += ch;
             cout << ch;
-        }
-		if (ch == 0 || ch == -32 || ch == 224) {
-            getch();
-            continue; 
         } 
-        if (ch == 27) {
-        	str = "";
-        	break;
-		}
         else if (ch == 8 && str.length() > 0) {
             str.pop_back();
             cout << "\b \b";
@@ -137,43 +105,7 @@ string NhapTen() {
     }
     return str;
 }
-bool NhapGioiTinh(int x, int y) {
-    bool gioiTinh = true; // true là Nam, false là Nữ
-    int ch;
-    
-    while (true) {
-        // Vẽ giao diện tại chỗ
-        gotoxy(x, y);
-        if (gioiTinh) {
-            SetColor(0, 10); cout << "  NAM  ";
-            SetColor(0, 7);  cout << " / Nu ";
-        } else {
-            SetColor(0, 7);  cout << " Nam / ";
-            SetColor(0, 13); cout << "  NU   ";
-            SetColor(0, 7);
-        }
 
-        ch = _getch(); // Đọc phím đầu tiên
-
-        // Kiểm tra nếu là phím đặc biệt (Mũi tên có mã đầu là 224 hoặc 0)
-        if (ch == 224 || ch == 0) {
-            ch = _getch(); // Đọc tiếp mã thứ hai của phím mũi tên
-            
-            // 75 là Trái, 77 là Phải. Nhấn cái nào cũng đảo gioiTinh
-            if (ch == 75 || ch == 77) {
-                gioiTinh = !gioiTinh;
-            }
-        } 
-        // Nếu nhấn Tab (mã 9) cũng cho đổi qua lại cho tiện
-        else if (ch == 9) {
-            gioiTinh = !gioiTinh;
-        }
-        // Nếu nhấn Enter (mã 13) thì chốt kết quả và thoát
-        else if (ch == 13) {
-            return gioiTinh;
-        }
-    }
-}
 // Ham tien ich
 
 //Ham khoi tao
@@ -189,52 +121,44 @@ void Init(DanhSachMonHoc &dsMH, DanhSachLop &dsLop, PTR_CAUHOI &root) {
     root = NULL;
 }
 
-
-// Ham dang nhap
-string NhapMatKhau() {
-    string temp = "";
-    char ch;
-    bool isHidden = true; 
-
-    while (true) {
-        ch = _getch();
-
-        if (ch == 27) {
-        	temp = "";
-        	return temp;
-		}
-
-        if (ch == 13) { 
-		    if (temp.length() > 0) { 
-		        return temp; 
-		    } else {
-		        continue; 
-		    }
-		}
-		if (ch == 0 || ch == -32 || ch == 224) {
-            getch();
-            continue; 
-        } 
-        else if (ch == 9) { 
-            isHidden = !isHidden;
-            for (int i = 0; i < temp.length(); i++) cout << "\b \b"; 
-            for (int i = 0; i < temp.length(); i++) {
-                cout << (isHidden ? '*' : temp[i]); 
-            }
-        }
-        else if (ch == 8) { 
-            if (temp.length() > 0) {
-                temp.pop_back();
-                cout << "\b \b";
-            }
-        } 
-        else if (isprint(ch)) { 
-            temp += ch;
-            cout << (isHidden ? '*' : ch);
-        }
-    }
+bool isCapsLockOn() {
+    return (GetKeyState(VK_CAPITAL) & 0x0001) != 0;
 }
 
+void InCanhBaoCaps(int x, int y) {
+    if ((GetKeyState(VK_CAPITAL) & 0x0001) != 0) {
+        SetColor(0, 14); 
+        gotoxy(x, y); cout << "CANH BAO: CapsLock dang bat!  ";
+    } else {
+        gotoxy(x, y); cout << "                             "; 
+    }
+    SetColor(0, 7); 
+}
+// Ham dang nhap
+string NhapMatKhau() {
+    string pass = "";
+    char ch;
+    int x = 52, y = 16;
+    while (true) {
+        // Cập nhật cảnh báo CapsLock tại dòng 18, cột 40
+        InCanhBaoCaps(40, 18);
+
+        gotoxy(x + pass.length(), y);
+        ch = _getch();
+        if (ch == 13) break;          // Enter
+        else if (ch == 8) {           // Backspace
+            if (!pass.empty()) pass.pop_back();
+            gotoxy(x, y); cout << string(pass.length() + 1, ' ');
+            gotoxy(x, y); for (char c : pass) cout << '*';
+        } else if (ch == 9) {         // Tab – có thể hiện tạm mật khẩu
+            // tuỳ chọn
+        } else {
+            pass.push_back(ch);
+            cout << '*';
+        }
+    }
+    return pass;
+}
 int kiemTraTaiKhoan(DanhSachLop &dsLop, string user, SinhVien* &svFound) {
     if (user == "") return ERR_LOGIN_EMPTY;
     if (user == "GV") return 1;
@@ -354,50 +278,5 @@ int KiemTraInDanhSachLop(DanhSachLop dsLop) {
 	if (dsLop.soLuong == 0) return ERR_LOP_EMPTY;
 	
 	return SUCCESS;
-}
-
-bool isCapsLockOn() {
-    return (GetKeyState(VK_CAPITAL) & 0x0001) != 0;
-}
-
-void InCanhBaoCaps(int x, int y) {
-    if ((GetKeyState(VK_CAPITAL) & 0x0001) != 0) {
-        SetColor(0, 14); 
-        gotoxy(x, y); cout << "CANH BAO: CapsLock dang bat!  ";
-    } else {
-        gotoxy(x, y); cout << "                             "; 
-    }
-    SetColor(0, 7); 
-}
-// Ham in danh sach sinh vien
-void inDanhSachSinhVien(Lop* lop, int x, int y) {
-    if (lop == NULL) return;
-
-    SinhVien* p = lop->headSV;
-    int dong = y;
-
-    VeKhung(x-2, y-1, 70, demSoSV(lop) + 3);
-
-    gotoxy(x, y);      cout << "STT";
-    gotoxy(x+5, y);    cout << "Ma SV";
-    gotoxy(x+20, y);   cout << "Ho";
-    gotoxy(x+35, y);   cout << "Ten";
-    gotoxy(x+50, y);   cout << "Phai";
-
-    dong++;
-
-    int stt = 1;
-
-    while (p != NULL) {
-        gotoxy(x, dong);     cout << stt++;
-        gotoxy(x+5, dong);   cout << p->maSV;
-        gotoxy(x+20, dong);  cout << p->ho;
-        gotoxy(x+35, dong);  cout << p->ten;
-        gotoxy(x+50, dong);  
-		cout << (p->phai == 1 ? "Nam" : "Nu");
-
-        dong++;
-        p = p->next;
-    }
 }
 #endif
