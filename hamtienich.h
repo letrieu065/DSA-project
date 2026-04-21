@@ -206,12 +206,12 @@ string NhapMatKhau() {
     int x = 52, y = 16;
 
     bool lastCaps = isCapsLockOn();
-    InCanhBaoCaps(40, 18); 
+    InCanhBaoCaps(47, 18); 
 
     while (true) {
         bool currentCaps = isCapsLockOn();
         if (currentCaps != lastCaps) {
-            InCanhBaoCaps(40, 18);
+            InCanhBaoCaps(47, 18);
             lastCaps = currentCaps;
         }
 
@@ -246,7 +246,7 @@ string NhapMatKhau() {
     }
 
     gotoxy(40, 18);
-    cout << "                             ";
+    cout << "                                          ";
 
     return pass;
 }
@@ -280,6 +280,7 @@ int xacThucMatKhau(int role, string pass, SinhVien* svFound) {
     return ERR_LOGIN_PASS;
 }
 
+/*
 void nhapLop(DanhSachLop &dsLop) {
 	string ma_nhap = NhapMa(50);
 	string ten_nhap = NhapTen();
@@ -288,8 +289,7 @@ void nhapLop(DanhSachLop &dsLop) {
 	
 	//themLop(dsLop, (char*)ma, (char*)ten);
 }
-
-
+*/
 
 int MenuDong(char options[][50], int soLuong, int toaDoX, int toaDoY) {
     int cursor = 0;

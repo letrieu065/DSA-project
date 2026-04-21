@@ -14,8 +14,8 @@ CauHoi* Root;
 int main() {
 	SetFontSize(24);
 	Init(DANHSACHMONHOC, DANHSACHLOP, Root);
-	LoadLop(DANHSACHLOP);
+	loadData(DANHSACHLOP, DANHSACHMONHOC, Root);
 	flowChinh(DANHSACHLOP, DANHSACHMONHOC, Root);
-	SaveLop(DANHSACHLOP);
+	saveData(DANHSACHLOP, DANHSACHMONHOC, Root);
 	return 0;
 }
