@@ -139,11 +139,10 @@ string NhapTen() {
     return str;
 }
 bool NhapGioiTinh(int x, int y) {
-    bool gioiTinh = true; // true là Nam, false là Nữ
+    bool gioiTinh = true; 
     int ch;
     
     while (true) {
-        // Vẽ giao diện tại chỗ
         gotoxy(x, y);
         if (gioiTinh) {
             SetColor(0, 10); cout << "  NAM  ";
@@ -154,22 +153,18 @@ bool NhapGioiTinh(int x, int y) {
             SetColor(0, 7);
         }
 
-        ch = _getch(); // Đọc phím đầu tiên
+        ch = _getch(); 
 
-        // Kiểm tra nếu là phím đặc biệt (Mũi tên có mã đầu là 224 hoặc 0)
         if (ch == 224 || ch == 0) {
-            ch = _getch(); // Đọc tiếp mã thứ hai của phím mũi tên
+            ch = _getch(); 
             
-            // 75 là Trái, 77 là Phải. Nhấn cái nào cũng đảo gioiTinh
             if (ch == 75 || ch == 77) {
                 gioiTinh = !gioiTinh;
             }
         } 
-        // Nếu nhấn Tab (mã 9) cũng cho đổi qua lại cho tiện
         else if (ch == 9) {
             gioiTinh = !gioiTinh;
         }
-        // Nếu nhấn Enter (mã 13) thì chốt kết quả và thoát
         else if (ch == 13) {
             return gioiTinh;
         }
@@ -211,29 +206,27 @@ string NhapMatKhau() {
     int x = 52, y = 16;
 
     bool lastCaps = isCapsLockOn();
-    InCanhBaoCaps(40, 18); // in lần đầu
+    InCanhBaoCaps(40, 18); 
 
     while (true) {
-        // chỉ update CapsLock khi thay đổi
         bool currentCaps = isCapsLockOn();
         if (currentCaps != lastCaps) {
             InCanhBaoCaps(40, 18);
             lastCaps = currentCaps;
         }
 
-        //  luôn giữ con trỏ đúng vị trí
         gotoxy(x + pass.length(), y);
 
         if (_kbhit()) {
             ch = _getch();
 
-            if (ch == 13) { // Enter
+            if (ch == 13) { 
                 if (!pass.empty()) break;
             }
-            else if (ch == 27) { // ESC
+            else if (ch == 27) { 
                 return "";
             }
-            else if (ch == 8) { // Backspace
+            else if (ch == 8) { 
                 if (!pass.empty()) {
                     pass.pop_back();
 
@@ -252,7 +245,6 @@ string NhapMatKhau() {
         Sleep(20);
     }
 
-    // xóa cảnh báo sau khi nhập xong
     gotoxy(40, 18);
     cout << "                             ";
 
@@ -303,11 +295,10 @@ int MenuDong(char options[][50], int soLuong, int toaDoX, int toaDoY) {
     int cursor = 0;
     while (true) {
         for (int i = 0; i < soLuong; i++) {
-            gotoxy(toaDoX, toaDoY + (i * 2)); // i * 2 để các menu cách nhau 1 dòng cho thoáng
+            gotoxy(toaDoX, toaDoY + (i * 2)); 
             if (i == cursor) {
                 SetColor(11, 0); 
                 cout << " > " << options[i];
-                // In thêm khoảng trắng để lấp đầy dòng màu nền
                 for (int j = strlen(options[i]); j < 20; j++) cout << " "; 
             } else {
                 SetColor(0, 7);
@@ -333,16 +324,13 @@ int MenuDong(char options[][50], int soLuong, int toaDoX, int toaDoY) {
     }
 }
 
-// Hàm quét sạch vùng ruột của khung Content để tải nội dung mới - Nguoi ngoai hanh tinh
 void XoaVungContent() {
     for (int i = 6; i <= 27; i++) {
         gotoxy(33, i);
-        // In 83 khoảng trắng để xóa dòng cũ
         cout << "                                                                                   "; 
     }
 }
 
-// Cập nhật lại hàm InThongBao để nằm gọn trong vùng Content
 void InThongBaoContent(string thongBao, int maMau, int x, int y) {
     SetColor(0, maMau);
     gotoxy(x, y);

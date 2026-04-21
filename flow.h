@@ -34,11 +34,7 @@ int flowDangNhap(DanhSachLop &dsLop) {
     while (true) {
         system("cls");
     	cout << "TAB: hien mat khau";
-    	/*
-    	if (isCapsLockOn()) {
-    		gotoxy(45, 20); cout << "CapsLock dang bat";
-		}
-		*/
+    	
         SetColor(0, 7);
         gotoxy(51, 10); cout << "DANG NHAP HE THONG";
         VeKhung(37, 11, 46, 8);
@@ -417,9 +413,6 @@ void InOrderCauHoi(PTR_CAUHOI root, int &soThuTu, int x, int y) {
     InOrderCauHoi(root->right, soThuTu, x, y);
 }
 
-// ============================================================
-// flowQuanLyCauHoi - Giao dien quan ly cau hoi (rap vao flowGiaoVien)
-// ============================================================
 void flowQuanLyCauHoi(PTR_CAUHOI &root) {
     char menuCon[5][50] = {
         "1. Them Cau Hoi",

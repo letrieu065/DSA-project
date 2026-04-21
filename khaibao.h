@@ -35,13 +35,13 @@ struct SinhVien {
 
 struct Lop {
     char maLop[MAX_MALOP];
-    char tenLop[50];
+    char tenLop[MAX_TEN];
     SinhVien* headSV = NULL; 
 };
 
 struct MonHoc {
     char maMH[MAX_MAMH];
-    char tenMH[50];
+    char tenMH[MAX_TEN];
     int soTinChi;
 };
 
