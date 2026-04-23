@@ -399,4 +399,21 @@ void inDanhSachSinhVien(Lop* lop, int x, int y) {
         p = p->next;
     }
 }
+
+void InOrderCauHoi(PTR_CAUHOI root, int &soThuTu, int x, int y) {
+    if (root == NULL) return;
+    InOrderCauHoi(root->left, soThuTu, x, y);
+
+    gotoxy(x, y + soThuTu * 3);
+    SetColor(0, 11);
+    cout << "[ID:" << root->id << "] [" << root->maMH << "] " << root->noiDung;
+    SetColor(0, 7);
+    gotoxy(x + 2, y + soThuTu * 3 + 1);
+    cout << "A." << root->a << "  B." << root->b
+         << "  C." << root->c << "  D." << root->d
+         << "  => Dap an: " << root->dapAn;
+
+    soThuTu++;
+    InOrderCauHoi(root->right, soThuTu, x, y);
+}
 #endif
