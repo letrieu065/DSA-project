@@ -18,31 +18,33 @@ using namespace std;
 int NhapSo() {
     string strNum = "";
     char ch;
+
     while (true) {
-        ch = _getch(); 
-        
-        if (isdigit(ch)) { 
+        ch = _getch();
+
+        if (isdigit(ch)) {
             strNum += ch;
             cout << ch;
         }
-        if (ch == 0 || ch == -32 || ch == 224) {
-            getch();
-            continue; 
+        else if (ch == 8) {
+            if (!strNum.empty()) {
+                strNum.pop_back();
+                cout << "\b \b";
+            }
         }
-        if (ch == 27) {
-        	strNum = "";
-        	break;
-		}
-        else if (ch == 8 && strNum.length() > 0) { 
-            strNum.pop_back(); 
-            cout << "\b \b";   
-        } 
-        else if (ch == 13 && strNum.length() > 0) {
-            break;
+        else if (ch == 13) {
+            if (!strNum.empty())
+                break;
+        }
+        else if (ch == 27) {
+            return -1;
+        }
+        else if (ch == 0 || ch == -32 || ch == 224) {
+            _getch();
         }
     }
-    cout << endl;
-    return stoi(strNum); 
+
+    return stoi(strNum);
 }
 
 string NhapChuoiChu() {
@@ -415,5 +417,10 @@ void InOrderCauHoi(PTR_CAUHOI root, int &soThuTu, int x, int y) {
 
     soThuTu++;
     InOrderCauHoi(root->right, soThuTu, x, y);
+}
+void ShowCur(bool CursorVisibility) {
+    HANDLE handle = GetStdHandle(STD_OUTPUT_HANDLE);
+    CONSOLE_CURSOR_INFO cursor = { 1, CursorVisibility };
+    SetConsoleCursorInfo(handle, &cursor);
 }
 #endif

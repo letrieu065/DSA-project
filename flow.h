@@ -371,7 +371,7 @@ void flowQuanLySinhVien(DanhSachLop &dsLop) {
 }
 */
 
-void flowQuanLyMonHoc(DanhSachMonHoc &dsMH) {
+/*void flowQuanLyMonHoc(DanhSachMonHoc &dsMH) {
 	char menuCon[5][50] = {"1. Them Mon Hoc", "2. Sua Mon", "3. Xoa Mon", "4. Xem Danh Sach", "5. Quay Lai"};
     
     while (true) {
@@ -397,9 +397,10 @@ void flowQuanLyMonHoc(DanhSachMonHoc &dsMH) {
 		} 
 
         if (chon == -1 || chon == 4) break; 
+        
 	}	
 }
-
+*/
 void flowQuanLyCauHoi(PTR_CAUHOI &root) {
     char menuCon[5][50] = {
         "1. Them Cau Hoi",
@@ -852,5 +853,201 @@ void flowQuanLySinhVienCuaLop(DanhSachLop &dsLop, Lop* lopHienTai) {
         }
     }
 }
+bool XacNhanMenu(int x, int y, string thongBao) {
+    int choice = 0;
+    while (true) {
+        gotoxy(x, y); 
+        SetColor(0, 12); cout << thongBao;
+        
+        gotoxy(x + thongBao.length() + 2, y);
+        if (choice == 0) SetColor(11, 0); else SetColor(0, 7);
+        cout << " CO ";
 
+        gotoxy(x + thongBao.length() + 8, y);
+        if (choice == 1) SetColor(11, 0); else SetColor(0, 7);
+        cout << " KHONG ";
+
+        SetColor(0, 7);
+
+        char ch = _getch();
+        if (ch == 224 || ch == -32) {
+            ch = _getch();
+            if (ch == 75 || ch == 77) choice = 1 - choice;
+        }
+        else if (ch == 13) return (choice == 0);
+        else if (ch == 27) return false; 
+    }
+}
+
+void flowQuanLyMonHoc(DanhSachMonHoc &dsMH) {
+    int cursor = 0;
+    int itemsPerPage = 8;
+    
+    while (true) {
+    	ShowCur(false);
+        int totalItems = dsMH.soLuong;
+        int totalPages = (totalItems == 0) ? 1 : (totalItems + itemsPerPage - 1) / itemsPerPage;
+        int currentPage = (totalItems == 0) ? 0 : (cursor / itemsPerPage);
+
+        XoaVungContent();
+        gotoxy(62, 6); SetColor(0, 10); cout << "DANH SACH MON HOC";
+        gotoxy(105, 25); cout << "(Trang " << currentPage + 1 << "/" << totalPages << ")"; 
+    
+        gotoxy(35, 8); SetColor(0, 14);
+        printf("%-5s %-15s %-35s %-5s", "STT", "Ma Mon", "Ten Mon Hoc", "STC");
+        SetColor(0, 7);
+
+        int startIdx = currentPage * itemsPerPage;
+        int endIdx = (startIdx + itemsPerPage > totalItems) ? totalItems : (startIdx + itemsPerPage);
+        
+        if (totalItems == 0) {
+            SetColor(0, 12);
+            gotoxy(58, 12); cout << "Danh sach mon hoc dang trong!";
+            gotoxy(56, 13); cout << "(INS hoac I de them mon hoc moi)";
+            SetColor(0, 7);
+        } else {
+            for (int i = startIdx; i < endIdx; i++) {
+                int toadoY = 10 + (i - startIdx) * 2;
+                
+                if (i == cursor) SetColor(11, 0);
+                else SetColor(0, 7);
+                
+                gotoxy(35, toadoY);
+
+                printf("%-5d %-15s %-35s %-5d", i + 1, dsMH.data[i].maMH, dsMH.data[i].tenMH, dsMH.data[i].soTinChi);
+            }
+        }
+
+        gotoxy(35, 26); SetColor(0, 8);
+        cout << "Up/Down: Chon | Left/Right: Chuyen trang";
+        gotoxy(35, 27); SetColor(0, 11);
+        cout << "[INS/I] Them | [E] Sua | [DEL/D] Xoa | [ESC] Thoat";
+        SetColor(0, 7);
+
+        int ch = _getch();
+        if (ch == 224 || ch == 0 || ch == -32) {
+            ch = _getch();
+            if (ch == 72 && cursor > 0) cursor--;
+            else if (ch == 80 && cursor < totalItems - 1) cursor++; 
+            else if (ch == 75 && currentPage > 0) cursor = (currentPage - 1) * itemsPerPage; 
+            else if (ch == 77 && currentPage < totalPages - 1) cursor = (currentPage + 1) * itemsPerPage;
+        }
+        else if (ch == 27) break;
+
+        else if (toupper(ch) == 'I') {
+            XoaVungContent();
+            gotoxy(59, 7); SetColor(0, 11); cout << "--- THEM MON HOC MOI ---"; SetColor(0, 7);
+
+            gotoxy(40, 10); cout << "Ma Mon:";
+            gotoxy(40, 12); cout << "Ten Mon Hoc:";
+            gotoxy(40, 14); cout << "So Tin Chi:";
+
+            int xNhap = 54;
+			ShowCur(true);
+            gotoxy(xNhap, 10); 
+			string ma = NhapMa(MAX_MAMH); 
+            if (ma == "") {
+            	InThongBaoContent("Da  huy thao tac them mon hoc!", 10, 56, 26);
+            	_getch();
+            continue;
+			}
+
+            if (kiemTraTrungMaMonHoc(dsMH, (char*)ma.c_str())) {
+    			InThongBaoContent("Loi: Ma mon hoc da ton tai!", 12, 56, 26);
+    			_getch();
+    		continue;
+			}
+			ShowCur(true);
+            gotoxy(xNhap, 12); 
+			string ten = NhapTen(); 
+			if (ten == ""){
+				InThongBaoContent("Da huy thao tac them mon hoc", 14, 56, 26);
+				_getch();
+			continue;
+			}
+			ShowCur(true);
+            gotoxy(xNhap, 14); int stc = NhapSo();
+            if (stc <= 0) {
+            	InThongBaoContent("Da huy thao tac them mon hoc", 14, 56, 26);
+            	_getch();
+			continue;
+			}
+			
+			ShowCur(false);
+			
+            MonHoc mhMoi;
+            strcpy(mhMoi.maMH, ma.c_str());
+            strcpy(mhMoi.tenMH, ten.c_str());
+            mhMoi.soTinChi = stc;
+        
+            if (dsMH.soLuong >= MAX_MON_HOC) {
+    			InThongBaoContent("Danh sach mon hoc da day!", 12, 50, 26);
+    			_getch();
+    		continue;
+			}	
+			
+			dsMH.data[dsMH.soLuong++] = mhMoi;
+			
+            SaveMonHoc(dsMH);
+            InThongBaoContent("Them mon hoc thanh cong!", 10, 58, 26);
+            _getch();
+            cursor = dsMH.soLuong - 1;
+			}   
+
+        else if (toupper(ch) == 'E' && totalItems > 0) {
+            XoaVungContent();
+            gotoxy(55, 7); SetColor(0, 11); cout << "--- SUA MON HOC ---"; SetColor(0, 7);
+            
+            gotoxy(40, 10); cout << "Ma mon hoc:";
+            gotoxy(40, 12); cout << "Ten moi:";
+            gotoxy(40, 14); cout << "So tin chi moi:";
+            
+            int xNhap = 54;
+            
+            gotoxy(xNhap, 10); cout << dsMH.data[cursor].maMH;
+            ShowCur(true);
+            gotoxy(xNhap, 12); string tenMoi = NhapTen(); 
+            if (tenMoi == "") {
+            	ShowCur(false);
+            	InThongBaoContent("Da huy thao tac sua!", 14, 58, 26);
+            	_getch();
+            continue;
+			}
+            if (tenMoi != "") strcpy(dsMH.data[cursor].tenMH, tenMoi.c_str());
+            ShowCur(true);
+            gotoxy(xNhap, 14); int stcMoi = NhapSo();
+            if (stcMoi <= 0) {
+            	ShowCur(false);
+            	InThongBaoContent("Da huy thao tac sua!", 14, 58, 26);
+            	_getch();
+            continue;
+			}
+            if (stcMoi > 0) dsMH.data[cursor].soTinChi = stcMoi;
+            ShowCur(false);
+            SaveMonHoc(dsMH);
+            InThongBaoContent("Cap nhat thanh cong!", 10, 50, 26);
+            _getch();
+
+        }
+        else if ((ch == 83 || toupper(ch) == 'D') && totalItems > 0) {
+            XoaVungContent();
+            string thongBao = "XAC NHAN XOA MON: " + string(dsMH.data[cursor].tenMH);
+            
+            if (XacNhanMenu(40, 12, thongBao)) {
+                for (int i = cursor; i < dsMH.soLuong - 1; i++) {
+                    dsMH.data[i] = dsMH.data[i + 1];
+                }
+                dsMH.soLuong--;
+                
+                if (cursor >= dsMH.soLuong && cursor > 0) cursor--;
+            
+                SaveMonHoc(dsMH);
+                InThongBaoContent("Da xoa mon hoc!", 10, 50, 26);
+            } else {
+                InThongBaoContent("Da huy xoa!", 14, 50, 26);
+            }
+            _getch();
+        }
+    }
+}
 #endif
