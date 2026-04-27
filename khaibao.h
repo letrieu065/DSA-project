@@ -46,7 +46,7 @@ struct MonHoc {
 };
 
 struct CauHoi {
-    int id;               
+    char id[25];               
     char maMH[MAX_MAMH];
     char noiDung[500];
     char a[200], b[200], c[200], d[200];

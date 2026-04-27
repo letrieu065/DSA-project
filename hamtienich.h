@@ -13,6 +13,9 @@
 
 using namespace std;
 
+void ShowCur(bool CursorVisibility);
+char XacNhan(int x, int y);
+int InChuoiGioiHan(string s, int x, int y, int maxCols);
 
 // Ham nhap lieu
 int NhapSo() {
@@ -172,7 +175,151 @@ bool NhapGioiTinh(int x, int y) {
         }
     }
 }
-// Ham tien ich
+
+char ChonDapAn(int x, int y) {
+    char dsDapAn[] = {'A', 'B', 'C', 'D'};
+    int index = 0;
+    char ch;
+
+    ShowCur(false); 
+
+    while (true) {
+        for (int i = 0; i < 4; i++) {
+            gotoxy(x + (i * 6), y); 
+            
+            if (i == index) {
+                SetColor(0, 11); 
+                cout << "[" << dsDapAn[i] << "]";
+            } else {
+                SetColor(0, 7); 
+                cout << " " << dsDapAn[i] << " "; 
+            }
+        }
+        SetColor(0, 7);
+
+        ch = _getch();
+
+        if (ch == 13) { 
+            ShowCur(true); 
+            return dsDapAn[index];
+        }
+        
+        if (ch == 27) {
+            
+            char xn = XacNhan(80, 26);
+            
+            gotoxy(50, 26); cout << "                                                    ";
+            gotoxy(80, 26); cout << "              ";
+            
+            if (xn == 'Y') return '\0'; 
+            else {
+                ShowCur(false);
+                continue;
+            }
+        }
+
+        if (ch == -32 || ch == 224) { 
+            ch = _getch();
+            if (ch == 75) {
+                index = (index > 0) ? index - 1 : 3; 
+            }
+            else if (ch == 77) { 
+                index = (index < 3) ? index + 1 : 0;
+            }
+        }
+    }
+}
+
+// Ham nhap nhieu dong co gioi han vung (maxCols: so ky tu tren 1 dong, maxRows: so dong toi da)
+string xuongdongGioiHan(int X, int Y, int maxCols, int maxRows, int maxChars) {
+    int curX = X, curY = Y, len = 0;
+    int posX[500], posY[500];
+    string result = "";
+    gotoxy(curX, curY);
+
+    while (true) {
+        char ch = _getch();
+        
+        if (ch == 27) {
+            // Lưu vị trí con trỏ hiện tại trước khi gọi XacNhan
+            int savedX = curX;
+            int savedY = curY;
+            
+            char xn = XacNhan(80, 26);
+            
+            // Xóa thông báo XacNhan
+            gotoxy(50, 26); cout << "                                                    ";
+            gotoxy(80, 26); cout << "              ";
+            
+            if (xn == 'Y') return ""; // YES -> thoát
+            else {
+                // NO -> quay con trỏ về chỗ cũ
+                ShowCur(true);
+                gotoxy(savedX, savedY);
+                continue;
+            }
+        }
+        if (ch == '\r') break; 
+
+        if (ch == 8) { 
+            if (len > 0) {
+                len--;
+                curX = posX[len]; curY = posY[len];
+                gotoxy(curX, curY); cout << " "; gotoxy(curX, curY);
+                result.pop_back();
+            }
+            continue;
+        }
+
+        if (ch < 32 || (unsigned char)ch > 126) continue;
+        if (len >= maxChars) continue;
+
+        if (curX >= X + maxCols) {
+            
+            if (curY >= Y + maxRows - 1) continue;
+
+            int wordStart = len - 1;
+            while (wordStart > 0 && result[wordStart - 1] != ' ') wordStart--;
+
+            if (wordStart > 0 && result[wordStart - 1] == ' ') {
+                for (int i = wordStart; i < len; i++) {
+                    gotoxy(posX[i], posY[i]); cout << " ";
+                }
+                curY++; curX = X;
+                for (int i = wordStart; i < len; i++) {
+                    posX[i] = curX; posY[i] = curY;
+                    gotoxy(curX, curY); cout << result[i];
+                    curX++;
+                }
+            } else {
+                curY++; curX = X;
+            }
+        }
+
+        posX[len] = curX; posY[len] = curY;
+        gotoxy(curX, curY); cout << ch;
+        result += ch; len++; curX++;
+    }
+    return result;
+}
+
+int InChuoiGioiHan(string s, int x, int y, int maxCols) {
+    int curX = x, curY = y;
+    int startY = y;
+
+    for (int i = 0; i < s.length(); i++) {
+        if (curX >= x + maxCols) {
+            curX = x;
+            curY++;
+        }
+
+        gotoxy(curX, curY);
+        cout << s[i];
+        curX++;
+    }
+
+    return curY - startY + 1; // 👈 trả số dòng
+}
 
 //Ham khoi tao
 void Init(DanhSachMonHoc &dsMH, DanhSachLop &dsLop, PTR_CAUHOI &root) { 
@@ -282,16 +429,7 @@ int xacThucMatKhau(int role, string pass, SinhVien* svFound) {
     return ERR_LOGIN_PASS;
 }
 
-/*
-void nhapLop(DanhSachLop &dsLop) {
-	string ma_nhap = NhapMa(50);
-	string ten_nhap = NhapTen();
-	const char* ma = ma_nhap.c_str();
-	const char* ten = ten_nhap.c_str();
-	
-	//themLop(dsLop, (char*)ma, (char*)ten);
-}
-*/
+
 
 int MenuDong(char options[][50], int soLuong, int toaDoX, int toaDoY) {
     int cursor = 0;
@@ -402,25 +540,58 @@ void inDanhSachSinhVien(Lop* lop, int x, int y) {
     }
 }
 
-void InOrderCauHoi(PTR_CAUHOI root, int &soThuTu, int x, int y) {
-    if (root == NULL) return;
-    InOrderCauHoi(root->left, soThuTu, x, y);
-
-    gotoxy(x, y + soThuTu * 3);
-    SetColor(0, 11);
-    cout << "[ID:" << root->id << "] [" << root->maMH << "] " << root->noiDung;
-    SetColor(0, 7);
-    gotoxy(x + 2, y + soThuTu * 3 + 1);
-    cout << "A." << root->a << "  B." << root->b
-         << "  C." << root->c << "  D." << root->d
-         << "  => Dap an: " << root->dapAn;
-
-    soThuTu++;
-    InOrderCauHoi(root->right, soThuTu, x, y);
-}
 void ShowCur(bool CursorVisibility) {
     HANDLE handle = GetStdHandle(STD_OUTPUT_HANDLE);
     CONSOLE_CURSOR_INFO cursor = { 1, CursorVisibility };
     SetConsoleCursorInfo(handle, &cursor);
 }
+
+char XacNhan(int x, int y) {
+    const char* option[] = {"YES", "NO"};
+    int index = 0;
+    int numOptions = 2;
+    char ch;
+
+    ShowCur(false);
+    gotoxy(50, 26);
+    SetColor(0, 14);
+    cout << "Ban co chac muon thoat khong?";
+
+    while (true) {
+        for (int i = 0; i < numOptions; i++) {
+            gotoxy(x + (i * 6), y);
+
+            if (i == index) {
+                SetColor(0, 11);
+                cout << "[" << option[i] << "]";
+            } else {
+                SetColor(0, 7);
+                cout << " " << option[i] << " ";
+            }
+        }
+        SetColor(0, 7);
+        ch = _getch();
+
+        if (ch == 13) { // Enter
+            ShowCur(true);
+            return option[index][0]; // trả về 'Y' hoặc 'N'
+        }
+
+        if (ch == 27) { // ESC
+            ShowCur(true);
+            return ' ';
+        }
+
+        if (ch == -32 || ch == (char)224) { // phím mũi tên
+            ch = _getch();
+            if (ch == 75) { // mũi tên trái
+                index = (index > 0) ? index - 1 : numOptions - 1;
+            } else if (ch == 77) { // mũi tên phải
+                index = (index < numOptions - 1) ? index + 1 : 0;
+            }
+        }
+    }
+    SetColor(0, 7);
+}
+
 #endif

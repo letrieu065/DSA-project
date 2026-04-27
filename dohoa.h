@@ -74,4 +74,6 @@ void VeLayoutChinh(string tenNguoiDung) {
     SetColor(0, 7);
     VeKhung(32, 5, 85, 23);
 }
+
+
 #endif
