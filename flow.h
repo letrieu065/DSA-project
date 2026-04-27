@@ -74,7 +74,7 @@ void flowGiaoVien(DanhSachLop &dsLop, DanhSachMonHoc &dsMH, PTR_CAUHOI &root) {
         
         int chon = MenuDong(menuChinh, 4, 4, 9); 
         
-        //if (chon == 0) flowQuanLyLop(dsLop);
+        //if (chon == 0) flowQuanLyLop(dsLop);//
         if (chon == 0) flowQuanLyLop_SinhVien(dsLop);
         else if (chon == 1) flowQuanLyMonHoc(dsMH);
         else if (chon == 2) flowQuanLyCauHoi(root);

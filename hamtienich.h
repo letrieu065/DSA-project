@@ -17,7 +17,7 @@ void ShowCur(bool CursorVisibility);
 char XacNhan(int x, int y);
 int InChuoiGioiHan(string s, int x, int y, int maxCols);
 
-// Ham nhap lieu
+// Ham nhap lieu//
 int NhapSo() {
     string strNum = "";
     char ch;
