@@ -3,6 +3,7 @@
 
 #include "ErrorCodes.h"
 #include "khaibao.h"
+#include "hamtienich.h"
 #include "dohoa.h"
 int themMonHoc(DanhSachMonHoc &dsMH, MonHoc* mh);
 int suaMonHoc(DanhSachMonHoc &dsMH, const char* ma, const char* tenMoi, int tinChiMoi);
@@ -10,7 +11,8 @@ int xoaMonHoc(DanhSachMonHoc &dsMH, const char* ma, PTR_CAUHOI root);
 int timViTriMonHoc(DanhSachMonHoc &dsMH, const char* ma);
 bool kiemTraTrungMaMonHoc(DanhSachMonHoc &dsMH, const char* ma);
 bool kiemTraMonHocDaCoCauHoi(PTR_CAUHOI root, const char* maMH);
-// Ham them lop
+int InChuoiGioiHan(string s, int x, int y, int maxCols);
+// Ham them lop//
 int KiemTraTrungMaLop(DanhSachLop &dsLop, char* maNhap) {
     for (int i = 0; i < dsLop.soLuong; i++) {
         if (strcmp(dsLop.nodes[i]->maLop, maNhap) == 0) {
@@ -263,23 +265,71 @@ bool kiemTraMonHocDaCoCauHoi(PTR_CAUHOI root, const char* maMH) {
 }
 
 // Cau hoi
+int nextCauHoiSoThuTu = 1;
+
+// Tao ID dang: maMH_0001
+void TaoIdCauHoi(char* bufOut, const char* maMH, int soThuTu) {
+    snprintf(bufOut, 25, "%s_%04d", maMH, soThuTu);
+}
+
+void InOrderCauHoi(PTR_CAUHOI root, int &y, int x) {
+    if (root == NULL) return;
+
+    InOrderCauHoi(root->left, y, x);
+
+    // 👉 In ID + nội dung
+    gotoxy(x, y);
+    SetColor(0, 11);
+    cout << "[" << root->id << "] ";
+    SetColor(0, 7);
+
+    int usedLines = InChuoiGioiHan(root->noiDung, x + 16, y, 65);
+
+    y += usedLines; // 👈 QUAN TRỌNG
+
+    // 👉 In đáp án (mỗi cái 1 dòng)
+    gotoxy(x + 2, y++);
+    cout << "A. " << root->a;
+
+    gotoxy(x + 2, y++);
+    cout << "B. " << root->b;
+
+    gotoxy(x + 2, y++);
+    cout << "C. " << root->c;
+
+    gotoxy(x + 2, y++);
+    cout << "D. " << root->d;
+
+    // 👉 Đáp án đúng
+    SetColor(0, 10);
+    gotoxy(x + 2, y++);
+    cout << "=> Dap an: " << root->dapAn;
+    SetColor(0, 7);
+
+    y += 1; // cách dòng giữa các câu
+
+    InOrderCauHoi(root->right, y, x);
+}
+
+
 PTR_CAUHOI ThemCauHoi(PTR_CAUHOI root, CauHoi* node) {
     if (root == NULL) return node;
-    if (node->id < root->id)
+    if (strcmp(node->id, root->id) < 0)
         root->left = ThemCauHoi(root->left, node);
     else
         root->right = ThemCauHoi(root->right, node);
     return root;
 }
 
-CauHoi* TimCauHoi(PTR_CAUHOI root, int id) {
+CauHoi* TimCauHoi(PTR_CAUHOI root, const char* id) {
     if (root == NULL) return NULL;
-    if (id == root->id) return root;
-    if (id < root->id)  return TimCauHoi(root->left, id);
+    int cmp = strcmp(id, root->id);
+    if (cmp == 0) return root;
+    if (cmp < 0)  return TimCauHoi(root->left, id);
     return TimCauHoi(root->right, id);
 }
 
-bool HieuChinhCauHoi(PTR_CAUHOI root, int id,
+bool HieuChinhCauHoi(PTR_CAUHOI root, const char* id,
                      const char* noiDung,
                      const char* a, const char* b,
                      const char* c, const char* d,
@@ -302,12 +352,13 @@ CauHoi* LayNhoNhat(CauHoi* node) {
     return node;
 }
 
-PTR_CAUHOI XoaCauHoi(PTR_CAUHOI root, int id) {
+PTR_CAUHOI XoaCauHoi(PTR_CAUHOI root, const char* id) {
     if (root == NULL) return NULL;
 
-    if (id < root->id) {
+    int cmp = strcmp(id, root->id);
+    if (cmp < 0) {
         root->left = XoaCauHoi(root->left, id);
-    } else if (id > root->id) {
+    } else if (cmp > 0) {
         root->right = XoaCauHoi(root->right, id);
     } else {
         // Truong hop 1: Node la
@@ -327,9 +378,8 @@ PTR_CAUHOI XoaCauHoi(PTR_CAUHOI root, int id) {
             return temp;
         }
         // Truong hop 3: Co 2 cay con
-        // Lay node trai nhat cua cay con phai de the mang
         CauHoi* minNode = LayNhoNhat(root->right);
-        root->id = minNode->id;
+        strcpy(root->id,      minNode->id);
         strcpy(root->maMH,    minNode->maMH);
         strcpy(root->noiDung, minNode->noiDung);
         strcpy(root->a, minNode->a);

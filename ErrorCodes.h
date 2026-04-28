@@ -3,7 +3,7 @@
 
 const int SUCCESS = 0;
 
-// Nhom loi 100: Loi lop
+// Nhom loi 100: Loi lop//
 const int ERR_LOP_FULL       = 101;
 const int ERR_LOP_DUPLICATE  = 102;
 const int ERR_LOP_NOT_FOUND  = -1;

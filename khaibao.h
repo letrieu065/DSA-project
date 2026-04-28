@@ -27,7 +27,7 @@ struct SinhVien {
     char maSV[MAX_MASV];
     char ho[MAX_TEN];
     char ten[MAX_TEN];
-    bool phai; // true: Nam, false: Nu       
+    bool phai; // true: Nam, false: Nu    //   
     char password[MAX_PASS];
     DiemThi* headDiem = NULL;
     SinhVien* next = NULL;
@@ -46,7 +46,7 @@ struct MonHoc {
 };
 
 struct CauHoi {
-    int id;               
+    char id[25];               
     char maMH[MAX_MAMH];
     char noiDung[500];
     char a[200], b[200], c[200], d[200];

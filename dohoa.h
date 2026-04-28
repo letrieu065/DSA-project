@@ -70,8 +70,10 @@ void VeLayoutChinh(string tenNguoiDung) {
     SetColor(0, 11);
     VeKhung(32, 1, 85, 3);
     
-    // 4. Khung Duoi-Phai
+    // 4. Khung Duoi-Phai//
     SetColor(0, 7);
     VeKhung(32, 5, 85, 23);
 }
+
+
 #endif
