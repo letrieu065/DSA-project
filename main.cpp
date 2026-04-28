@@ -6,12 +6,13 @@
 #include "flow.h"
 //
 using namespace std;
-DanhSachMonHoc DANHSACHMONHOC;
-DanhSachLop DANHSACHLOP;
-CauHoi* Root;
+
 
 int main() {
 	SetFontSize(24);
+	DanhSachMonHoc DANHSACHMONHOC;
+	DanhSachLop DANHSACHLOP;
+	CauHoi* Root;
 	Init(DANHSACHMONHOC, DANHSACHLOP, Root);
 	loadData(DANHSACHLOP, DANHSACHMONHOC, Root);
 	flowChinh(DANHSACHLOP, DANHSACHMONHOC, Root);

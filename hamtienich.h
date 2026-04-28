@@ -231,12 +231,15 @@ char ChonDapAn(int x, int y) {
 }
 
 // Ham nhap nhieu dong co gioi han vung (maxCols: so ky tu tren 1 dong, maxRows: so dong toi da)
-string xuongdongGioiHan(int X, int Y, int maxCols, int maxRows, int maxChars) {
+string xuongdongGioiHan(int X, int Y, int maxCols, int maxRows, int maxChars, char* noiDungCu = NULL) {
     int curX = X, curY = Y, len = 0;
     int posX[500], posY[500];
     string result = "";
     gotoxy(curX, curY);
-
+    
+	string s="";
+	if (noiDungCu != NULL) s = noiDungCu;
+	
     while (true) {
         char ch = _getch();
         
@@ -301,6 +304,7 @@ string xuongdongGioiHan(int X, int Y, int maxCols, int maxRows, int maxChars) {
         result += ch; len++; curX++;
     }
     return result;
+    return s;
 }
 
 int InChuoiGioiHan(string s, int x, int y, int maxCols) {
