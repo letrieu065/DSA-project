@@ -17,6 +17,7 @@ void flowQuanLyMonHoc(DanhSachMonHoc &dsMH);
 void flowQuanLyCauHoi(DanhSachMonHoc &dsMH, PTR_CAUHOI &root);
 void flowQuanLyCauHoiCuaMon(const char* maMH,const char* tenMH ,PTR_CAUHOI &root);
 
+
 void flowChinh(DanhSachLop &dsLop, DanhSachMonHoc &dsMH, PTR_CAUHOI &root) {
     while (true) {
         int role = flowDangNhap(dsLop); 
@@ -143,23 +144,13 @@ void flowQuanLyCauHoi(DanhSachMonHoc &dsMH, PTR_CAUHOI &root) {
     }
 }
 
-// Hàm bổ trợ: Đếm và lấy danh sách câu hỏi của một môn học cụ thể
-void LayDanhSachCauHoiTheoMon(PTR_CAUHOI root, const char* maMH, CauHoi* dsTam[], int &n) {
-    if (root == NULL) return;
-    
-    // Duyet In-order để lấy danh sách theo thứ tự ID
-    LayDanhSachCauHoiTheoMon(root->left, maMH, dsTam, n);
-    
-    if (strcmp(root->maMH, maMH) == 0) {
-        dsTam[n++] = root;
-    }
-    
-    LayDanhSachCauHoiTheoMon(root->right, maMH, dsTam, n);
-}
 
 void flowQuanLyCauHoiCuaMon(const char* maMH, const char* tenMH, PTR_CAUHOI &root) {
+	
+	KiemTraVaTaoFileCauHoi(maMH, tenMH);
+	
     int currentPage = 0;
-    int itemsPerPage = 4; // Vì câu hỏi chiếm nhiều dòng nên để 4 câu/trang là vừa đẹp
+    int itemsPerPage = 4; 
 
     while (true) {
         ShowCur(false);
@@ -189,15 +180,26 @@ void flowQuanLyCauHoiCuaMon(const char* maMH, const char* tenMH, PTR_CAUHOI &roo
             int startIdx = currentPage * itemsPerPage;
             int endIdx = (startIdx + itemsPerPage > totalItems) ? totalItems : (startIdx + itemsPerPage);
 
+                
             for (int i = startIdx; i < endIdx; i++) {
-                int yPos = 8 + (i - startIdx) * 4; // Mỗi block câu hỏi chiếm 4 dòng
+    			int yPos = 8 + (i - startIdx) * 8;
+                
+                int startX = 35;
+                int idLen = strlen(dsTam[i]->id);
+                int idPadding = idLen + 3;
+				int contentX = startX + idPadding;
+				
                 SetColor(0, 14);
-                gotoxy(35, yPos);     cout << "ID: " << dsTam[i]->id;
-                SetColor(0, 7);
-                gotoxy(35, yPos + 1); cout << "ND: " << dsTam[i]->noiDung;
-                gotoxy(35, yPos + 2); cout << "A: " << dsTam[i]->a << " | B: " << dsTam[i]->b 
-                                           << " | C: " << dsTam[i]->c << " | D: " << dsTam[i]->d;
-                gotoxy(35, yPos + 3); SetColor(0, 11);
+                gotoxy(startX, yPos);     cout << "[" << dsTam[i]->id<<"] ";
+                
+				SetColor(0, 7);
+				InNoiDungCanLe(dsTam[i]->noiDung, contentX, yPos, 65); 
+
+                gotoxy(35, yPos + 1); cout << "A: " << dsTam[i]->a;
+                gotoxy(35, yPos + 2); cout << "B: " << dsTam[i]->b;
+                gotoxy(35, yPos + 3); cout << "C: " << dsTam[i]->c;
+                gotoxy(35, yPos + 4); cout << "D: " << dsTam[i]->d;
+                gotoxy(35, yPos + 5); SetColor(0, 11);
                 cout << ">> Dap an: " << dsTam[i]->dapAn;
                 SetColor(0, 8); cout << " ---------------------------------------";
             }
@@ -216,7 +218,7 @@ void flowQuanLyCauHoiCuaMon(const char* maMH, const char* tenMH, PTR_CAUHOI &roo
             else if (ch == 77 && currentPage < totalPages - 1) currentPage++; // Sang phải
         }
         else if (ch == 27) break; // ESC thoát
-
+         
         // --- Logic Them (I) ---
         else if (toupper(ch) == 'I') {
             XoaVungContent();
@@ -250,7 +252,10 @@ void flowQuanLyCauHoiCuaMon(const char* maMH, const char* tenMH, PTR_CAUHOI &roo
             strcpy(newNode->d, pD.c_str());
 
             root = ThemCauHoi(root, newNode);
-            InThongBaoContent("Them cau hoi thanh cong!", 10, 45, 26);
+            
+			LuuFileCauHoiTheoMon(maMH, tenMH, root);
+			InThongBaoContent("Them cau hoi thanh cong!", 10, 45, 26);
+        
             _getch();
         }
 
@@ -260,9 +265,11 @@ void flowQuanLyCauHoiCuaMon(const char* maMH, const char* tenMH, PTR_CAUHOI &roo
 		    ShowCur(true);
 		    gotoxy(55, 6); SetColor(0, 11); cout << "--- HIEU CHINH CAU HOI ---"; SetColor(0, 7);
 		    
-		    // Bước 1: Tìm câu hỏi qua ID
+		   
 		    gotoxy(35, 8); cout << "Nhap ID can sua: ";
 		    string idStr = NhapMa(24); // Giả sử hàm NhapMa trả về string
+		    if (idStr == "") continue;
+		    
 		    CauHoi* node = TimCauHoi(root, idStr.c_str());
 		
 		    if (node == NULL || strcmp(node->maMH, maMH) != 0) {
@@ -270,7 +277,6 @@ void flowQuanLyCauHoiCuaMon(const char* maMH, const char* tenMH, PTR_CAUHOI &roo
 		        _getch(); continue;
 		    }
 		
-		    // Bước 2: Vẽ giao diện giống hệt lúc "Them" nhưng in sẵn nội dung cũ
 		    XoaVungContent();
 		    gotoxy(57, 6); SetColor(0, 11); cout << "--- SUA NOI DUNG CAU HOI ---"; SetColor(0, 7);
 		    gotoxy(35, 8);  cout << "Ma Mon Hoc : " << node->maMH;
@@ -285,11 +291,8 @@ void flowQuanLyCauHoiCuaMon(const char* maMH, const char* tenMH, PTR_CAUHOI &roo
 		    gotoxy(35, 22); cout << "D. " << node->d;
 		    gotoxy(35, 24); cout << "Dap An Dung (A/B/C/D): " << node->dapAn;
 		
-		    // Bước 3: Cho phép nhập đè lên hoặc sửa (Sử dụng hàm nhập hỗ trợ chuỗi cũ)
-		    // Lưu ý: Nếu hàm xuongdongGioiHan của bạn không hỗ trợ sửa chuỗi cũ, 
-		    // bạn có thể phải viết thêm 1 hàm NhapCoNoiDungCu.
 		    
-		    SetColor(0, 14); // Đổi màu để phân biệt lúc đang sửa
+		    SetColor(0, 14); 
 		    gotoxy(50, 11); string ndMoi = xuongdongGioiHan(50, 11, 65, 4, 800, node->noiDung); 
 		    
 		    gotoxy(39, 16); string aMoi = xuongdongGioiHan(39, 16, 70, 2, 200, node->a);
@@ -310,6 +313,7 @@ void flowQuanLyCauHoiCuaMon(const char* maMH, const char* tenMH, PTR_CAUHOI &roo
 		        strcpy(node->c, cMoi.c_str());
 		        strcpy(node->d, dMoi.c_str());
 		        if(daMoi != '\0') node->dapAn = daMoi;
+		        LuuFileCauHoiTheoMon(maMH, tenMH, root);
 		        
 		        InThongBaoContent("Cap nhat thanh cong!", 10, 45, 27);
 		    } else {
@@ -323,12 +327,17 @@ void flowQuanLyCauHoiCuaMon(const char* maMH, const char* tenMH, PTR_CAUHOI &roo
             XoaVungContent();
             gotoxy(55, 6); SetColor(0, 11); cout << "--- XOA CAU HOI ---"; SetColor(0, 7);
             gotoxy(35, 8); cout << "Nhap ID can xoa : ";
+            
             string idStr = NhapMa(24);
+            if (idStr == "") continue;
+        
             CauHoi* node = TimCauHoi(root, idStr.c_str());
             if (node == NULL || strcmp(node->maMH, maMH) != 0) {
                 InThongBaoContent("ID khong ton tai trong mon nay!", 12, 45, 26);
             } else {
                 root = XoaCauHoi(root, idStr.c_str());
+                LuuFileCauHoiTheoMon(maMH, tenMH, root);
+                XoaFileNeuTrong(maMH, tenMH, root);
                 InThongBaoContent("Da xoa cau hoi!", 10, 45, 26);
             }
             _getch();

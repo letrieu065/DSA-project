@@ -7,9 +7,11 @@
 #include <windows.h>
 #include <cctype>
 #include <cstring>
+#include <sstream>
 #include "khaibao.h"
 #include "hamchinh.h"
 #include "dohoa.h"
+
 
 using namespace std;
 
@@ -244,19 +246,17 @@ string xuongdongGioiHan(int X, int Y, int maxCols, int maxRows, int maxChars, ch
         char ch = _getch();
         
         if (ch == 27) {
-            // Lưu vị trí con trỏ hiện tại trước khi gọi XacNhan
+
             int savedX = curX;
             int savedY = curY;
             
             char xn = XacNhan(80, 26);
-            
-            // Xóa thông báo XacNhan
+         
             gotoxy(50, 26); cout << "                                                    ";
             gotoxy(80, 26); cout << "              ";
             
-            if (xn == 'Y') return ""; // YES -> thoát
+            if (xn == 'Y') return ""; 
             else {
-                // NO -> quay con trỏ về chỗ cũ
                 ShowCur(true);
                 gotoxy(savedX, savedY);
                 continue;
@@ -307,6 +307,24 @@ string xuongdongGioiHan(int X, int Y, int maxCols, int maxRows, int maxChars, ch
     return s;
 }
 
+void InNoiDungCanLe(string noiDung, int X, int Y, int maxW) {
+    int curX = X, curY = Y;
+    string word;
+    stringstream ss(noiDung);
+
+    gotoxy(X, Y);
+    while (ss >> word) {
+       
+        if (curX + word.length() > X + maxW) {
+            curY++;        
+            curX = X;       
+            gotoxy(curX, curY);
+        }
+        cout << word << " ";
+        curX += word.length() + 1;
+    }
+}
+
 int InChuoiGioiHan(string s, int x, int y, int maxCols) {
     int curX = x, curY = y;
     int startY = y;
@@ -322,7 +340,7 @@ int InChuoiGioiHan(string s, int x, int y, int maxCols) {
         curX++;
     }
 
-    return curY - startY + 1; // 👈 trả số dòng
+    return curY - startY + 1; 
 }
 
 //Ham khoi tao
