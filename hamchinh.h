@@ -267,7 +267,6 @@ bool kiemTraMonHocDaCoCauHoi(PTR_CAUHOI root, const char* maMH) {
 // Cau hoi
 int nextCauHoiSoThuTu = 1;
 
-// Tao ID dang: maMH_0001
 void TaoIdCauHoi(char* bufOut, const char* maMH, int soThuTu) {
     snprintf(bufOut, 25, "%s_%04d", maMH, soThuTu);
 }
@@ -277,7 +276,6 @@ void InOrderCauHoi(PTR_CAUHOI root, int &y, int x) {
 
     InOrderCauHoi(root->left, y, x);
 
-    // 👉 In ID + nội dung
     gotoxy(x, y);
     SetColor(0, 11);
     cout << "[" << root->id << "] ";
@@ -285,9 +283,8 @@ void InOrderCauHoi(PTR_CAUHOI root, int &y, int x) {
 
     int usedLines = InChuoiGioiHan(root->noiDung, x + 16, y, 65);
 
-    y += usedLines; // 👈 QUAN TRỌNG
+    y += usedLines; 
 
-    // 👉 In đáp án (mỗi cái 1 dòng)
     gotoxy(x + 2, y++);
     cout << "A. " << root->a;
 
@@ -311,6 +308,22 @@ void InOrderCauHoi(PTR_CAUHOI root, int &y, int x) {
     InOrderCauHoi(root->right, y, x);
 }
 
+void CapNhatSTT(PTR_CAUHOI root) {
+    if (root == NULL) return;
+    
+    // Tìm phần số trong ID (ví dụ "IT_0015" lấy ra 15)
+    string idStr = root->id;
+    size_t pos = idStr.find_last_of('_');
+    if (pos != string::npos) {
+        int soHienTai = atoi(idStr.substr(pos + 1).c_str());
+        if (soHienTai >= nextCauHoiSoThuTu) {
+            nextCauHoiSoThuTu = soHienTai + 1; // Số tiếp theo sẽ lớn hơn số lớn nhất hiện tại
+        }
+    }
+    CapNhatSTT(root->left);
+    CapNhatSTT(root->right);
+}
+
 
 PTR_CAUHOI ThemCauHoi(PTR_CAUHOI root, CauHoi* node) {
     if (root == NULL) return node;
@@ -327,23 +340,6 @@ CauHoi* TimCauHoi(PTR_CAUHOI root, const char* id) {
     if (cmp == 0) return root;
     if (cmp < 0)  return TimCauHoi(root->left, id);
     return TimCauHoi(root->right, id);
-}
-
-bool HieuChinhCauHoi(PTR_CAUHOI root, const char* id,
-                     const char* noiDung,
-                     const char* a, const char* b,
-                     const char* c, const char* d,
-                     char dapAn) {
-    CauHoi* node = TimCauHoi(root, id);
-    if (node == NULL) return false;
-
-    strcpy(node->noiDung, noiDung);
-    strcpy(node->a, a);
-    strcpy(node->b, b);
-    strcpy(node->c, c);
-    strcpy(node->d, d);
-    node->dapAn = dapAn;
-    return true;
 }
 
 CauHoi* LayNhoNhat(CauHoi* node) {
