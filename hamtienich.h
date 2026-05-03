@@ -222,10 +222,10 @@ char ChonDapAn(int x, int y) {
 
         if (ch == -32 || ch == 224) { 
             ch = _getch();
-            if (ch == 75) {
+            if (ch == 75) { //mũi tên trái
                 index = (index > 0) ? index - 1 : 3; 
             }
-            else if (ch == 77) { 
+            else if (ch == 77) { //mũi tên phải
                 index = (index < 3) ? index + 1 : 0;
             }
         }
@@ -264,11 +264,12 @@ string xuongdongGioiHan(int X, int Y, int maxCols, int maxRows, int maxChars, ch
         }
         if (ch == '\r') break; 
 
-        if (ch == 8) { 
+        if (ch == 8) { // phím backspace
             if (len > 0) {
                 len--;
                 curX = posX[len]; curY = posY[len];
-                gotoxy(curX, curY); cout << " "; gotoxy(curX, curY);
+                gotoxy(curX, curY); cout << " "; 
+				gotoxy(curX, curY);
                 result.pop_back();
             }
             continue;
