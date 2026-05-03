@@ -7,9 +7,11 @@
 #include <windows.h>
 #include <cctype>
 #include <cstring>
+#include <sstream>
 #include "khaibao.h"
 #include "hamchinh.h"
 #include "dohoa.h"
+
 
 using namespace std;
 
@@ -231,29 +233,30 @@ char ChonDapAn(int x, int y) {
 }
 
 // Ham nhap nhieu dong co gioi han vung (maxCols: so ky tu tren 1 dong, maxRows: so dong toi da)
-string xuongdongGioiHan(int X, int Y, int maxCols, int maxRows, int maxChars) {
+string xuongdongGioiHan(int X, int Y, int maxCols, int maxRows, int maxChars, char* noiDungCu = NULL) {
     int curX = X, curY = Y, len = 0;
     int posX[500], posY[500];
     string result = "";
     gotoxy(curX, curY);
-
+    
+	string s="";
+	if (noiDungCu != NULL) s = noiDungCu;
+	
     while (true) {
         char ch = _getch();
         
         if (ch == 27) {
-            // Lưu vị trí con trỏ hiện tại trước khi gọi XacNhan
+
             int savedX = curX;
             int savedY = curY;
             
             char xn = XacNhan(80, 26);
-            
-            // Xóa thông báo XacNhan
+         
             gotoxy(50, 26); cout << "                                                    ";
             gotoxy(80, 26); cout << "              ";
             
-            if (xn == 'Y') return ""; // YES -> thoát
+            if (xn == 'Y') return ""; 
             else {
-                // NO -> quay con trỏ về chỗ cũ
                 ShowCur(true);
                 gotoxy(savedX, savedY);
                 continue;
@@ -301,6 +304,25 @@ string xuongdongGioiHan(int X, int Y, int maxCols, int maxRows, int maxChars) {
         result += ch; len++; curX++;
     }
     return result;
+    return s;
+}
+
+void InNoiDungCanLe(string noiDung, int X, int Y, int maxW) {
+    int curX = X, curY = Y;
+    string word;
+    stringstream ss(noiDung);
+
+    gotoxy(X, Y);
+    while (ss >> word) {
+       
+        if (curX + word.length() > X + maxW) {
+            curY++;        
+            curX = X;       
+            gotoxy(curX, curY);
+        }
+        cout << word << " ";
+        curX += word.length() + 1;
+    }
 }
 
 int InChuoiGioiHan(string s, int x, int y, int maxCols) {
@@ -318,7 +340,7 @@ int InChuoiGioiHan(string s, int x, int y, int maxCols) {
         curX++;
     }
 
-    return curY - startY + 1; // 👈 trả số dòng
+    return curY - startY + 1; 
 }
 
 //Ham khoi tao
