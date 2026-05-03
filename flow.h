@@ -7,9 +7,8 @@
 #include "ErrorCodes.h"
 #include "hamtienich.h"
 
-
-
 int flowDangNhap(DanhSachLop &dsLop);
+
 void flowGiaoVien(DanhSachLop &dsLop, DanhSachMonHoc &dsMH, PTR_CAUHOI &root);
 void flowQuanLyLop_SinhVien(DanhSachLop &dsLop);
 void flowQuanLySinhVienCuaLop(DanhSachLop &dsLop, Lop* lopHienTai);
@@ -17,6 +16,8 @@ void flowQuanLyMonHoc(DanhSachMonHoc &dsMH);
 void flowQuanLyCauHoi(DanhSachMonHoc &dsMH, PTR_CAUHOI &root);
 void flowQuanLyCauHoiCuaMon(const char* maMH,const char* tenMH ,PTR_CAUHOI &root);
 
+
+void flowSinhVien(DanhSachLop &dsLop, DanhSachMonHoc &dsMH, PTR_CAUHOI &root);
 
 void flowChinh(DanhSachLop &dsLop, DanhSachMonHoc &dsMH, PTR_CAUHOI &root) {
 	CapNhatSTT(root);
@@ -27,7 +28,7 @@ void flowChinh(DanhSachLop &dsLop, DanhSachMonHoc &dsMH, PTR_CAUHOI &root) {
             flowGiaoVien(dsLop, dsMH, root);
         }
         else if (role == 2) {
-        	
+        	flowSinhVien(dsLop, dsMH, root);
         }
     }
 }
@@ -77,12 +78,15 @@ void flowGiaoVien(DanhSachLop &dsLop, DanhSachMonHoc &dsMH, PTR_CAUHOI &root) {
         
         int chon = MenuDong(menuChinh, 4, 4, 9); 
         
-        //if (chon == 0) flowQuanLyLop(dsLop);//
         if (chon == 0) flowQuanLyLop_SinhVien(dsLop);
         else if (chon == 1) flowQuanLyMonHoc(dsMH);
         else if (chon == 2) flowQuanLyCauHoi(dsMH, root);
         else break; 
     }
+}
+
+void flowSinhVien(DanhSachLop &dsLop, DanhSachMonHoc &dsMH, PTR_CAUHOI &root) {
+	cout << "Dang phat trien";
 }
 
 
@@ -419,6 +423,11 @@ void flowQuanLyLop_SinhVien(DanhSachLop &dsLop) {
             gotoxy(40, 12); cout << "Nhap Ten Lop:                               ";
             
             gotoxy(55, 10); string ma = NhapMa(MAX_MALOP); if (ma == "") continue;
+            if (KiemTraTrungMaLop(dsLop, (char*)ma.c_str()) != -1) {
+            	InThongBaoContent(layThongBaoLoi(ERR_LOP_DUPLICATE), 12, 50, 26);
+            	_getch();
+            	continue;
+			}
             gotoxy(55, 12); string ten = NhapTen(); if (ten == "") continue;
             
             int res = themLop(dsLop, (char*)ma.c_str(), (char*)ten.c_str());
@@ -433,25 +442,32 @@ void flowQuanLyLop_SinhVien(DanhSachLop &dsLop) {
             _getch();
         } 
         else if (toupper(ch) == 'E' && totalItems > 0) { 
-            XoaVungContent();
-            gotoxy(100, 27); cout << "ESC: de thoat";
-            gotoxy(55, 7); SetColor(0, 11); cout << "--- SUA LOP ---"; SetColor(0, 7);
-            
-            gotoxy(40, 10); cout << "Ma Lop hien tai: " << dsLop.nodes[cursor]->maLop;
-            gotoxy(40, 12); cout << "Nhap Ten Lop moi:                               ";
-            
-            gotoxy(58, 12); string tenMoi = NhapTen(); if (tenMoi == "") continue;
-            
-            int res = suaLop(dsLop, dsLop.nodes[cursor]->maLop, (char*)tenMoi.c_str());
-            
-            if (res == SUCCESS) {
-                InThongBaoContent("Cap nhat ten lop thanh cong!", 10, 50, 26);
-                SaveLop(dsLop); 
-            } else {
-                InThongBaoContent(layThongBaoLoi(res), 12, 50, 26);
-            }
-            _getch();
-        } 
+		    XoaVungContent();
+		    gotoxy(100, 27); cout << "ESC: de thoat";
+		    gotoxy(55, 7); SetColor(0, 11); cout << "--- SUA LOP ---"; SetColor(0, 7);
+		    
+		    gotoxy(40, 10); cout << "Ma Lop : " << dsLop.nodes[cursor]->maLop;
+		    gotoxy(40, 12); cout << "Ten Lop: "; 
+		    
+		    string tenCu = dsLop.nodes[cursor]->tenLop;
+		    string tenMoi = NhapTen(tenCu); 
+		    
+		    if (tenMoi == "" || tenMoi == tenCu) {
+		        InThongBaoContent("Khong co thay doi nao.", 8, 50, 26);
+		        _getch();
+		        continue;
+		    }
+		    
+		    int res = suaLop(dsLop, dsLop.nodes[cursor]->maLop, (char*)tenMoi.c_str());
+		    
+		    if (res == SUCCESS) {
+		        InThongBaoContent("Cap nhat ten lop thanh cong!", 10, 50, 26);
+		        SaveLop(dsLop); 
+		    } else {
+		        InThongBaoContent(layThongBaoLoi(res), 12, 50, 26);
+		    }
+		    _getch();
+		}
         else if ((ch == 83 || toupper(ch) == 'D') && totalItems > 0) { 
             XoaVungContent();
             gotoxy(55, 7); SetColor(0, 11); cout << "--- XOA LOP ---"; SetColor(0, 7);
@@ -551,6 +567,10 @@ void flowQuanLySinhVienCuaLop(DanhSachLop &dsLop, Lop* lopHienTai) {
             gotoxy(55, 7); SetColor(0, 11); cout << "--- THEM SINH VIEN MOI ---"; SetColor(0, 7);
             
             gotoxy(40, 10); cout << "Ma SV:                 ";
+            gotoxy(40, 12); cout << "Ho   :                               ";
+            gotoxy(40, 14); cout << "Ten  :                 ";
+            gotoxy(40, 16); cout << "Phai :       ";
+            
             gotoxy(47, 10); string ma = NhapMa(MAX_MASV); if (ma == "") continue;
             
             if (kiemTraTrungMaSinhVien(dsLop, ma.c_str()) == ERR_SV_DUPLICATE) {
@@ -558,13 +578,8 @@ void flowQuanLySinhVienCuaLop(DanhSachLop &dsLop, Lop* lopHienTai) {
                 _getch(); continue;
             }
 
-            gotoxy(40, 12); cout << "Ho   :                               ";
             gotoxy(47, 12); string ho = NhapTen(); if (ho == "") continue;
-            
-            gotoxy(40, 14); cout << "Ten  :                 ";
             gotoxy(47, 14); string ten = NhapTen(); if (ten == "") continue;
-        
-            gotoxy(40, 16); cout << "Phai :       Nam/Nu";
             bool phai = NhapGioiTinh(47, 16);
         
             SinhVien svMoi;
@@ -584,68 +599,78 @@ void flowQuanLySinhVienCuaLop(DanhSachLop &dsLop, Lop* lopHienTai) {
             _getch();
         } 
         
-        if ((toupper(ch) == 'E' || isDelete) && totalItems > 0) {
-            SinhVien* svTarget = lopHienTai->headSV;
-            for (int i = 0; i < cursor && svTarget != NULL; i++) {
-                svTarget = svTarget->next;
-            }
-            
-            if (svTarget == NULL) continue; 
-            
-            if (toupper(ch) == 'E') {
-                XoaVungContent();
-                gotoxy(100, 27); cout << "ESC: de thoat";
-                gotoxy(55, 7); SetColor(0, 11); cout << "--- SUA SINH VIEN ---"; SetColor(0, 7);
-                
-                gotoxy(40, 10); cout << "Dang sua SV: " << svTarget->maSV;
-                gotoxy(40, 12); cout << "Ho hien tai  : " << svTarget->ho;
-                gotoxy(40, 13); cout << "Ten hien tai : " << svTarget->ten;
-                
-                gotoxy(40, 15); cout << "Ho moi  (Enter de giu nguyen): ";
-                gotoxy(71, 15); string hoMoi = NhapChuoiChu(); 
-                
-                gotoxy(40, 16); cout << "Ten moi (Enter de giu nguyen): ";
-                gotoxy(71, 16); string tenMoi = NhapChuoiChu();
-                
-                gotoxy(40, 17); cout << "Phai moi (Nam/Nu)            : ";
-                bool phaiMoi = NhapGioiTinh(71, 17); 
-                
-                SinhVien svMoiData;
-                strncpy(svMoiData.ho, hoMoi.c_str(), sizeof(svMoiData.ho));
-                strncpy(svMoiData.ten, tenMoi.c_str(), sizeof(svMoiData.ten));
-                svMoiData.phai = phaiMoi;
-                
-                int res = suaSinhVien(lopHienTai, svTarget->maSV, svMoiData);
-                if (res == SUCCESS) {
-                    InThongBaoContent("Cap nhat thong tin thanh cong!", 10, 45, 26);
-                    SaveLop(dsLop); 
-                }
-                _getch();
-            }
-            
-            if (isDelete) {
-                XoaVungContent();
-                gotoxy(55, 7); SetColor(0, 11); cout << "--- XOA SINH VIEN ---"; SetColor(0, 7);
-                
-                gotoxy(40, 10); cout << "Ban co chac muon xoa SV: ";
-                SetColor(0, 12); cout << svTarget->ho << " " << svTarget->ten << " (" << svTarget->maSV << ")"; SetColor(0, 7);
-                cout << "? (y/n): ";
-                
-                char confirm = _getch();
-                if (confirm == 'y' || confirm == 'Y') {
-                    int res = xoaSinhVien(lopHienTai, svTarget->maSV);
-                    if (res == SUCCESS) {
-                        InThongBaoContent("Xoa sinh vien thanh cong!", 10, 45, 26);
-                        SaveLop(dsLop);
-                        
-                        int newTotal = demSoSV(lopHienTai);
-                        if (cursor >= newTotal && cursor > 0) cursor--; 
-                    }
-                    _getch();
-                }
-            }
-        }
-    }
+		else if ((toupper(ch) == 'E' || isDelete) && totalItems > 0) {
+		    // 1. Tìm node mục tiêu
+		    SinhVien* svTarget = lopHienTai->headSV;
+		    for (int i = 0; i < cursor && svTarget != NULL; i++) {
+		        svTarget = svTarget->next;
+		    }
+		
+		    if (svTarget != NULL) {
+		        if (toupper(ch) == 'E') {
+		            XoaVungContent();
+		            gotoxy(100, 27); cout << "ESC: de thoat";
+		            gotoxy(55, 7); SetColor(0, 11); cout << "--- SUA SINH VIEN ---"; SetColor(0, 7);
+		            
+		            gotoxy(40, 10); cout << "Dang sua SV  : " << svTarget->maSV;
+		            gotoxy(40, 12); cout << "Ho           :                               ";
+		            gotoxy(40, 13); cout << "Ten          :                ";
+		            gotoxy(40, 14); cout << "Phai (Nam/Nu):      ";
+		
+		            gotoxy(57, 12); cout << svTarget->ho;
+		            gotoxy(57, 13); cout << svTarget->ten;
+		            gotoxy(57, 14); cout << (svTarget->phai ? "Nam" : "Nu");
+		
+		            ShowCur(true);
+		
+		            gotoxy(57, 12); 
+		            string hoMoi = NhapTen(svTarget->ho); 
+		            if (hoMoi == "") { ShowCur(false); return; } 
+		
+		            gotoxy(57, 13);
+		            string tenMoi = NhapTen(svTarget->ten);
+		            if (tenMoi == "") { ShowCur(false); return; }
+		
+		            ShowCur(false);
+		            bool phaiMoi = NhapGioiTinh(57, 14, svTarget->phai); 
+		            
+		            SinhVien svMoiData;
+		            strcpy(svMoiData.ho, hoMoi.c_str());
+		            strcpy(svMoiData.ten, tenMoi.c_str());
+		            svMoiData.phai = phaiMoi;
+		
+		            int res = suaSinhVien(lopHienTai, svTarget->maSV, svMoiData);
+		            if (res == SUCCESS) {
+		                InThongBaoContent("Cap nhat thong tin thanh cong!", 10, 45, 26);
+		                SaveLop(dsLop); 
+		            }
+		            _getch();
+		        }
+		        
+		        else if (isDelete) {
+		            XoaVungContent();
+		            gotoxy(55, 7); SetColor(0, 11); cout << "--- XOA SINH VIEN ---"; SetColor(0, 7);
+		            
+		            gotoxy(40, 10); cout << "Ban co chac muon xoa SV: ";
+		            SetColor(0, 12); cout << svTarget->ho << " " << svTarget->ten;
+		            SetColor(0, 7); cout << " (" << svTarget->maSV << ")? (y/n): ";
+		            
+		            char confirm = _getch();
+		            if (confirm == 'y' || confirm == 'Y') {
+		                int res = xoaSinhVien(lopHienTai, svTarget->maSV);
+		                if (res == SUCCESS) {
+		                    InThongBaoContent("Xoa sinh vien thanh cong!", 10, 45, 26);
+		                    SaveLop(dsLop);
+		                    
+		                    int newTotal = demSoSV(lopHienTai);
+		                    if (cursor >= newTotal && cursor > 0) cursor--; 
+		                }
+		                _getch();
+		            }
+		        }
+		    }
+		}
+	}
 }
 bool XacNhanMenu(int x, int y, string thongBao) {
     int choice = 0;
@@ -788,41 +813,44 @@ void flowQuanLyMonHoc(DanhSachMonHoc &dsMH) {
             cursor = dsMH.soLuong - 1;
 			}   
 
-        else if (toupper(ch) == 'E' && totalItems > 0) {
-            XoaVungContent();
-            gotoxy(55, 7); SetColor(0, 11); cout << "--- SUA MON HOC ---"; SetColor(0, 7);
-            
-            gotoxy(40, 10); cout << "Ma mon hoc:";
-            gotoxy(40, 12); cout << "Ten moi:";
-            gotoxy(40, 14); cout << "So tin chi moi:";
-            
-            int xNhap = 54;
-            
-            gotoxy(xNhap, 10); cout << dsMH.data[cursor].maMH;
-            ShowCur(true);
-            gotoxy(xNhap, 12); string tenMoi = NhapTen(); 
-            if (tenMoi == "") {
-            	ShowCur(false);
-            	InThongBaoContent("Da huy thao tac sua!", 14, 58, 26);
-            	_getch();
-            continue;
-			}
-            if (tenMoi != "") strcpy(dsMH.data[cursor].tenMH, tenMoi.c_str());
-            ShowCur(true);
-            gotoxy(xNhap, 14); int stcMoi = NhapSo();
-            if (stcMoi <= 0) {
-            	ShowCur(false);
-            	InThongBaoContent("Da huy thao tac sua!", 14, 58, 26);
-            	_getch();
-            continue;
-			}
-            if (stcMoi > 0) dsMH.data[cursor].soTinChi = stcMoi;
-            ShowCur(false);
-            SaveMonHoc(dsMH);
-            InThongBaoContent("Cap nhat thanh cong!", 10, 50, 26);
-            _getch();
-
-        }
+        else if (toupper(ch) == 'E' && totalItems > 0) { 
+		    XoaVungContent();
+		    gotoxy(100, 27); cout << "ESC: de thoat";
+		    gotoxy(55, 7); SetColor(0, 11); cout << "--- SUA MON HOC ---"; SetColor(0, 7);
+		    
+		    gotoxy(40, 10); cout << "Ma mon hoc    : " << dsMH.data[cursor].maMH;
+		    gotoxy(40, 12); cout << "Ten mon moi   :                               ";
+		    gotoxy(40, 14); cout << "So tin chi moi:     ";
+		
+		    gotoxy(57, 12); cout << dsMH.data[cursor].tenMH;
+		    gotoxy(57, 14); cout << dsMH.data[cursor].soTinChi;
+		
+		    ShowCur(true);
+		    
+		    gotoxy(57, 12); 
+		    string tenMoi = NhapTen(dsMH.data[cursor].tenMH); 
+		    if (tenMoi == "") {
+		        ShowCur(false); InThongBaoContent("Da huy!", 14, 50, 26);
+		        _getch(); continue;
+		    }
+		
+		    gotoxy(57, 14); cout << "    "; 
+		    gotoxy(57, 14); 
+		    int stcMoi = NhapSo(dsMH.data[cursor].soTinChi);
+		    
+		    if (stcMoi == -1) {
+		        ShowCur(false); InThongBaoContent("Da huy!", 14, 50, 26);
+		        _getch(); continue;
+		    }
+		
+		    strcpy(dsMH.data[cursor].tenMH, tenMoi.c_str());
+		    dsMH.data[cursor].soTinChi = stcMoi;
+		    
+		    ShowCur(false);
+		    SaveMonHoc(dsMH);
+		    InThongBaoContent("Cap nhat thanh cong!", 10, 50, 26);
+		    _getch();
+		}
         else if ((ch == 83 || toupper(ch) == 'D') && totalItems > 0) {
             XoaVungContent();
             string thongBao = "XAC NHAN XOA MON: " + string(dsMH.data[cursor].tenMH);

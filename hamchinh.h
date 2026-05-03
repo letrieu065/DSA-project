@@ -21,11 +21,21 @@ int KiemTraTrungMaLop(DanhSachLop &dsLop, char* maNhap) {
     }
     return -1; 
 }
+int KiemTraTrungTenLop(DanhSachLop &dsLop, char* tenNhap) {
+    for (int i = 0; i < dsLop.soLuong; i++) {
+        if (strcmp(dsLop.nodes[i]->tenLop, tenNhap) == 0) {
+            return i; 
+        }
+    }
+    return -1; 
+}
 
 int themLop(DanhSachLop &dsLop, char* ma, char* ten) {
 	if (dsLop.soLuong >= MAX_LOP) return ERR_LOP_FULL;
 	
 	if (KiemTraTrungMaLop(dsLop, ma) != -1) return ERR_LOP_DUPLICATE;
+	
+	if (KiemTraTrungTenLop(dsLop, ten) != -1) return ERR_LOP_DUPLICATE_NAME;
 	
 	int i = dsLop.soLuong;
     dsLop.nodes[i] = new Lop;
@@ -143,25 +153,26 @@ int themSinhVien(Lop* lop, SinhVien sv) {
 }
 // Ham sua sinh vien
 int suaSinhVien(Lop* lop, const char* maSV, SinhVien svMoi) {
-	if (lop == NULL) return ERR_LOP_NOT_FOUND;
-	
-	SinhVien* p = lop ->headSV;
-	
-	while (p != NULL) {
-		if (strcmp(p->maSV, maSV) == 0) {
-			if (strlen(svMoi.ho) > 0)
-			    snprintf(p->ho, sizeof(p->ho), "%s", svMoi.ho);
-			
-			if (strlen(svMoi.ten) > 0)
-			    snprintf(p->ten, sizeof(p->ten), "%s", svMoi.ten);
-			
-			p->phai = svMoi.phai;
-			
-			return SUCCESS;
-		}
-		p = p->next;
-	}
-	return ERR_SV_NOT_FOUND;
+    if (lop == NULL) return ERR_LOP_NOT_FOUND;
+    
+    SinhVien* p = lop->headSV;
+    while (p != NULL && strcmp(p->maSV, maSV) != 0) {
+        p = p->next;
+    }
+    
+    if (p == NULL) return ERR_SV_NOT_FOUND;
+
+    if (strlen(svMoi.ho) > 0) {
+        strcpy(p->ho, svMoi.ho);
+    }
+    
+    if (strlen(svMoi.ten) > 0) {
+        strcpy(p->ten, svMoi.ten);
+    }
+    
+    p->phai = svMoi.phai;
+    
+    return SUCCESS;
 }
 // Ham xoa sinh vien
 int xoaSinhVien(Lop* lop, const char* maSV) {

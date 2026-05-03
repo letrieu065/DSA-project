@@ -8,10 +8,10 @@
 using namespace std;
 
 int main() {
-	SetFontSize(24);
 	DanhSachMonHoc DANHSACHMONHOC;
 	DanhSachLop DANHSACHLOP;
 	CauHoi* Root;
+	SetFontSize(24);
 	Root = NULL;
 	Init(DANHSACHMONHOC, DANHSACHLOP, Root);
 	loadData(DANHSACHLOP, DANHSACHMONHOC, Root);

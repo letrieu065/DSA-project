@@ -9,6 +9,7 @@ const int ERR_LOP_DUPLICATE  = 102;
 const int ERR_LOP_NOT_FOUND  = -1;
 const int ERR_LOP_EMPTY = 104;
 const int ERR_LOP_HAS_SV = 105;
+const int ERR_LOP_DUPLICATE_NAME = 106;
 
 // Nhom loi 200: loi sinh vien
 const int ERR_SV_DUPLICATE   = 201;
