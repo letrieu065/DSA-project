@@ -26,8 +26,8 @@ struct DiemThi {
 struct SinhVien {
     char maSV[MAX_MASV];
     char ho[MAX_TEN];
-    char ten[MAX_TEN];
-    bool phai; // true: Nam, false: Nu       
+    char ten[MAX_TEN];   
+    bool phai; // true: Nam, false: Nu   
     char password[MAX_PASS];
     DiemThi* headDiem = NULL;
     SinhVien* next = NULL;

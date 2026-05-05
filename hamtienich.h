@@ -19,17 +19,24 @@ void ShowCur(bool CursorVisibility);
 char XacNhan(int x, int y);
 int InChuoiGioiHan(string s, int x, int y, int maxCols);
 
-// Ham nhap lieu//
-int NhapSo() {
+// Ham nhap lieu
+int NhapSo(int suggest = -1) {
     string strNum = "";
-    char ch;
+    
+    if (suggest != -1) {
+        strNum = to_string(suggest);
+        cout << strNum;
+    }
 
+    char ch;
     while (true) {
         ch = _getch();
 
         if (isdigit(ch)) {
-            strNum += ch;
-            cout << ch;
+            if (strNum.length() < 2) { 
+                strNum += ch;
+                cout << ch;
+            }
         }
         else if (ch == 8) {
             if (!strNum.empty()) {
@@ -42,7 +49,7 @@ int NhapSo() {
                 break;
         }
         else if (ch == 27) {
-            return -1;
+            return -1; 
         }
         else if (ch == 0 || ch == -32 || ch == 224) {
             _getch();
@@ -117,63 +124,60 @@ string NhapMa(int maxLength) {
     return ma;
 }
 
-string NhapTen() {
-    string str = "";
+string NhapTen(string suggest = "") {
+    string str = suggest; 
+    cout << str; 
+    
     char ch;
     while (true) {
+        
         ch = _getch();
         
-        if (isprint(ch)) { 
-            str += ch;
-            cout << ch;
+        if (ch == 0 || ch == -32 || ch == 224) {
+            _getch(); continue;
         }
-		if (ch == 0 || ch == -32 || ch == 224) {
-            getch();
-            continue; 
-        } 
-        if (ch == 27) {
-        	str = "";
-        	break;
-		}
-        else if (ch == 8 && str.length() > 0) {
+
+        if (isprint(ch)) {
+            if (ch == ' ') {
+                if (str.length() == 0 || str.back() == ' ') continue;
+            }
+            if (str.length() < 50) {
+                str += ch;
+                cout << ch;
+            }
+        }
+        else if (ch == 27) return ""; 
+        else if (ch == 8 && str.length() > 0) { 
             str.pop_back();
             cout << "\b \b";
-        } 
-        else if (ch == 13 && str.length() > 0) {
-            break;
+        }
+        else if (ch == 13) { 
+            while (!str.empty() && str.back() == ' ') {
+                str.pop_back();
+                cout << "\b \b";
+            }
+            if (!str.empty()) break;
         }
     }
     return str;
 }
-bool NhapGioiTinh(int x, int y) {
-    bool gioiTinh = true; 
-    int ch;
-    
+
+bool NhapGioiTinh(int x, int y, bool defaultPhai = true) {
+    bool phai = defaultPhai;
+    char ch;
     while (true) {
         gotoxy(x, y);
-        if (gioiTinh) {
-            SetColor(0, 10); cout << "  NAM  ";
-            SetColor(0, 7);  cout << " / Nu ";
-        } else {
-            SetColor(0, 7);  cout << " Nam / ";
-            SetColor(0, 13); cout << "  NU   ";
-            SetColor(0, 7);
-        }
+        SetColor(0, 14); 
+        cout << (phai ? "Nam" : "Nu "); 
+        SetColor(0, 7);
 
-        ch = _getch(); 
-
-        if (ch == 224 || ch == 0) {
-            ch = _getch(); 
-            
-            if (ch == 75 || ch == 77) {
-                gioiTinh = !gioiTinh;
-            }
-        } 
-        else if (ch == 9) {
-            gioiTinh = !gioiTinh;
-        }
-        else if (ch == 13) {
-            return gioiTinh;
+        ch = _getch();
+        if (ch == 13) return phai; 
+        if (ch == 27) return defaultPhai; 
+        
+        if (ch == -32 || ch == 0 || ch == ' ') { 
+            if (ch == -32 || ch == 0) _getch(); 
+            phai = !phai; 
         }
     }
 }
@@ -371,11 +375,11 @@ void InCanhBaoCaps(int x, int y) {
     SetColor(0, 7); 
 }
 
-// Ham dang nhap
 string NhapMatKhau() {
     string pass = "";
     char ch;
     int x = 52, y = 16;
+    bool isHidden = true; 
 
     bool lastCaps = isCapsLockOn();
     InCanhBaoCaps(47, 18); 
@@ -398,10 +402,18 @@ string NhapMatKhau() {
             else if (ch == 27) { 
                 return "";
             }
+            else if (ch == 9) { 
+                isHidden = !isHidden; 
+                
+                gotoxy(x, y);
+                for (int i = 0; i < pass.length(); i++) {
+                    cout << (isHidden ? '*' : pass[i]);
+                }
+                
+            }
             else if (ch == 8) { 
                 if (!pass.empty()) {
                     pass.pop_back();
-
                     int pos = x + pass.length();
                     gotoxy(pos, y);
                     cout << ' ';
@@ -410,15 +422,14 @@ string NhapMatKhau() {
             }
             else if (ch >= 32 && ch <= 126 && pass.length() < 20) {
                 pass.push_back(ch);
-                cout << '*';
+                cout << (isHidden ? '*' : ch);
             }
         }
-
         Sleep(20);
     }
 
     gotoxy(40, 18);
-    cout << "                                          ";
+    cout << "                                           ";
 
     return pass;
 }
@@ -510,6 +521,7 @@ string layThongBaoLoi(int errorCode) {
         case ERR_LOP_DUPLICATE: return "Loi 102: Ma lop nay da ton tai!";
         case ERR_LOP_NOT_FOUND: return "Loi 103: Khong tim thay ma lop!";
         case ERR_LOP_EMPTY: return "Loi 104: Danh sach lop dang trong!";
+        case ERR_LOP_DUPLICATE_NAME: return "Loi 106: Ten lop nay da ton tai!";
         
         // Nhóm 200: Sinh viên
         case ERR_SV_DUPLICATE: return "Loi 201: Ma sinh vien bi trung!";
@@ -615,6 +627,32 @@ char XacNhan(int x, int y) {
         }
     }
     SetColor(0, 7);
+}
+
+bool XacNhanMenu(int x, int y, string thongBao) {
+    int choice = 0;
+    while (true) {
+        gotoxy(x, y); 
+        SetColor(0, 12); cout << thongBao;
+        
+        gotoxy(x + thongBao.length() + 2, y);
+        if (choice == 0) SetColor(11, 0); else SetColor(0, 7);
+        cout << " CO ";
+
+        gotoxy(x + thongBao.length() + 8, y);
+        if (choice == 1) SetColor(11, 0); else SetColor(0, 7);
+        cout << " KHONG ";
+
+        SetColor(0, 7);
+
+        char ch = _getch();
+        if (ch == 224 || ch == -32) {
+            ch = _getch();
+            if (ch == 75 || ch == 77) choice = 1 - choice;
+        }
+        else if (ch == 13) return (choice == 0);
+        else if (ch == 27) return false; 
+    }
 }
 
 #endif
