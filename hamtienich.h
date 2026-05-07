@@ -375,19 +375,18 @@ void InCanhBaoCaps(int x, int y) {
     SetColor(0, 7); 
 }
 
-string NhapMatKhau() {
+string NhapMatKhau(int x, int y, int capsX, int capsY) { 
     string pass = "";
     char ch;
-    int x = 52, y = 16;
     bool isHidden = true; 
 
     bool lastCaps = isCapsLockOn();
-    InCanhBaoCaps(47, 18); 
+    InCanhBaoCaps(capsX, capsY); 
 
     while (true) {
         bool currentCaps = isCapsLockOn();
         if (currentCaps != lastCaps) {
-            InCanhBaoCaps(47, 18);
+            InCanhBaoCaps(capsX, capsY);
             lastCaps = currentCaps;
         }
 
@@ -409,7 +408,6 @@ string NhapMatKhau() {
                 for (int i = 0; i < pass.length(); i++) {
                     cout << (isHidden ? '*' : pass[i]);
                 }
-                
             }
             else if (ch == 8) { 
                 if (!pass.empty()) {
@@ -428,7 +426,7 @@ string NhapMatKhau() {
         Sleep(20);
     }
 
-    gotoxy(40, 18);
+    gotoxy(capsX, capsY);
     cout << "                                           ";
 
     return pass;

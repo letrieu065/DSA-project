@@ -12,10 +12,8 @@ int flowDangNhap(DanhSachLop &dsLop);
 void flowGiaoVien(DanhSachLop &dsLop, DanhSachMonHoc &dsMH, PTR_CAUHOI &root);
 void flowQuanLyLop_SinhVien(DanhSachLop &dsLop);
 void flowQuanLySinhVienCuaLop(DanhSachLop &dsLop, Lop* lopHienTai);
-void flowQuanLyMonHoc(DanhSachMonHoc &dsMH);
-void flowQuanLyCauHoi(DanhSachMonHoc &dsMH, PTR_CAUHOI &root);
+void flowQuanLyMonHoc_CauHoi(DanhSachMonHoc &dsMH, PTR_CAUHOI &root);
 void flowQuanLyCauHoiCuaMon(const char* maMH,const char* tenMH ,PTR_CAUHOI &root);
-
 
 void flowSinhVien(DanhSachLop &dsLop, DanhSachMonHoc &dsMH, PTR_CAUHOI &root);
 
@@ -57,10 +55,64 @@ int flowDangNhap(DanhSachLop &dsLop) {
         }
 
         gotoxy(52, 16);
-        string pass = NhapMatKhau(); 
+        string pass = NhapMatKhau(52, 16, 47, 18); 
         int passCheck = xacThucMatKhau(role, pass, svHienTai);
 
-        if (passCheck == SUCCESS) return role;
+        if (passCheck == SUCCESS) {
+            if (role == 2 && strcmp(svHienTai->password, "123456") == 0) {
+                bool isChanged = false; 
+                
+                while (!isChanged) {
+                    XoaVungContent();
+                    VeGiaoDienDoiMatKhau();
+                    
+                    gotoxy(30, 23); SetColor(0, 8); 
+                    cout << "TAB: An/Hien mat khau  |  ESC: Huy va quay lai Dang nhap";
+                    SetColor(0, 7);
+
+                    string pass_old = NhapMatKhau(54, 13, 47, 20);
+                    if (pass_old == "") break; 
+
+                    if (pass_old != "123456") {
+                        InThongBaoContent("Loi: Mat khau hien tai khong dung!", 12, 45, 20);
+                        _getch(); continue; 
+                    }
+
+                    string pass_new = NhapMatKhau(54, 15, 47, 20);
+                    if (pass_new == "") break;
+
+                    if (pass_new == "123456") {
+                        InThongBaoContent("Loi: Mat khau moi phai khac mat khau mac dinh!", 12, 38, 20);
+                        _getch(); continue;
+                    }
+                    
+                    if (pass_new.length() < 3) { 
+                        InThongBaoContent("Loi: Mat khau moi phai tu 3 ky tu tro len!", 12, 40, 20);
+                        _getch(); continue;
+                    }
+
+                    string pass_new_check = NhapMatKhau(54, 17, 47, 20);
+                    if (pass_new_check == "") break;
+
+                    if (pass_new != pass_new_check) {
+                        InThongBaoContent("Loi: Mat khau xac nhan khong khop!", 12, 45, 20);
+                        _getch(); continue;
+                    }
+
+                    strcpy(svHienTai->password, pass_new.c_str());
+                    SaveLop(dsLop); 
+                    
+                    InThongBaoContent("Doi mat khau thanh cong", 10, 38, 20);
+                    Sleep(1200); 
+                    isChanged = true;
+                }
+                
+                if (!isChanged) {
+                    continue; 
+                }
+            }
+            return role; 
+        }
         else {
             InThongBaoContent(layThongBaoLoi(passCheck), 12, 45, 18);
             _getch();
@@ -70,7 +122,7 @@ int flowDangNhap(DanhSachLop &dsLop) {
 }
 
 void flowGiaoVien(DanhSachLop &dsLop, DanhSachMonHoc &dsMH, PTR_CAUHOI &root) {
-    char menuChinh[4][50] = {"1. Quan Ly Lop", "2. Quan Ly Cau Hoi", "3. Dang Xuat "};
+    char menuChinh[4][50] = {"1. Quan Ly Lop", "2. Quan Ly Mon Hoc", "3. Dang Xuat "};
     
     while (true) {
         SetupConsoleLayout();
@@ -79,18 +131,18 @@ void flowGiaoVien(DanhSachLop &dsLop, DanhSachMonHoc &dsMH, PTR_CAUHOI &root) {
         int chon = MenuDong(menuChinh, 4, 4, 9); 
         
         if (chon == 0) flowQuanLyLop_SinhVien(dsLop);
-        else if (chon == 1) flowQuanLyCauHoi(dsMH, root);
+        else if (chon == 1) flowQuanLyMonHoc_CauHoi(dsMH, root);
         else break; 
     }
 }
 
 void flowSinhVien(DanhSachLop &dsLop, DanhSachMonHoc &dsMH, PTR_CAUHOI &root) {
+	system("cls");
 	cout << "Dang phat trien";
+	_getch();
 }
 
-
-
-void flowQuanLyCauHoi(DanhSachMonHoc &dsMH, PTR_CAUHOI &root) {
+void flowQuanLyMonHoc_CauHoi(DanhSachMonHoc &dsMH, PTR_CAUHOI &root) {
     int cursor = 0;
     int itemsPerPage = 8;
     
@@ -463,7 +515,6 @@ void flowQuanLyCauHoiCuaMon(const char* maMH, const char* tenMH, PTR_CAUHOI &roo
     }
 }
 
-// TEST
 void flowQuanLyLop_SinhVien(DanhSachLop &dsLop) {
     int cursor = 0;
     int itemsPerPage = 8;

@@ -9,8 +9,6 @@
 
 using namespace std;
 
-// (Lưu ý: Các hàm ThemCauHoi và biến nextCauHoiSoThuTu chắc được định nghĩa ở file khác nên mình giữ nguyên)
-
 void KiemTraVaTaoFileCauHoi(const char* maMH, const char* tenMH);
 void LuuFileCauHoiTheoMon(const char* maMH, const char* tenMH, PTR_CAUHOI root);
 void LayDanhSachCauHoiTheoMon(PTR_CAUHOI root, const char* maMH, CauHoi* dsTam[], int &n);
@@ -18,7 +16,7 @@ void LoadCauHoiTuFile(const char* maMH, const char* tenMH, PTR_CAUHOI &root);
 
 
 void SaveMonHoc(DanhSachMonHoc &dsMH) {
-    ofstream fOut("data/MONHOC.txt", ios::out); // Đã thêm "data/"
+    ofstream fOut("data/MONHOC.txt", ios::out); 
     if (!fOut.is_open()) return;
     fOut << dsMH.soLuong << endl;
     for (int i = 0; i < dsMH.soLuong; i++) {
@@ -30,7 +28,7 @@ void SaveMonHoc(DanhSachMonHoc &dsMH) {
 }
 
 void LoadMonHoc(DanhSachMonHoc &dsMH) {
-    ifstream fIn("data/MONHOC.txt", ios::in); // Đã thêm "data/"
+    ifstream fIn("data/MONHOC.txt", ios::in);
     if (!fIn.is_open()) return;
     int n;
     fIn >> n;
@@ -46,7 +44,7 @@ void LoadMonHoc(DanhSachMonHoc &dsMH) {
 }
 
 void SaveLop(DanhSachLop &dsLop) {
-    ofstream fOut("data/LOP.txt", ios::out); // Đã thêm "data/"
+    ofstream fOut("data/LOP.txt", ios::out); 
     if (!fOut.is_open()) return;
     fOut << dsLop.soLuong << endl;
     for (int i = 0; i < dsLop.soLuong; i++) {
@@ -57,7 +55,7 @@ void SaveLop(DanhSachLop &dsLop) {
 }
 
 void LoadLop(DanhSachLop &dsLop) {
-    ifstream fIn("data/LOP.txt", ios::in); // Đã thêm "data/"
+    ifstream fIn("data/LOP.txt", ios::in); 
     if (!fIn.is_open()) return;
     int n;
     fIn >> n;
@@ -72,10 +70,8 @@ void LoadLop(DanhSachLop &dsLop) {
     fIn.close();
 }
 
-// --- CÁC HÀM XỬ LÝ FILE CÂU HỎI ---
 
 void KiemTraVaTaoFileCauHoi(const char* maMH, const char* tenMH) {
-    // Đã thêm "data/"
     string fileName = "data/" + string(tenMH) + " " + string(maMH) + ".txt";
     ifstream f(fileName.c_str());
     if (!f.good()) {
@@ -100,7 +96,6 @@ void LuuFileCauHoiTheoMon(const char* maMH, const char* tenMH, PTR_CAUHOI root) 
     int n = 0;
     LayDanhSachCauHoiTheoMon(root, maMH, dsTam, n); 
     
-    // Đã thêm "data/"
     string fileName = "data/" + string(tenMH) + " " + string(maMH) + ".txt";
     ofstream fout(fileName.c_str());
     if (!fout.is_open()) return;
@@ -118,7 +113,6 @@ void LuuFileCauHoiTheoMon(const char* maMH, const char* tenMH, PTR_CAUHOI root) 
 }
 
 void LoadCauHoiTuFile(const char* maMH, const char* tenMH, PTR_CAUHOI &root) {
-    // Đã thêm "data/"
     string fileName = "data/" + string(tenMH) + " " + string(maMH) + ".txt";
     ifstream fIn(fileName.c_str());
     if (!fIn.is_open()) return;
@@ -143,7 +137,6 @@ void LoadCauHoiTuFile(const char* maMH, const char* tenMH, PTR_CAUHOI &root) {
         newNode->left = newNode->right = NULL;
         root = ThemCauHoi(root, newNode); 
 
-        // Cập nhật biến đếm ID để không trùng khi thêm mới
         string idStr = tempID;
         string maStr = maMH;
         if (idStr.find(maStr) == 0) {
@@ -160,13 +153,12 @@ void XoaFileNeuTrong(const char* maMH, const char* tenMH, PTR_CAUHOI root) {
     LayDanhSachCauHoiTheoMon(root, maMH, dsTam, n);
 
     if (n == 0) {
-        // Đã thêm "data/"
         string fileName = "data/" + string(tenMH) + " " + string(maMH) + ".txt";
         remove(fileName.c_str());
     }
 }
 
-// --- LƯU / LOAD TỔNG ---
+// SAVE -- LOAD 
 
 void saveData(DanhSachLop &dsLop, DanhSachMonHoc &dsMH, PTR_CAUHOI &root) {
     SaveMonHoc(dsMH);

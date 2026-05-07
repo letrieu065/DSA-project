@@ -1,4 +1,4 @@
-9
+8
 INTJP2231
 2
 Tin hoc co so 1
@@ -14,9 +14,6 @@ Cau Truc Du Lieu
 CBITE0231
 4
 Toan Cao Cap 2
-NMKTLT0213
-2
-Nhap Mon Lap Trinh
 DTEJS0213
 2
 Tu Tuong HO CHI MINH

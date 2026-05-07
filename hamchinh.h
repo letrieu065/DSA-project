@@ -13,6 +13,7 @@ int timViTriMonHoc(DanhSachMonHoc &dsMH, const char* ma);
 bool kiemTraTrungMaMonHoc(DanhSachMonHoc &dsMH, const char* ma);
 bool kiemTraMonHocDaCoCauHoi(PTR_CAUHOI root, const char* maMH);
 int InChuoiGioiHan(string s, int x, int y, int maxCols);
+
 // Ham them lop//
 int KiemTraTrungMaLop(DanhSachLop &dsLop, char* maNhap) {
     for (int i = 0; i < dsLop.soLuong; i++) {

@@ -75,5 +75,67 @@ void VeLayoutChinh(string tenNguoiDung) {
     VeKhung(32, 5, 85, 23);
 }
 
+void VeMenuChinh() {
+    system("cls");
+    SetColor(0, 11); 
+    VeKhung(0, 0, 118, 28);
+    
+    SetColor(0, 14); 
+    gotoxy(45, 3); cout << "HE THONG THI TRAC NGHIEM";
+    gotoxy(2, 5); for(int i=0; i<116; i++) cout << (char)196;
+
+    SetColor(0, 15); 
+    gotoxy(40, 10); cout << "[ 1 ] - Bat dau thi trac nghiem";
+    gotoxy(40, 12); cout << "[ 2 ] - Xem bang diem ket qua";
+    gotoxy(40, 14); cout << "[ 0 ] - Thoat chuong trinh";
+
+    SetColor(0, 8); 
+    gotoxy(2, 26); for(int i=0; i<116; i++) cout << (char)196;
+    gotoxy(4, 27); cout << "Huong dan: Nhap so tuong ung (0-2) va nhan Enter de chon.";
+}
+
+void VeManHinhThi(string monThi, string thoiGian, int cauHienTai, int tongCau) {
+    system("cls");
+    SetColor(0, 11);
+    VeKhung(0, 0, 118, 28);
+
+    gotoxy(3, 1); cout << "Mon thi: " << monThi;
+    gotoxy(90, 1); cout << "Thoi gian con lai: " << thoiGian;
+    gotoxy(2, 2); for(int i=0; i<116; i++) cout << (char)196;
+
+    SetColor(0, 15);
+    gotoxy(5, 5); cout << "Cau hoi " << cauHienTai << "/" << tongCau << ":";
+    
+    gotoxy(10, 12); cout << "[ A ] Dap an mau A";
+    gotoxy(65, 12); cout << "[ C ] Dap an mau C";
+    gotoxy(10, 15); cout << "[ B ] Dap an mau B";
+    gotoxy(65, 15); cout << "[ D ] Dap an mau D";
+
+    SetColor(0, 11);
+    gotoxy(2, 25); for(int i=0; i<116; i++) cout << (char)196;
+    gotoxy(4, 26); cout << "Dieu huong: [<-] Cau truoc | [->] Cau tiep | [A/B/C/D] Chon | [ESC] Nop bai";
+}
+
+void VeGiaoDienDoiMatKhau() {
+	system("cls");
+    int kWidth = 60;
+    int kHeight = 12;
+    int sX = (120 - kWidth) / 2;
+    int sY = (30 - kHeight) / 2;
+
+    SetColor(0, 12); 
+    VeKhung(sX, sY, kWidth, kHeight);
+    
+    SetColor(0, 15);
+    gotoxy(sX + 15, sY + 1); cout << "DOI MAT KHAU LAN DAU DANG NHAP";
+    gotoxy(sX + 2, sY + 2); for(int i=0; i < kWidth - 3; i++) cout << (char)196;
+
+    gotoxy(sX + 5, sY + 4); cout << "Mat khau hien tai: ";
+    gotoxy(sX + 5, sY + 6); cout << "Mat khau moi     : ";
+    gotoxy(sX + 5, sY + 8); cout << "Xac nhan moi     : ";
+    
+    SetColor(0, 14);
+    gotoxy(sX + 2, sY + 10); cout << "(*) Mat khau moi phai khac mat khau mac dinh '123456'";
+}
 
 #endif
