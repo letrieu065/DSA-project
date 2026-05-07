@@ -14,6 +14,49 @@ void LuuFileCauHoiTheoMon(const char* maMH, const char* tenMH, PTR_CAUHOI root);
 void LayDanhSachCauHoiTheoMon(PTR_CAUHOI root, const char* maMH, CauHoi* dsTam[], int &n);
 void LoadCauHoiTuFile(const char* maMH, const char* tenMH, PTR_CAUHOI &root);
 
+int DemSoDiem(DiemThi* headDiem) {
+    int count = 0;
+    for (DiemThi* p = headDiem; p != NULL; p = p->next) {
+        count++;
+    }
+    return count;
+}
+
+void SaveLop(DanhSachLop &dsLop) {
+    ofstream fOut("data/LOP.txt", ios::out); 
+    if (!fOut.is_open()) return;
+    
+    fOut << dsLop.soLuong << endl;
+    
+    for (int i = 0; i < dsLop.soLuong; i++) {
+        fOut << dsLop.nodes[i]->maLop << endl;
+        fOut << dsLop.nodes[i]->tenLop << endl;
+        
+        int soSV = demSoSV(dsLop.nodes[i]);
+        fOut << soSV << endl;
+        
+        SinhVien* pSV = dsLop.nodes[i]->headSV;
+        while (pSV != NULL) {
+            fOut << pSV->maSV << endl;
+            fOut << pSV->ho << endl;
+            fOut << pSV->ten << endl;
+            fOut << pSV->phai << endl; 
+            fOut << pSV->password << endl;
+            
+            int soDiem = DemSoDiem(pSV->headDiem);
+            fOut << soDiem << endl;
+            
+            DiemThi* pDiem = pSV->headDiem;
+            while (pDiem != NULL) {
+                fOut << pDiem->maMH << endl;
+                fOut << pDiem->diem << endl;
+                pDiem = pDiem->next;
+            }
+            pSV = pSV->next;
+        }
+    }
+    fOut.close();
+}
 
 void SaveMonHoc(DanhSachMonHoc &dsMH) {
     ofstream fOut("data/MONHOC.txt", ios::out); 
@@ -25,6 +68,58 @@ void SaveMonHoc(DanhSachMonHoc &dsMH) {
         fOut << dsMH.data[i].tenMH << endl;
     }
     fOut.close();
+}
+
+void LoadLop(DanhSachLop &dsLop) {
+    ifstream fIn("data/LOP.txt", ios::in); 
+    if (!fIn.is_open()) return;
+    
+    int soLop;
+    fIn >> soLop; fIn.ignore();
+    
+    for (int i = 0; i < soLop; i++) {
+        dsLop.nodes[i] = new Lop;
+        fIn.getline(dsLop.nodes[i]->maLop, MAX_MALOP);
+        fIn.getline(dsLop.nodes[i]->tenLop, MAX_TEN);
+        dsLop.nodes[i]->headSV = NULL;
+        
+        int soSV;
+        fIn >> soSV; fIn.ignore();
+        
+        SinhVien* tailSV = NULL;
+        
+        for (int j = 0; j < soSV; j++) {
+            SinhVien* svMoi = new SinhVien;
+            fIn.getline(svMoi->maSV, MAX_MASV);
+            fIn.getline(svMoi->ho, MAX_TEN);
+            fIn.getline(svMoi->ten, MAX_TEN);
+            fIn >> svMoi->phai; fIn.ignore();
+            fIn.getline(svMoi->password, MAX_PASS);
+            svMoi->headDiem = NULL;
+            svMoi->next = NULL;
+            
+            int soDiem;
+            fIn >> soDiem; fIn.ignore();
+            
+            DiemThi* tailDiem = NULL;
+            for (int k = 0; k < soDiem; k++) {
+                DiemThi* diemMoi = new DiemThi;
+                fIn.getline(diemMoi->maMH, MAX_MAMH);
+                fIn >> diemMoi->diem; fIn.ignore();
+                diemMoi->next = NULL;
+                
+                if (svMoi->headDiem == NULL) svMoi->headDiem = diemMoi;
+                else tailDiem->next = diemMoi;
+                tailDiem = diemMoi;
+            }
+            
+            if (dsLop.nodes[i]->headSV == NULL) dsLop.nodes[i]->headSV = svMoi;
+            else tailSV->next = svMoi;
+            tailSV = svMoi;
+        }
+        dsLop.soLuong++;
+    }
+    fIn.close();
 }
 
 void LoadMonHoc(DanhSachMonHoc &dsMH) {
@@ -42,34 +137,6 @@ void LoadMonHoc(DanhSachMonHoc &dsMH) {
     dsMH.soLuong = n; 
     fIn.close();
 }
-
-void SaveLop(DanhSachLop &dsLop) {
-    ofstream fOut("data/LOP.txt", ios::out); 
-    if (!fOut.is_open()) return;
-    fOut << dsLop.soLuong << endl;
-    for (int i = 0; i < dsLop.soLuong; i++) {
-        fOut << dsLop.nodes[i]->maLop << endl;
-        fOut << dsLop.nodes[i]->tenLop << endl;
-    }
-    fOut.close();
-}
-
-void LoadLop(DanhSachLop &dsLop) {
-    ifstream fIn("data/LOP.txt", ios::in); 
-    if (!fIn.is_open()) return;
-    int n;
-    fIn >> n;
-    fIn.ignore();
-    for (int i = 0; i < n; i++) {
-        dsLop.nodes[i] = new Lop;
-        fIn.getline(dsLop.nodes[i]->maLop, MAX_MALOP);
-        fIn.getline(dsLop.nodes[i]->tenLop, 50);
-        dsLop.nodes[i]->headSV = NULL; 
-    }
-    dsLop.soLuong = n; 
-    fIn.close();
-}
-
 
 void KiemTraVaTaoFileCauHoi(const char* maMH, const char* tenMH) {
     string fileName = "data/" + string(tenMH) + " " + string(maMH) + ".txt";

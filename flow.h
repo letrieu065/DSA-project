@@ -137,8 +137,7 @@ void flowGiaoVien(DanhSachLop &dsLop, DanhSachMonHoc &dsMH, PTR_CAUHOI &root) {
 }
 
 void flowSinhVien(DanhSachLop &dsLop, DanhSachMonHoc &dsMH, PTR_CAUHOI &root) {
-	system("cls");
-	cout << "Dang phat trien";
+	VeMenuChinh();
 	_getch();
 }
 

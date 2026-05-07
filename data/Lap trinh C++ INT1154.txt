@@ -1,0 +1,21 @@
+INT1154_0001
+Dac diem nao sau day KHONG phai la dac trung co ban cua OOP?
+Tinh dong goi (Encapsulation)
+Tinh tuan tu (Sequential)
+Tinh da hinh (Polymorphism)
+Tinh ke thua (Inheritance)
+B
+INT1154_0002
+Trong C++, ham ao (virtual function) duoc su dung de lam gi?
+Ho tro nap chong toan tu
+Ho tro tinh dong goi
+Ho tro da hinh dong (Dynamic polymorphism)
+Ho tro da hinh tinh (Static polymorphism)
+C
+INT1154_0003
+Kieu du lieu nao sau day co kich thuoc lon nhat trong C++ (tren he thong 64-bit)?
+int
+float
+double
+char
+C
