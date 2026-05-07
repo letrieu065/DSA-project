@@ -530,6 +530,9 @@ string layThongBaoLoi(int errorCode) {
         case ERR_LOGIN_USER: return "Loi 301: Tai khoan khong ton tai!";
         case ERR_LOGIN_PASS: return "Loi 302: Mat khau khong chinh xac!";
         case ERR_LOGIN_EMPTY: return "Loi 303: Vui long nhap day du thong tin!";
+        case ERR_LOGIN_PASS_DUPLICATE: return "Loi 304: Mat khau trung mat khau cu!";
+        case ERR_LOGIN_PASS_NOT_MATCH: return "Loi 305: Mat khau moi khong khop";
+        case ERR_LOGIN_PASS_WEAK: return "Loi 306: Mat khau yeu";
         
         default: return "Loi khong xac dinh!";
     }

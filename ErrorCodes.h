@@ -19,7 +19,10 @@ const int ERR_SV_FULL = 203;
 // Nhom loi 300: loi dang nhap - he thong
 const int ERR_LOGIN_USER     = 301; 
 const int ERR_LOGIN_PASS     = 302; 
-const int ERR_LOGIN_EMPTY    = 303; 
+const int ERR_LOGIN_EMPTY    = 303;
+const int ERR_LOGIN_PASS_DUPLICATE = 304;
+const int ERR_LOGIN_PASS_NOT_MATCH = 305; 
+const int ERR_LOGIN_PASS_WEAK = 306;
 
 // Nhom loi 400: loi mon hoc
 const int ERR_MH_FULL      = 401;

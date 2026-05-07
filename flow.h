@@ -74,7 +74,7 @@ int flowDangNhap(DanhSachLop &dsLop) {
                     if (pass_old == "") break; 
 
                     if (pass_old != "123456") {
-                        InThongBaoContent("Loi: Mat khau hien tai khong dung!", 12, 45, 20);
+                        InThongBaoContent(layThongBaoLoi(ERR_LOGIN_PASS), 12, 45, 20);
                         _getch(); continue; 
                     }
 
@@ -82,12 +82,12 @@ int flowDangNhap(DanhSachLop &dsLop) {
                     if (pass_new == "") break;
 
                     if (pass_new == "123456") {
-                        InThongBaoContent("Loi: Mat khau moi phai khac mat khau mac dinh!", 12, 38, 20);
+                        InThongBaoContent(layThongBaoLoi(ERR_LOGIN_PASS_DUPLICATE), 12, 38, 20);
                         _getch(); continue;
                     }
                     
                     if (pass_new.length() < 3) { 
-                        InThongBaoContent("Loi: Mat khau moi phai tu 3 ky tu tro len!", 12, 40, 20);
+                        InThongBaoContent(layThongBaoLoi(ERR_LOGIN_PASS_WEAK), 12, 40, 20);
                         _getch(); continue;
                     }
 
@@ -95,7 +95,7 @@ int flowDangNhap(DanhSachLop &dsLop) {
                     if (pass_new_check == "") break;
 
                     if (pass_new != pass_new_check) {
-                        InThongBaoContent("Loi: Mat khau xac nhan khong khop!", 12, 45, 20);
+                        InThongBaoContent(layThongBaoLoi(ERR_LOGIN_PASS_NOT_MATCH), 12, 45, 20);
                         _getch(); continue;
                     }
 
