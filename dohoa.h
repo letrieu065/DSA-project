@@ -2,6 +2,11 @@
 #define DOHOA_H
 
 #include <windows.h>
+#include "hamchinh.h"
+
+using namespace std;
+
+void InNoiDungCanLe(string noiDung, int X, int Y, int maxW);
 
 // Ham chuyen toa do
 void gotoxy(int x, int y) {
@@ -17,6 +22,7 @@ void SetColor(int backgound_color, int text_color) {
     SetConsoleTextAttribute(hDefaultColor, (backgound_color << 4) | text_color);
 }
 
+// Ham ve khung
 void VeKhung(int x, int y, int width, int height) {
     for (int i = x; i <= x + width; i++) {
         gotoxy(i, y); cout << (char)196; 
@@ -52,16 +58,18 @@ void SetupConsoleLayout() {
 }
 
 // Ham ve khung
-void VeLayoutChinh(string tenNguoiDung) {
+void VeLayoutChinh(string tenNguoiDung, string maso = "") {
     system("cls");
     
     // 1. Khung Tren-Trai
     SetColor(0, 11);
     VeKhung(2, 1, 28, 3);
     gotoxy(4, 2); cout << "User: " << tenNguoiDung;
-    
+    if (!maso.empty()) {
+        gotoxy(4, 3); cout << "ID  : " << maso;
+    }
     // 2. Khung Duoi-Trai
-    SetColor(0, 14); // Mau vang
+    SetColor(0, 14); 
     VeKhung(2, 5, 28, 23);
     gotoxy(13, 6); cout << "DANH MUC";
     gotoxy(3, 7); cout << "---------------------------";
@@ -70,50 +78,88 @@ void VeLayoutChinh(string tenNguoiDung) {
     SetColor(0, 11);
     VeKhung(32, 1, 85, 3);
     
-    // 4. Khung Duoi-Phai//
+    // 4. Khung Duoi-Phai
     SetColor(0, 7);
     VeKhung(32, 5, 85, 23);
 }
 
-void VeMenuChinh() {
+// UI thi trac nghiem
+void VeKhungPhongThi(SinhVien* sv, string monThi, int tongSoCau) {
     system("cls");
     SetColor(0, 11); 
-    VeKhung(0, 0, 118, 28);
+    VeKhung(0, 0, 118, 28); 
+
+    gotoxy(3, 1); cout << "MSSV: ";
+    SetColor(0, 14); cout << sv->maSV; 
     
-    SetColor(0, 14); 
-    gotoxy(45, 3); cout << "HE THONG THI TRAC NGHIEM";
-    gotoxy(2, 5); for(int i=0; i<116; i++) cout << (char)196;
+    SetColor(0, 11); gotoxy(30, 1); cout << "Ho ten: ";
+    SetColor(0, 14); cout << sv->ho << " " << sv->ten;
 
-    SetColor(0, 15); 
-    gotoxy(40, 10); cout << "[ 1 ] - Bat dau thi trac nghiem";
-    gotoxy(40, 12); cout << "[ 2 ] - Xem bang diem ket qua";
-    gotoxy(40, 14); cout << "[ 0 ] - Thoat chuong trinh";
+    SetColor(0, 11);
+    gotoxy(3, 2); cout << "Mon thi: ";
+    SetColor(0, 15); cout << monThi; 
 
-    SetColor(0, 8); 
-    gotoxy(2, 26); for(int i=0; i<116; i++) cout << (char)196;
-    gotoxy(4, 27); cout << "Huong dan: Nhap so tuong ung (0-2) va nhan Enter de chon.";
+    SetColor(0, 11);
+    gotoxy(60, 2); cout << "Tong so cau: ";
+    SetColor(0, 15); cout << tongSoCau;
+
+    SetColor(0, 11);
+    gotoxy(1, 3); 
+    for(int i=0; i<116; i++) cout << (char)196; 
+
+    gotoxy(2, 25); 
+    for(int i=0; i<116; i++) cout << (char)196; 
+    
+    gotoxy(4, 26); 
+    SetColor(0, 8);
+    cout << "Dieu huong: [<-] Cau truoc | [->] Cau tiep | [A/B/C/D] Chon | [ESC] Nop bai";
+    SetColor(0, 7);
 }
 
-void VeManHinhThi(string monThi, string thoiGian, int cauHienTai, int tongCau) {
-    system("cls");
-    SetColor(0, 11);
-    VeKhung(0, 0, 118, 28);
+void InDongHo(int soGiay) {
+    int phut = soGiay / 60;
+    int giay = soGiay % 60;
+    gotoxy(85, 2); SetColor(0, 11); cout << "Thoi gian con lai: ";
+    SetColor(0, 12); // Màu đỏ cho nổi bật
+    printf("%02d:%02d", phut, giay);
+    SetColor(0, 7);
+}
 
-    gotoxy(3, 1); cout << "Mon thi: " << monThi;
-    gotoxy(90, 1); cout << "Thoi gian con lai: " << thoiGian;
-    gotoxy(2, 2); for(int i=0; i<116; i++) cout << (char)196;
+void HienThiCauHoiThi(CauHoi* cau, int cauSo, int tongSoCau, char dapAnDaChon) {
+    // Xóa ruột khung (Y từ 4 đến 23) để in câu mới
+    for (int i = 4; i <= 23; i++) {
+        gotoxy(2, i); cout << "                                                                                                                  ";
+    }
 
-    SetColor(0, 15);
-    gotoxy(5, 5); cout << "Cau hoi " << cauHienTai << "/" << tongCau << ":";
-    
-    gotoxy(10, 12); cout << "[ A ] Dap an mau A";
-    gotoxy(65, 12); cout << "[ C ] Dap an mau C";
-    gotoxy(10, 15); cout << "[ B ] Dap an mau B";
-    gotoxy(65, 15); cout << "[ D ] Dap an mau D";
+    // In Nội dung câu hỏi
+    gotoxy(5, 5); SetColor(0, 14); cout << "Cau " << cauSo << " / " << tongSoCau << ": "; SetColor(0, 15);
+    InNoiDungCanLe(cau->noiDung, 5, 6, 110); 
 
-    SetColor(0, 11);
-    gotoxy(2, 25); for(int i=0; i<116; i++) cout << (char)196;
-    gotoxy(4, 26); cout << "Dieu huong: [<-] Cau truoc | [->] Cau tiep | [A/B/C/D] Chon | [ESC] Nop bai";
+    // In Đáp án A, B, C, D
+    if (dapAnDaChon == 'A') SetColor(11, 0); else SetColor(0, 15);
+    gotoxy(5, 12); cout << "[ A ]"; SetColor(0, 7); InNoiDungCanLe(cau->a, 12, 12, 45);
+
+    if (dapAnDaChon == 'B') SetColor(11, 0); else SetColor(0, 15);
+    gotoxy(5, 18); cout << "[ B ]"; SetColor(0, 7); InNoiDungCanLe(cau->b, 12, 18, 45);
+
+    if (dapAnDaChon == 'C') SetColor(11, 0); else SetColor(0, 15);
+    gotoxy(60, 12); cout << "[ C ]"; SetColor(0, 7); InNoiDungCanLe(cau->c, 67, 12, 45);
+
+    if (dapAnDaChon == 'D') SetColor(11, 0); else SetColor(0, 15);
+    gotoxy(60, 18); cout << "[ D ]"; SetColor(0, 7); InNoiDungCanLe(cau->d, 67, 18, 45);
+
+    // In thanh Nút bấm trạng thái
+    gotoxy(35, 23); SetColor(0, 11); cout << "DAP AN DA CHON: ";
+    char dsDapAn[] = {'A', 'B', 'C', 'D'};
+    for (int i = 0; i < 4; i++) {
+        gotoxy(53 + i * 12, 23);
+        if (dapAnDaChon == dsDapAn[i]) {
+            SetColor(12, 14); cout << " ( " << dsDapAn[i] << " ) "; // Nổi bần bật khi chọn
+        } else {
+            SetColor(0, 8); cout << " [ " << dsDapAn[i] << " ] ";   // Chìm đi khi chưa chọn
+        }
+    }
+    SetColor(0, 7);
 }
 
 void VeGiaoDienDoiMatKhau() {

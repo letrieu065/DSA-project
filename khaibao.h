@@ -4,8 +4,6 @@
 #include <iostream>
 #include <cstring>
 
-using namespace std;
-
 const int MAX_MON_HOC = 300;
 const int MAX_LOP = 10000;
 

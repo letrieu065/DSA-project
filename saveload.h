@@ -1,11 +1,11 @@
 #ifndef SAVELOAD_H
 #define SAVELOAD_H
 
-#include "khaibao.h"
 #include <fstream>
 #include <string>
 #include <cstdio>
 #include <cstring>
+#include "khaibao.h"
 
 using namespace std;
 
@@ -148,7 +148,6 @@ void KiemTraVaTaoFileCauHoi(const char* maMH, const char* tenMH) {
     f.close();
 }
 
-
 void LayDanhSachCauHoiTheoMon(PTR_CAUHOI root, const char* maMH, CauHoi* dsTam[], int &n) {
     if (root == NULL) return;
     LayDanhSachCauHoiTheoMon(root->left, maMH, dsTam, n);
@@ -224,8 +223,6 @@ void XoaFileNeuTrong(const char* maMH, const char* tenMH, PTR_CAUHOI root) {
         remove(fileName.c_str());
     }
 }
-
-// SAVE -- LOAD 
 
 void saveData(DanhSachLop &dsLop, DanhSachMonHoc &dsMH, PTR_CAUHOI &root) {
     SaveMonHoc(dsMH);

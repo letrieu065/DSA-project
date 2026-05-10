@@ -1,7 +1,13 @@
 2
 D24CQCN01-N
 Cong nghe thong tin 1
-2
+3
+A
+TEST
+DEMO
+1
+123
+0
 N24DCAT001
 Le Anh
 Trieu
@@ -14,7 +20,7 @@ N24DCAT002
 Nguyen Van
 A
 1
-123456
+HELLO
 0
 D24CQCN02-N
 Cong nghe thong tin 2

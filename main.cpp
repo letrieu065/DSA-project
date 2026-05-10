@@ -1,6 +1,8 @@
 #include <iostream>
+#include <windows.h>
 #include "khaibao.h"
 #include "hamtienich.h"
+#include "dohoa.h"
 #include "saveload.h"
 #include "hamchinh.h"
 #include "flow.h"

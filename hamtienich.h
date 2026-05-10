@@ -11,6 +11,8 @@
 #include "khaibao.h"
 #include "hamchinh.h"
 #include "dohoa.h"
+#include "saveload.h"
+#include "ErrorCodes.h"
 
 
 using namespace std;
@@ -18,6 +20,7 @@ using namespace std;
 void ShowCur(bool CursorVisibility);
 char XacNhan(int x, int y);
 int InChuoiGioiHan(string s, int x, int y, int maxCols);
+void InNoiDungCanLe(string noiDung, int X, int Y, int maxW);
 
 // Ham nhap lieu
 int NhapSo(int suggest = -1) {
@@ -461,8 +464,6 @@ int xacThucMatKhau(int role, string pass, SinhVien* svFound) {
     return ERR_LOGIN_PASS;
 }
 
-
-
 int MenuDong(char options[][50], int soLuong, int toaDoX, int toaDoY) {
     int cursor = 0;
     while (true) {
@@ -656,4 +657,146 @@ bool XacNhanMenu(int x, int y, string thongBao) {
     }
 }
 
+void changePass(DanhSachLop &dsLop, SinhVien* svHienTai) {
+    bool isChanged = false; 
+    while (!isChanged) {
+        XoaVungContent();
+        VeGiaoDienDoiMatKhau();
+        
+        gotoxy(30, 23); SetColor(0, 8); 
+        cout << "TAB: An/Hien mat khau  |  ESC: Huy thao tac va Quay lai";
+        SetColor(0, 7);
+
+        string pass_old = NhapMatKhau(54, 13, 47, 20);
+        if (pass_old == "") return; 
+
+        if (pass_old != string(svHienTai->password)) {
+            InThongBaoContent("Mat khau cu khong chinh xac!", 12, 45, 20);
+            _getch(); continue; 
+        }
+
+        string pass_new = NhapMatKhau(54, 15, 47, 20);
+        if (pass_new == "") return;
+
+        if (pass_new == string(svHienTai->password)) {
+            InThongBaoContent("Mat khau moi khong duoc giong mat khau cu!", 12, 40, 20);
+            _getch(); continue;
+        }
+        
+        if (pass_new.length() < 3) { 
+            InThongBaoContent(layThongBaoLoi(ERR_LOGIN_PASS_WEAK), 12, 40, 20);
+            _getch(); continue;
+        }
+
+        string pass_new_check = NhapMatKhau(54, 17, 47, 20);
+        if (pass_new_check == "") return;
+
+        if (pass_new != pass_new_check) {
+            InThongBaoContent(layThongBaoLoi(ERR_LOGIN_PASS_NOT_MATCH), 12, 45, 20);
+            _getch(); continue;
+        }
+
+        strcpy(svHienTai->password, pass_new.c_str());
+        SaveLop(dsLop); 
+        
+        InThongBaoContent("Doi mat khau thanh cong!", 10, 42, 20);
+        Sleep(1200); 
+        isChanged = true;
+    }
+}
+
+void TienHanhThiTracNghiem(SinhVien* sv, MonHoc monChon, CauHoi* deThi[], int soCau, int thoiGianPhut) {
+    ShowCur(false);
+    
+    char dapAnDaChon[1000];
+    for (int i = 0; i < soCau; i++) {
+        dapAnDaChon[i] = ' '; 
+    }
+
+    int cauHienTai = 0;
+    
+    int tongThoiGianGiay = thoiGianPhut * 60;
+    time_t batDau = time(0);
+    int thoiGianConLai = tongThoiGianGiay;
+    int thoiGianDaIn = -1; 
+
+    VeKhungPhongThi(sv, monChon.tenMH, soCau);
+    HienThiCauHoiThi(deThi[cauHienTai], cauHienTai + 1, soCau, dapAnDaChon[cauHienTai]);
+
+    while (true) {
+        
+        time_t hienTai = time(0);
+        thoiGianConLai = tongThoiGianGiay - (hienTai - batDau);
+
+        if (thoiGianConLai <= 0) { 
+            thoiGianConLai = 0;
+            InDongHo(thoiGianConLai);
+            Sleep(1000); 
+            break; 
+        }
+
+        if (thoiGianConLai != thoiGianDaIn) {
+            InDongHo(thoiGianConLai);
+            thoiGianDaIn = thoiGianConLai;
+        }
+
+        if (_kbhit()) {
+            int ch = _getch();
+
+            if (ch == 224 || ch == 0 || ch == -32) {
+                ch = _getch();
+                if (ch == 75 && cauHienTai > 0) { 
+                    cauHienTai--;
+                    HienThiCauHoiThi(deThi[cauHienTai], cauHienTai + 1, soCau, dapAnDaChon[cauHienTai]);
+                } 
+                else if (ch == 77 && cauHienTai < soCau - 1) { 
+                    cauHienTai++;
+                    HienThiCauHoiThi(deThi[cauHienTai], cauHienTai + 1, soCau, dapAnDaChon[cauHienTai]);
+                }
+            }
+            else if (ch == 'a' || ch == 'A') {
+                dapAnDaChon[cauHienTai] = 'A';
+                HienThiCauHoiThi(deThi[cauHienTai], cauHienTai + 1, soCau, dapAnDaChon[cauHienTai]);
+            }
+            else if (ch == 'b' || ch == 'B') {
+                dapAnDaChon[cauHienTai] = 'B';
+                HienThiCauHoiThi(deThi[cauHienTai], cauHienTai + 1, soCau, dapAnDaChon[cauHienTai]);
+            }
+            else if (ch == 'c' || ch == 'C') {
+                dapAnDaChon[cauHienTai] = 'C';
+                HienThiCauHoiThi(deThi[cauHienTai], cauHienTai + 1, soCau, dapAnDaChon[cauHienTai]);
+            }
+            else if (ch == 'd' || ch == 'D') {
+                dapAnDaChon[cauHienTai] = 'D';
+                HienThiCauHoiThi(deThi[cauHienTai], cauHienTai + 1, soCau, dapAnDaChon[cauHienTai]);
+            }
+            else if (ch == 27) { 
+                break;
+            }
+        }
+
+        Sleep(50); 
+    }
+
+    system("cls"); 
+    
+    int soCauDung = 0;
+    for (int i = 0; i < soCau; i++) {
+        if (dapAnDaChon[i] == deThi[i]->dapAn) {
+            soCauDung++;
+        }
+    }
+    
+    float diemThi = (float)soCauDung / soCau * 10.0f;
+    
+    SetColor(0, 10);
+    gotoxy(40, 10); cout << "DA NOP BAI THANH CONG!";
+    gotoxy(40, 12); cout << "So cau dung: " << soCauDung << " / " << soCau;
+    gotoxy(40, 14); cout << "DIEM CUA BAN: " << diemThi;
+    
+    // TODO: Ghi kết quả diemThi vào Danh sách liên kết điểm của SinhVien
+    // TODO: Ghi đáp án đã chọn ra file .txt để xem lại chi tiết (Yêu cầu H)
+    
+    _getch();
+}
 #endif

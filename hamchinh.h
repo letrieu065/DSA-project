@@ -5,16 +5,45 @@
 #include "khaibao.h"
 #include "hamtienich.h"
 #include "dohoa.h"
+
 int nextCauHoiSoThuTu = 1;
+
+// Prototype ham chinh
+
+// Ham lop
+int KiemTraTrungMaLop(DanhSachLop &dsLop, char* maNhap);
+int KiemTraTrungTenLop(DanhSachLop &dsLop, char* tenNhap);
+int themLop(DanhSachLop &dsLop, char* ma, char* ten);
+int timViTriLop(DanhSachLop &dsLop, const char* maLop_nhap);
+int suaLop(DanhSachLop &dsLop, char* ma, char* tenMoi);
+int xoaLop(DanhSachLop &dsLop, char* ma);
+
+// Ham sinh vien
+SinhVien* timKiemSinhVien(Lop* lop, const char* maSV);
+SinhVien* timKiemSinhVien(DanhSachLop &dsLop, const char* maSV);
+int kiemTraTrungMaSinhVien(DanhSachLop &dsLop, const char* maSV);
+int themSinhVien(Lop* lop, SinhVien sv);
+int suaSinhVien(Lop* lop, const char* maSV, SinhVien svMoi);
+int xoaSinhVien(Lop* lop, const char* maSV);
+int demSoSV(Lop* lop);
+
+// Ham mon hoc
 int themMonHoc(DanhSachMonHoc &dsMH, MonHoc* mh);
 int suaMonHoc(DanhSachMonHoc &dsMH, const char* ma, const char* tenMoi, int tinChiMoi);
 int xoaMonHoc(DanhSachMonHoc &dsMH, const char* ma, PTR_CAUHOI root);
 int timViTriMonHoc(DanhSachMonHoc &dsMH, const char* ma);
 bool kiemTraTrungMaMonHoc(DanhSachMonHoc &dsMH, const char* ma);
 bool kiemTraMonHocDaCoCauHoi(PTR_CAUHOI root, const char* maMH);
+
+// Ham cau hoi
+void TaoIdCauHoi(char* bufOut, const char* maMH, int soThuTu);
+int timViTriMonHoc(DanhSachMonHoc &dsMH, const char* ma);
+bool kiemTraTrungMaMonHoc(DanhSachMonHoc &dsMH, const char* ma);
+bool kiemTraMonHocDaCoCauHoi(PTR_CAUHOI root, const char* maMH);
+
 int InChuoiGioiHan(string s, int x, int y, int maxCols);
 
-// Ham them lop//
+
 int KiemTraTrungMaLop(DanhSachLop &dsLop, char* maNhap) {
     for (int i = 0; i < dsLop.soLuong; i++) {
         if (strcmp(dsLop.nodes[i]->maLop, maNhap) == 0) {
@@ -23,6 +52,7 @@ int KiemTraTrungMaLop(DanhSachLop &dsLop, char* maNhap) {
     }
     return -1; 
 }
+
 int KiemTraTrungTenLop(DanhSachLop &dsLop, char* tenNhap) {
     for (int i = 0; i < dsLop.soLuong; i++) {
         if (strcmp(dsLop.nodes[i]->tenLop, tenNhap) == 0) {
@@ -59,19 +89,6 @@ int timViTriLop(DanhSachLop &dsLop, const char* maLop_nhap) {
     return ERR_LOP_NOT_FOUND;
 }
 
-// In danh sach lop
-void inDanhSachLop(DanhSachLop &dsLop, int x, int y) {	
-	for (int i = 0; i < dsLop.soLuong; i++) {
-		if (dsLop.nodes[i] != NULL) {
-			char* ma = dsLop.nodes[i]->maLop;
-			char* ten = dsLop.nodes[i]->tenLop;
-			
-			gotoxy(x, y + i); cout << i + 1 << ". " << ma << " - " << ten;
-		}
-	}
-}
-
-// Ham sua lop
 int suaLop(DanhSachLop &dsLop, char* ma, char* tenMoi) {
     int index = timViTriLop(dsLop, ma);
     
@@ -84,7 +101,6 @@ int suaLop(DanhSachLop &dsLop, char* ma, char* tenMoi) {
     return SUCCESS;
 }
 
-// Ham xoa lop
 int xoaLop(DanhSachLop &dsLop, char* ma) {
 	int index = timViTriLop(dsLop, ma);
 	
@@ -106,7 +122,7 @@ int xoaLop(DanhSachLop &dsLop, char* ma) {
     
     return SUCCESS;
 }
-// Ham tiem kiem sinh vien
+
 SinhVien* timKiemSinhVien(Lop* lop, const char* maSV) {
     if (lop == NULL) return NULL;
 
@@ -120,6 +136,7 @@ SinhVien* timKiemSinhVien(Lop* lop, const char* maSV) {
 
     return NULL;
 }
+
 SinhVien* timKiemSinhVien(DanhSachLop &dsLop, const char* maSV) {
     for (int i = 0; i < dsLop.soLuong; i++) {
     	if (dsLop.nodes[i] == NULL) continue;
@@ -134,14 +151,14 @@ SinhVien* timKiemSinhVien(DanhSachLop &dsLop, const char* maSV) {
     }
     return NULL;
 }
-// Ham kiem tra trung ma sinh vien
+
 int kiemTraTrungMaSinhVien(DanhSachLop &dsLop, const char* maSV) {
 	if (timKiemSinhVien(dsLop, maSV) !=NULL) {
 		return ERR_SV_DUPLICATE;
 	}
 	return SUCCESS;
 }
-// Ham them sinh vien
+
 int themSinhVien(Lop* lop, SinhVien sv) {
 	if (lop == NULL) return ERR_LOP_NOT_FOUND;
 	SinhVien * newNode = new SinhVien;
@@ -153,7 +170,7 @@ int themSinhVien(Lop* lop, SinhVien sv) {
 	
 	return SUCCESS;
 }
-// Ham sua sinh vien
+
 int suaSinhVien(Lop* lop, const char* maSV, SinhVien svMoi) {
     if (lop == NULL) return ERR_LOP_NOT_FOUND;
     
@@ -176,7 +193,7 @@ int suaSinhVien(Lop* lop, const char* maSV, SinhVien svMoi) {
     
     return SUCCESS;
 }
-// Ham xoa sinh vien
+
 int xoaSinhVien(Lop* lop, const char* maSV) {
 	if (lop == NULL) return ERR_LOP_NOT_FOUND;
 	
@@ -197,6 +214,7 @@ int xoaSinhVien(Lop* lop, const char* maSV) {
 	delete p;
     return SUCCESS;
 }
+
 int demSoSV(Lop* lop) {
     if (lop == NULL) return 0;
 
@@ -210,7 +228,7 @@ int demSoSV(Lop* lop) {
 
     return dem;
 }
-//Them mon hoc
+
 int themMonHoc(DanhSachMonHoc &dsMH, MonHoc* mh) {
     if (mh == NULL) return ERR_MH_INVALID_DATA;
 
@@ -228,7 +246,7 @@ int themMonHoc(DanhSachMonHoc &dsMH, MonHoc* mh) {
      
     return SUCCESS;
 }
-//Sua mon hoc
+
 int suaMonHoc(DanhSachMonHoc &dsMH, const char* ma, const char* tenMoi, int tinChiMoi) {
     int i = timViTriMonHoc(dsMH, ma);
     
@@ -243,7 +261,7 @@ int suaMonHoc(DanhSachMonHoc &dsMH, const char* ma, const char* tenMoi, int tinC
 	}
 	return SUCCESS;
 }
-//Xoa mon hoc
+
 int xoaMonHoc(DanhSachMonHoc &dsMH, const char* ma, PTR_CAUHOI root) {
     int idx = timViTriMonHoc(dsMH, ma);
     if (idx == -1) return ERR_MH_NOT_FOUND;
@@ -258,7 +276,7 @@ int xoaMonHoc(DanhSachMonHoc &dsMH, const char* ma, PTR_CAUHOI root) {
     
 	return SUCCESS;
 }
-//Tim kiem mon hoc
+
 int timViTriMonHoc(DanhSachMonHoc &dsMH, const char* ma) {
     for (int i = 0; i < dsMH.soLuong; i++)
         if (strcmp(dsMH.data[i].maMH, ma) == 0) return i;
@@ -268,6 +286,7 @@ int timViTriMonHoc(DanhSachMonHoc &dsMH, const char* ma) {
 bool kiemTraTrungMaMonHoc(DanhSachMonHoc &dsMH, const char* ma) {
     return timViTriMonHoc(dsMH, ma) != -1;
 }
+
 bool kiemTraMonHocDaCoCauHoi(PTR_CAUHOI root, const char* maMH) {
 	if (root == NULL ) return false;
 	
@@ -276,8 +295,6 @@ bool kiemTraMonHocDaCoCauHoi(PTR_CAUHOI root, const char* maMH) {
 	return kiemTraMonHocDaCoCauHoi(root->left, maMH) ||
 	       kiemTraMonHocDaCoCauHoi(root->right, maMH);
 }
-
-// Cau hoi
 
 void TaoIdCauHoi(char* bufOut, const char* maMH, int soThuTu) {
     snprintf(bufOut, 25, "%s_%04d", maMH, soThuTu);
@@ -335,7 +352,6 @@ void CapNhatSTT(PTR_CAUHOI root) {
     CapNhatSTT(root->left);
     CapNhatSTT(root->right);
 }
-
 
 PTR_CAUHOI ThemCauHoi(PTR_CAUHOI root, CauHoi* node) {
     if (root == NULL) return node;
