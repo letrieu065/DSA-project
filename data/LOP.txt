@@ -1,7 +1,13 @@
 2
 D24CQCN01-N
 Cong nghe thong tin 1
-3
+4
+N24DCCN001
+DUA
+GI VAY
+1
+123456
+0
 A
 TEST
 DEMO
