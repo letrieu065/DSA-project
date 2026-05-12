@@ -111,47 +111,73 @@ void flowSinhVien(DanhSachLop &dsLop, DanhSachMonHoc &dsMH, PTR_CAUHOI &root, Si
 }
 
 void flowQuanLyMonHoc_CauHoi(DanhSachMonHoc &dsMH, PTR_CAUHOI &root) {
+    XoaTitle();
+    InTitle("QUAN LY MON HOC - CAU HOI");
     int cursor = 0;
     int itemsPerPage = 8;
-    
-    gotoxy(63, 2); SetColor(0, 11); cout << "QUAN LY CAU HOI";
 
+    int oldCursor = -1;
+    int oldPage = -1;
+    int forceRedraw = 0;
+    
     while (true) {
         ShowCur(false);
         int totalItems = dsMH.soLuong;
         int totalPages = (totalItems == 0) ? 1 : (totalItems + itemsPerPage - 1) / itemsPerPage;
         int currentPage = (totalItems == 0) ? 0 : (cursor / itemsPerPage);
 
-        XoaVungContent();
-        gotoxy(61, 6); SetColor(0, 11); cout << "--- CHON MON HOC ---";
-        gotoxy(105, 27);  SetColor(0, 10); cout << "(Trang " << currentPage + 1 << "/" << totalPages << ")";
+        if (forceRedraw || currentPage != oldPage) {
+            XoaVungContent();
+            gotoxy(105, 27);  SetColor(0, 10); cout << "(Trang " << currentPage + 1 << "/" << totalPages << ")";
 
-        gotoxy(35, 8); SetColor(0, 14);
-        printf("%-5s %-15s %-35s %-5s", "STT", "Ma Mon", "Ten Mon Hoc", "STC");
-        SetColor(0, 7);
-
-        int startIdx = currentPage * itemsPerPage;
-        int endIdx = (startIdx + itemsPerPage > totalItems) ? totalItems : (startIdx + itemsPerPage);
-
-        if (totalItems == 0) {
-            SetColor(0, 12);
-            gotoxy(55, 12); cout << "Danh sach mon hoc dang trong!";
-            gotoxy(53, 13); cout << "(Vui long them mon hoc truoc)";
+            gotoxy(35, 8); SetColor(0, 14);
+            printf("%-5s %-15s %-35s %-5s", "STT", "Ma Mon", "Ten Mon Hoc", "STC");
             SetColor(0, 7);
-        } else {
-            for (int i = startIdx; i < endIdx; i++) {
-                int toadoY = 10 + (i - startIdx) * 2;
-                if (i == cursor) SetColor(11, 0);
-                else SetColor(0, 7);
-                gotoxy(35, toadoY);
-                printf("%-5d %-15s %-35s %-5d", i + 1, dsMH.data[i].maMH, dsMH.data[i].tenMH, dsMH.data[i].soTinChi);
+            int startIdx = currentPage * itemsPerPage;
+            int endIdx = (startIdx + itemsPerPage > totalItems) ? totalItems : (startIdx + itemsPerPage);
+
+            if (totalItems == 0) {
+                SetColor(0, 12);
+                gotoxy(55, 12); cout << "Danh sach mon hoc dang trong!";
+                gotoxy(53, 13); cout << "(Vui long them mon hoc truoc)";
+                SetColor(0, 7);
+            } else {
+                for (int i = startIdx; i < endIdx; i++) {
+                    int toadoY = 10 + (i - startIdx) * 2;
+                    if (i == cursor) SetColor(11, 0);
+                    else SetColor(0, 7);
+                    gotoxy(35, toadoY);
+                    printf("%-5d %-15s %-35s %-5d", i + 1, dsMH.data[i].maMH, dsMH.data[i].tenMH, dsMH.data[i].soTinChi);
+                }
             }
+            gotoxy(35, 26); SetColor(0, 8);
+            cout << "[ENTER] Quan ly cau hoi cua mon";
+            gotoxy(35, 27); SetColor(0, 11);
+            cout << "[INS/I] Them | [E] Sua | [DEL] Xoa | [ESC] Thoat";
+            SetColor(0, 7);
+
+            oldPage = currentPage;
+            oldCursor = cursor;
+            forceRedraw = false;
         }
-        gotoxy(35, 26); SetColor(0, 8);
-        cout << "[ENTER] Quan ly cau hoi cua mon";
-        gotoxy(35, 27); SetColor(0, 11);
-        cout << "[INS/I] Them | [E] Sua | [DEL] Xoa | [ESC] Thoat";
-        SetColor(0, 7);
+
+        else if (oldCursor != cursor) {
+            int startIdx = currentPage * itemsPerPage;
+
+            if (oldCursor >= startIdx && oldCursor < startIdx + itemsPerPage) {
+                int toadoY_old = 10 + (oldCursor - startIdx) * 2;
+                SetColor(0, 7);
+                gotoxy(35, toadoY_old);
+                printf("%-5d %-15s %-35s %-5d", oldCursor + 1, dsMH.data[oldCursor].maMH, dsMH.data[oldCursor].tenMH, dsMH.data[oldCursor].soTinChi);
+            }
+
+            int toadoY_new = 10 + (cursor - startIdx) * 2;
+            SetColor(11, 0);
+            gotoxy(35, toadoY_new);
+            printf("%-5d %-15s %-35s %-5d", cursor + 1, dsMH.data[cursor].maMH, dsMH.data[cursor].tenMH, dsMH.data[cursor].soTinChi);
+
+            oldCursor = cursor;
+        }
 
         int ch = _getch();
         if (ch == 224 || ch == 0 || ch == -32) {
@@ -161,8 +187,10 @@ void flowQuanLyMonHoc_CauHoi(DanhSachMonHoc &dsMH, PTR_CAUHOI &root) {
             else if (ch == 75 && currentPage > 0) cursor = (currentPage - 1) * itemsPerPage;
             else if (ch == 77 && currentPage < totalPages - 1) cursor = (currentPage + 1) * itemsPerPage;
         }
-        else if (ch == 13 && totalItems > 0)
+        else if (ch == 13 && totalItems > 0) {
             flowQuanLyCauHoiCuaMon(dsMH.data[cursor].maMH,dsMH.data[cursor].tenMH, root);
+            forceRedraw = true;
+        }
         else if (ch == 27) break;
         else if (toupper(ch) == 'I') {
             XoaVungContent();
@@ -222,7 +250,8 @@ void flowQuanLyMonHoc_CauHoi(DanhSachMonHoc &dsMH, PTR_CAUHOI &root) {
             InThongBaoContent("Them mon hoc thanh cong!", 10, 58, 26);
             _getch();
             cursor = dsMH.soLuong - 1;
-			}   
+            forceRedraw = true;
+		}   
 
         else if (toupper(ch) == 'E' && totalItems > 0) { 
 		    XoaVungContent();
@@ -261,6 +290,7 @@ void flowQuanLyMonHoc_CauHoi(DanhSachMonHoc &dsMH, PTR_CAUHOI &root) {
 		    SaveMonHoc(dsMH);
 		    InThongBaoContent("Cap nhat thanh cong!", 10, 50, 26);
 		    _getch();
+            forceRedraw = true;
 		}
         else if ((ch == 83 || toupper(ch) == 'D') && totalItems > 0) {
             XoaVungContent();
@@ -280,11 +310,14 @@ void flowQuanLyMonHoc_CauHoi(DanhSachMonHoc &dsMH, PTR_CAUHOI &root) {
                 InThongBaoContent("Da huy xoa!", 14, 50, 26);
             }
             _getch();
+            forceRedraw = true;
         }
     }
 }
 
 void flowQuanLyCauHoiCuaMon(const char* maMH, const char* tenMH, PTR_CAUHOI &root) {
+    XoaSmallTitle();
+    InSmallTitle("MON: " + string(tenMH) + " - MA: " + string(maMH));
 	
 	KiemTraVaTaoFileCauHoi(maMH, tenMH);
 	
@@ -295,7 +328,6 @@ void flowQuanLyCauHoiCuaMon(const char* maMH, const char* tenMH, PTR_CAUHOI &roo
         ShowCur(false);
         XoaVungContent();
 
-        // 1. Lọc danh sách câu hỏi của môn này
         CauHoi* dsTam[1000];
         int totalItems = 0;
         LayDanhSachCauHoiTheoMon(root, maMH, dsTam, totalItems);
@@ -304,14 +336,10 @@ void flowQuanLyCauHoiCuaMon(const char* maMH, const char* tenMH, PTR_CAUHOI &roo
         if (currentPage >= totalPages) currentPage = totalPages - 1;
         if (currentPage < 0) currentPage = 0;
 
-        // 2. Hiển thị tiêu đề môn học
-        gotoxy(55, 6); SetColor(0, 11);
-        cout << "MON: " << tenMH << " - MA: " << maMH;
         gotoxy(105, 27); SetColor(0, 10);
         cout << "(Trang " << currentPage + 1 << "/" << totalPages << ")";
         SetColor(0, 7);
 
-        // 3. Hiển thị danh sách câu hỏi (nếu có)
         if (totalItems == 0) {
             SetColor(0, 12);
             gotoxy(55, 12); cout << "Mon nay chua co cau hoi nao!";

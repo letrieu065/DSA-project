@@ -133,18 +133,27 @@ string NhapTen(string suggest = "") {
     
     char ch;
     while (true) {
-        
         ch = _getch();
         
         if (ch == 0 || ch == -32 || ch == 224) {
             _getch(); continue;
         }
 
-        if (isprint(ch)) {
+        if (isalpha(ch) || ch == ' ') {
+            
             if (ch == ' ') {
                 if (str.length() == 0 || str.back() == ' ') continue;
             }
+            
             if (str.length() < 50) {
+                if (isalpha(ch)) {
+                    if (str.length() == 0 || str.back() == ' ') {
+                        ch = toupper(ch); 
+                    } else {
+                        ch = tolower(ch); 
+                    }
+                }
+
                 str += ch;
                 cout << ch;
             }
@@ -159,7 +168,7 @@ string NhapTen(string suggest = "") {
                 str.pop_back();
                 cout << "\b \b";
             }
-            if (!str.empty()) break;
+            if (!str.empty()) break; 
         }
     }
     return str;
@@ -465,39 +474,57 @@ int xacThucMatKhau(int role, string pass, SinhVien* svFound) {
 }
 
 int MenuDong(char options[][50], int soLuong, int toaDoX, int toaDoY) {
+    ShowCur(false); 
     int cursor = 0;
-    while (true) {
-        for (int i = 0; i < soLuong; i++) {
-            gotoxy(toaDoX, toaDoY + (i * 2)); 
-            if (i == cursor) {
-                SetColor(11, 0); 
-                cout << " > " << options[i];
-                for (int j = strlen(options[i]); j < 20; j++) cout << " "; 
-            } else {
-                SetColor(0, 7);
-                cout << "   " << options[i];
-                for (int j = strlen(options[i]); j < 20; j++) cout << " ";
-            }
+    int oldCursor = 0;
+
+    for (int i = 0; i < soLuong; i++) {
+        gotoxy(toaDoX, toaDoY + (i * 2)); 
+        if (i == cursor) {
+            SetColor(11, 0); 
+            cout << " > " << options[i];
+            for (int j = strlen(options[i]); j < 20; j++) cout << " "; 
+        } else {
+            SetColor(0, 7);
+            cout << "   " << options[i];
+            for (int j = strlen(options[i]); j < 20; j++) cout << " ";
         }
-        
+    }
+    
+    while (true) {
         char ch = _getch();
         if (ch == -32 || ch == 224) { 
             ch = _getch();
+            oldCursor = cursor;
+
             if (ch == 72 && cursor > 0) cursor--; 
             if (ch == 80 && cursor < soLuong - 1) cursor++; 
+
+            if (oldCursor != cursor) {
+                gotoxy(toaDoX, toaDoY + (oldCursor * 2));
+                SetColor(0, 7);
+                cout << "   " << options[oldCursor];
+                for (int j = strlen(options[oldCursor]); j < 20; j++) cout << " ";
+
+                gotoxy(toaDoX, toaDoY + (cursor * 2));
+                SetColor(11, 0);
+                cout << " > " << options[cursor];
+                for (int j = strlen(options[cursor]); j < 20; j++) cout << " ";
+            }
         }
         else if (ch == 13) {
-        	SetColor(0, 7);
-        	return cursor;
-		} 
+            SetColor(0, 7);
+            return cursor;
+        } 
         else if (ch == 27) {
-        	SetColor(0, 7);
-        	return -1; 
-		}
+            SetColor(0, 7);
+            return -1; 
+        }
     }
 }
 
 void XoaVungContent() {
+    SetColor(0, 7);
     for (int i = 6; i <= 27; i++) {
         gotoxy(33, i);
         cout << "                                                                                   "; 
@@ -799,4 +826,45 @@ void TienHanhThiTracNghiem(SinhVien* sv, MonHoc monChon, CauHoi* deThi[], int so
     
     _getch();
 }
+void InGiuaKhung(string text, int startX, int toaDoY, int doRongKhung) {
+    int textLength = text.length();
+    
+    // Nếu chữ dài hơn cả khung thì in từ đầu khung luôn để tránh lỗi
+    if (textLength >= doRongKhung) {
+        gotoxy(startX, toaDoY);
+        cout << text;
+        return;
+    }
+    
+    // Tính toán tọa độ X chuẩn xác để căn giữa
+    int xCenter = startX + (doRongKhung - textLength) / 2;
+    
+    gotoxy(xCenter, toaDoY);
+    cout << text;
+}
+
+void XoaTitle() {
+    SetColor(0, 7);
+    gotoxy(33, 2); cout << "                                                                                   ";
+    SetColor(0, 7);
+}
+
+void XoaSmallTitle() {
+    SetColor(0, 7);
+    gotoxy(33, 3); cout << "                                                                                   ";
+    SetColor(0, 7);
+}
+
+void InTitle(string title) {
+    SetColor(0, 11);
+    InGiuaKhung(title, 32, 2, 85);
+    SetColor(0, 7);
+}
+
+void InSmallTitle(string title) {
+    SetColor(0, 11);
+    InGiuaKhung(title, 32, 3, 85);
+    SetColor(0, 7);
+}
+
 #endif

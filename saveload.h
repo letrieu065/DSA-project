@@ -5,6 +5,7 @@
 #include <string>
 #include <cstdio>
 #include <cstring>
+#include <direct.h>
 #include "khaibao.h"
 
 using namespace std;
@@ -139,7 +140,8 @@ void LoadMonHoc(DanhSachMonHoc &dsMH) {
 }
 
 void KiemTraVaTaoFileCauHoi(const char* maMH, const char* tenMH) {
-    string fileName = "data/" + string(tenMH) + " " + string(maMH) + ".txt";
+    _mkdir("data/CAUHOI"); // Lệnh này sẽ tự tạo folder CAUHOI nếu nó chưa tồn tại
+    string fileName = "data/CAUHOI/" + string(tenMH) + " " + string(maMH) + ".txt";
     ifstream f(fileName.c_str());
     if (!f.good()) {
         ofstream fout(fileName.c_str());
@@ -162,7 +164,8 @@ void LuuFileCauHoiTheoMon(const char* maMH, const char* tenMH, PTR_CAUHOI root) 
     int n = 0;
     LayDanhSachCauHoiTheoMon(root, maMH, dsTam, n); 
     
-    string fileName = "data/" + string(tenMH) + " " + string(maMH) + ".txt";
+    _mkdir("data/CAUHOI"); // Tự tạo folder trước khi lưu
+    string fileName = "data/CAUHOI/" + string(tenMH) + " " + string(maMH) + ".txt";
     ofstream fout(fileName.c_str());
     if (!fout.is_open()) return;
 
@@ -179,7 +182,8 @@ void LuuFileCauHoiTheoMon(const char* maMH, const char* tenMH, PTR_CAUHOI root) 
 }
 
 void LoadCauHoiTuFile(const char* maMH, const char* tenMH, PTR_CAUHOI &root) {
-    string fileName = "data/" + string(tenMH) + " " + string(maMH) + ".txt";
+    // Chỉ cần đổi đường dẫn đọc file, không cần _mkdir ở hàm Load
+    string fileName = "data/CAUHOI/" + string(tenMH) + " " + string(maMH) + ".txt";
     ifstream fIn(fileName.c_str());
     if (!fIn.is_open()) return;
 
@@ -219,7 +223,8 @@ void XoaFileNeuTrong(const char* maMH, const char* tenMH, PTR_CAUHOI root) {
     LayDanhSachCauHoiTheoMon(root, maMH, dsTam, n);
 
     if (n == 0) {
-        string fileName = "data/" + string(tenMH) + " " + string(maMH) + ".txt";
+        // Cập nhật đường dẫn xóa file
+        string fileName = "data/CAUHOI/" + string(tenMH) + " " + string(maMH) + ".txt";
         remove(fileName.c_str());
     }
 }
