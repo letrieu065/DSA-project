@@ -1,0 +1,31 @@
+10
+INTJP2231
+2
+Tin hoc co so 1
+BASSUK25250
+4
+Nhap So Tin Hieu
+PPRES21324
+3
+Kien Truc May Tinh
+DSAITD2406
+4
+Cau Truc Du Lieu
+CBITE0231
+4
+Toan Cao Cap 2
+DTEJS0213
+2
+Tu Tuong HO CHI MINH
+TCCB1031
+1
+Giao duc the chat
+NFWE1R923
+2
+Lich su Dang
+INT1154
+3
+Lap trinh C++
+INT1155
+3
+Cau truc du lieu

@@ -15,8 +15,10 @@
 #include "saveload.h"
 #include "ErrorCodes.h"
 
-//
+//// Trong hamtienich.h
+
 using namespace std;
+
 void getXY(int &x, int &y) {
     CONSOLE_SCREEN_BUFFER_INFO csbi;
     if (GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi)) {
@@ -31,6 +33,51 @@ char XacNhan(int x, int y);
 int InChuoiGioiHan(string s, int x, int y, int maxCols);
 void InNoiDungCanLe(string noiDung, int X, int Y, int maxW);
 
+string NhapCoDieuHuong(int X, int Y, int maxCols, int maxRows, string noiDungCu, int &keyLog) {
+    ShowCur(true);
+    string result = noiDungCu;
+    int cursor = result.length(); // Con trỏ bắt đầu ở cuối nội dung cũ
+
+    while (true) {
+        // Thay vì xóa trắng bằng vòng lặp for (gây nháy), ta ghi đè nội dung mới lên
+        gotoxy(X, Y);
+        // Tạm thời xóa vùng này bằng khoảng trắng trước khi in lại
+        for(int i=0; i < maxRows; i++) {
+            gotoxy(X, Y+i); cout << string(maxCols, ' ');
+        }
+        InNoiDungCanLe(result, X, Y, maxCols);
+
+        // Tính toán tọa độ hiển thị con trỏ
+        int curX = X + (cursor % maxCols);
+        int curY = Y + (cursor / maxCols);
+        gotoxy(curX, curY);
+
+        int ch = _getch();
+
+        if (ch == 13) { keyLog = 13; return result; }
+        if (ch == 27) { keyLog = 27; return noiDungCu; }
+
+        if (ch == 224 || ch == 0) {
+            ch = _getch();
+            if (ch == 75 && cursor > 0) cursor--;           // Trái
+            else if (ch == 77 && cursor < result.length()) cursor++; // Phải
+            else if (ch == 72 || ch == 80) {                // Lên/Xuống
+                keyLog = ch;
+                return result; 
+            }
+            continue;
+        }
+
+        if (ch == 8 && cursor > 0) { // Backspace
+            result.erase(cursor - 1, 1);
+            cursor--;
+        }
+        else if (ch >= 32 && ch <= 126 && result.length() < (maxCols * maxRows)) {
+            result.insert(cursor, 1, (char)ch);
+            cursor++;
+        }
+    }
+}
 // Ham nhap lieu
 int NhapSo(int suggest = -1) {
     string strNum = "";
@@ -313,7 +360,7 @@ void control(int X, int Y, string &text) {
 // Ham nhap nhieu dong co gioi han vung (maxCols: so ky tu tren 1 dong, maxRows: so dong toi da)
 string xuongdongGioiHan(int X, int Y, int maxCols, int maxRows, int maxChars, char* noiDungCu = NULL) {
     int curX = X, curY = Y, len = 0;
-    int posX[500], posY[500];
+    int posX[210], posY[210];
     string result = "";
     gotoxy(curX, curY);
     

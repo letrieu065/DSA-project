@@ -1,10 +1,9 @@
+
 #ifndef KHAIBAO_H
 #define KHAIBAO_H
 
 #include <iostream>
 #include <cstring>
-
-using namespace std;
 
 const int MAX_MON_HOC = 300;
 const int MAX_LOP = 10000;
@@ -26,8 +25,8 @@ struct DiemThi {
 struct SinhVien {
     char maSV[MAX_MASV];
     char ho[MAX_TEN];
-    char ten[MAX_TEN];
-    char phai[5];        
+    char ten[MAX_TEN];   
+    bool phai; // true: Nam, false: Nu   
     char password[MAX_PASS];
     DiemThi* headDiem = NULL;
     SinhVien* next = NULL;
@@ -35,18 +34,18 @@ struct SinhVien {
 
 struct Lop {
     char maLop[MAX_MALOP];
-    char tenLop[50];
+    char tenLop[MAX_TEN];
     SinhVien* headSV = NULL; 
 };
 
 struct MonHoc {
     char maMH[MAX_MAMH];
-    char tenMH[50];
+    char tenMH[MAX_TEN];
     int soTinChi;
 };
 
 struct CauHoi {
-    int id;               
+    char id[25];               
     char maMH[MAX_MAMH];
     char noiDung[500];
     char a[200], b[200], c[200], d[200];
@@ -67,5 +66,6 @@ struct DanhSachMonHoc {
 };
 
 typedef CauHoi* PTR_CAUHOI; 
+
 
 #endif

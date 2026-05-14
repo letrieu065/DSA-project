@@ -6,8 +6,6 @@
 #include "hamtienich.h"
 #include "dohoa.h"
 
-// Prototype ham chinh
-//
 // Ham lop
 int KiemTraTrungMaLop(DanhSachLop &dsLop, char* maNhap);
 int KiemTraTrungTenLop(DanhSachLop &dsLop, char* tenNhap);
@@ -397,34 +395,36 @@ PTR_CAUHOI XoaCauHoi(PTR_CAUHOI root, const char* id) {
     } else if (cmp > 0) {
         root->right = XoaCauHoi(root->right, id);
     } else {
-        // Truong hop 1: Node la
-        if (root->left == NULL && root->right == NULL) {
-            delete root;
-            return NULL;
-        }
-        // Truong hop 2: Chi co 1 cay con
+        // Trường hợp 1 & 2: Node lá hoặc có 1 con
         if (root->left == NULL) {
             CauHoi* temp = root->right;
             delete root;
             return temp;
-        }
-        if (root->right == NULL) {
+        } else if (root->right == NULL) {
             CauHoi* temp = root->left;
             delete root;
             return temp;
         }
-        // Truong hop 3: Co 2 cay con
+
+        // Trường hợp 3: Có 2 con
+        // Tìm node thế mạng (nhỏ nhất bên phải)
         CauHoi* minNode = LayNhoNhat(root->right);
-        strcpy(root->id,      minNode->id);
-        strcpy(root->maMH,    minNode->maMH);
+
+        // Copy toàn bộ dữ liệu từ minNode sang root (Nhanh và an toàn)
+        // Lưu ý: Chỉ copy phần data, giữ nguyên con trỏ left/right của root hiện tại
+        strcpy(root->id, minNode->id);
+        strcpy(root->maMH, minNode->maMH);
         strcpy(root->noiDung, minNode->noiDung);
         strcpy(root->a, minNode->a);
         strcpy(root->b, minNode->b);
         strcpy(root->c, minNode->c);
         strcpy(root->d, minNode->d);
         root->dapAn = minNode->dapAn;
+
+        // Xóa node thế mạng ở cây con bên phải
         root->right = XoaCauHoi(root->right, minNode->id);
     }
     return root;
 }
+
 #endif
