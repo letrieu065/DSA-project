@@ -19,7 +19,7 @@ void flowQuanLyCauHoiCuaMon(const char* maMH,const char* tenMH ,PTR_CAUHOI &root
 void flowSinhVien(DanhSachLop &dsLop, DanhSachMonHoc &dsMH, PTR_CAUHOI &root, SinhVien* sv);
 void flowXemThongTinSinhVien(SinhVien* sv);
 void flowXemDiemSinhVien(SinhVien* sv, DanhSachMonHoc &dsMH);
-void flowThiTracNghiem(SinhVien* sv, DanhSachMonHoc &dsMH, PTR_CAUHOI &root);
+void flowThiTracNghiem(SinhVien* sv, DanhSachMonHoc &dsMH, PTR_CAUHOI &root, DanhSachLop &dsLop);
 
 void flowChinh(DanhSachLop &dsLop, DanhSachMonHoc &dsMH, PTR_CAUHOI &root) {
 	CapNhatSTT(root);
@@ -104,8 +104,8 @@ void flowSinhVien(DanhSachLop &dsLop, DanhSachMonHoc &dsMH, PTR_CAUHOI &root, Si
         int chon = MenuDong(menuChinh, 4, 4, 9); 
         
         if (chon == 0) flowXemThongTinSinhVien(sv);
-        //else if (chon == 1) flowXemDiemSinhVien(sv, dsMH);
-        else if (chon == 2) flowThiTracNghiem(sv, dsMH, root);
+        else if (chon == 1) flowXemDiemSinhVien(sv, dsMH);
+        else if (chon == 2) flowThiTracNghiem(sv, dsMH, root, dsLop);
         else break; 
     }
 }
@@ -797,7 +797,7 @@ void flowQuanLySinhVienCuaLop(DanhSachLop &dsLop, Lop* lopHienTai) {
         } 
         
 		else if ((toupper(ch) == 'E' || isDelete) && totalItems > 0) {
-		    // 1. TÃƒÆ’Ã‚Â¬m node mÃƒÂ¡Ã‚Â»Ã‚Â¥c tiÃƒÆ’Ã‚Âªu
+
 		    SinhVien* svTarget = lopHienTai->headSV;
 		    for (int i = 0; i < cursor && svTarget != NULL; i++) {
 		        svTarget = svTarget->next;
@@ -881,33 +881,88 @@ void flowXemThongTinSinhVien(SinhVien* sv) {
     _getch();
 }
 
-/*void flowXemDiemSinhVien(SinhVien* sv) {
-    XoaVungContent();
-    gotoxy(60, 2); SetColor(0, 11); cout << "DIEM SO SINH VIEN"; SetColor(0, 7);
-    
-    if (sv->headDiem == NULL) {
-        gotoxy(50, 12); cout << "(Sinh vien chua co diem mon hoc)";
-    } else {
-        gotoxy(35, 8); SetColor(0, 14);
-        printf(" %-5s %-15s %-10s", "STT", "Ma Mon Hoc", "Diem");
+void flowXemDiemSinhVien(SinhVien* sv, DanhSachMonHoc &dsMH) {
+    int itemsPerPage = 8;
+    int currentPage = 0;
+
+    int totalItems = 0;
+    DiemThi* pCount = sv->headDiem;
+    while (pCount != NULL) {
+        totalItems++;
+        pCount = pCount->next;
+    }
+
+    DiemThi** arr = new DiemThi*[totalItems];
+    int idx = 0;
+    DiemThi* p = sv->headDiem;
+    while (p != NULL) {
+        arr[idx++] = p;
+        p = p->next;
+    }
+
+    while (true) {
+        ShowCur(false);
+        int totalPages = (totalItems == 0) ? 1 : (totalItems + itemsPerPage - 1) / itemsPerPage;
+        if (currentPage >= totalPages) currentPage = totalPages - 1;
+        if (currentPage < 0) currentPage = 0;
+
+        XoaVungContent();
+        XoaTitle(); 
+        string titleInfo = "DIEM SO SINH VIEN: " + string(sv->ho) + " " + string(sv->ten);
+        InTitle(titleInfo);
+
+        gotoxy(105, 27); SetColor(0, 10);
+        cout << "(Trang " << currentPage + 1 << "/" << totalPages << ")";
         SetColor(0, 7);
-        
-        Diem* p = sv->headDiem;
-        int stt = 1;
-        while (p != NULL) {
-            int toadoY = 10 + (stt - 1) * 2;
-            gotoxy(35, toadoY);
-            printf(" %-5d %-15s %-10.2f", stt, p->maMH, p->diemSo);
-            p = p->next;
-            stt++;
+
+        if (totalItems == 0) {
+            SetColor(0, 12);
+            gotoxy(50, 12); cout << "(Sinh vien nay chua thi mon nao!)";
+            SetColor(0, 7);
+        } 
+        else {
+            gotoxy(35, 8); SetColor(0, 14);
+			printf("%-5s %-45s %-10s %-8s", "STT", "Ten Mon Hoc", "Diem So", "Lan Thi");
+            SetColor(0, 7);
+
+            int startIdx = currentPage * itemsPerPage;
+            int endIdx = (startIdx + itemsPerPage > totalItems) ? totalItems : (startIdx + itemsPerPage);
+
+            for (int i = startIdx; i < endIdx; i++) {
+                int toadoY = 10 + (i - startIdx) * 2;
+                gotoxy(35, toadoY);
+
+                DiemThi* currentDiem = arr[totalItems - 1 - i];
+                string tenMonHoc = "(Mon hoc da bi xoa)";
+                int mhIndex = timViTriMonHoc(dsMH, currentDiem->maMH);
+                if (mhIndex != -1) {
+                    tenMonHoc = dsMH.data[mhIndex].tenMH;
+                }
+                printf("%-5d %-45s %-10.2f %-8d", i + 1, tenMonHoc.c_str(), currentDiem->diem, currentDiem->lanThi);
+            }
+        }
+
+        gotoxy(35, 26); SetColor(0, 8);
+        cout << "Left/Right: Chuyen trang";
+        gotoxy(35, 27); SetColor(0, 11);
+        cout << "[ESC] Thoat";
+        SetColor(0, 7);
+
+        int ch = _getch();
+        if (ch == 224 || ch == 0 || ch == -32) {
+            ch = _getch();
+            if (ch == 75 && currentPage > 0) currentPage--;
+            else if (ch == 77 && currentPage < totalPages - 1) currentPage++;
+        }
+        else if (ch == 27) { 
+            break; 
         }
     }
-    
-    _getch();
+    delete[] arr;
 }
-*/
 
-void flowThiTracNghiem(SinhVien* sv, DanhSachMonHoc &dsMH, PTR_CAUHOI &root) {
+
+void flowThiTracNghiem(SinhVien* sv, DanhSachMonHoc &dsMH, PTR_CAUHOI &root, DanhSachLop &dsLop) {
     int cursor = 0;
     int itemsPerPage = 8;
     bool isSelected = false;
@@ -1029,6 +1084,8 @@ void flowThiTracNghiem(SinhVien* sv, DanhSachMonHoc &dsMH, PTR_CAUHOI &root) {
         InThongBaoContent("Ngan hang de da san sang! An phim bat ky de vao thi...", 10, 35, 20);
         _getch();
         TienHanhThiTracNghiem(sv, monChon, deThi, questionCount, testTime);
+
+		SaveDiemToFile(dsLop); 
     }  
 }
 

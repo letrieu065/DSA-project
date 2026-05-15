@@ -1,39 +1,19 @@
 2
 D24CQCN01-N
 Cong nghe thong tin 1
-4
+2
 N24DCCN001
 DUA
 GI Vay
 1
-123456
+123456789
 0
-A
 TEST
 DEMO
 1
-123
+1
+
 0
-N24DCAT001
-Le Anh
-Trieu
-1
-TRIEU123
-1
-INT1154
-9.5
-N24DCAT002
-Nguyen Van
-A
-1
-HELLO
-0
-D24CQCN02-N
-Cong nghe thong tin 2
-1
-N24DCAT030
-Tran Thi
-B
-0
-123456
+
+
 0

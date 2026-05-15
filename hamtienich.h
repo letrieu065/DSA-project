@@ -925,7 +925,18 @@ void TienHanhThiTracNghiem(SinhVien* sv, MonHoc monChon, CauHoi* deThi[], int so
     gotoxy(40, 12); cout << "So cau dung: " << soCauDung << " / " << soCau;
     gotoxy(40, 14); cout << "DIEM CUA BAN: " << diemThi;
     
-    // TODO: Ghi kết quả diemThi vào Danh sách liên kết điểm của SinhVien
+    int lan = 1;
+	DiemThi* p = sv->headDiem;
+	while (p != NULL) {
+	    if (strcmp(p->maMH, monChon.maMH) == 0) lan++;
+	    p = p->next;
+	}
+	DiemThi* newDiem = new DiemThi;
+	strcpy(newDiem->maMH, monChon.maMH);
+	newDiem->diem = diemThi;
+	newDiem->lanThi = lan;
+	newDiem->next = sv->headDiem;
+	sv->headDiem = newDiem;
     // TODO: Ghi đáp án đã chọn ra file .txt để xem lại chi tiết (Yêu cầu H)
     
     _getch();
