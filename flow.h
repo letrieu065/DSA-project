@@ -323,7 +323,6 @@ void flowQuanLyCauHoiCuaMon(const char* maMH, const char* tenMH, PTR_CAUHOI &roo
 	
     int currentPage = 0;
     int itemsPerPage = 1; 
-    int rowOnScreen = 0;
 
     while (true) {
         ShowCur(false);
@@ -361,12 +360,12 @@ void flowQuanLyCauHoiCuaMon(const char* maMH, const char* tenMH, PTR_CAUHOI &roo
 		        gotoxy(startX, yPos + 1); cout << "[" << dsTam[i]->id << "] ";
 		    
 		        SetColor(0, 7);
-		        InNoiDungCanLe(dsTam[i]->noiDung, contentX, yPos + 1, 65); 
+		        InNoiDungCanLe(dsTam[i]->noiDung, contentX, yPos + 1, 63); 
 		
-		        gotoxy(35, yPos + 6);  cout << "A."; InNoiDungCanLe(dsTam[i]->a, 39, yPos + 6, 70);
-		        gotoxy(35, yPos + 9);  cout << "B."; InNoiDungCanLe(dsTam[i]->b, 39, yPos + 9, 70);
-		        gotoxy(35, yPos + 12); cout << "C."; InNoiDungCanLe(dsTam[i]->c, 39, yPos + 12, 70);
-		        gotoxy(35, yPos + 15); cout << "D."; InNoiDungCanLe(dsTam[i]->d, 39, yPos + 15, 70);
+		        gotoxy(35, yPos + 6);  cout << "A."; InNoiDungCanLe(dsTam[i]->a, 39, yPos + 6, 75);
+		        gotoxy(35, yPos + 9);  cout << "B."; InNoiDungCanLe(dsTam[i]->b, 39, yPos + 9, 75);
+		        gotoxy(35, yPos + 12); cout << "C."; InNoiDungCanLe(dsTam[i]->c, 39, yPos + 12, 75);
+		        gotoxy(35, yPos + 15); cout << "D."; InNoiDungCanLe(dsTam[i]->d, 39, yPos + 15, 75);
 		        
 		        gotoxy(35, yPos + 18); SetColor(0, 11);
 		        cout << ">> Dap an dung: " << dsTam[i]->dapAn;
@@ -403,7 +402,7 @@ void flowQuanLyCauHoiCuaMon(const char* maMH, const char* tenMH, PTR_CAUHOI &roo
             gotoxy(35, 20); cout << "D. ";
             gotoxy(35, 22); cout << "Dap An Dung: ";
 
-            gotoxy(50, 8); string noiDung = xuongdongGioiHan(50, 8, 65, 4, 210); if (noiDung == "") continue;
+            gotoxy(50, 8); string noiDung = xuongdongGioiHan(50, 8, 63, 4, 230); if (noiDung == "") continue;
             gotoxy(39, 14); string pA 	  = xuongdongGioiHan(39, 14, 75, 2, 148); if (pA == "") continue;
             gotoxy(39, 16); string pB     = xuongdongGioiHan(39, 16, 75, 2, 148); if (pB == "") continue;
             gotoxy(39, 28); string pC     = xuongdongGioiHan(39, 18, 75, 2, 148); if (pC == "") continue;
@@ -428,134 +427,121 @@ void flowQuanLyCauHoiCuaMon(const char* maMH, const char* tenMH, PTR_CAUHOI &roo
         
             _getch();
         }
+        
+		// --- Logic Sua (E) ---
 
-		// ===== PHẦN SỬA CÂU HỎI - BẮT ĐẦU TỪ NỘI DUNG CÂU HỎI =====
-// Thay thế dòng 431-506
-
-		else if (toupper(ch) == 'E' && totalItems > 0) {
-		    CauHoi* node = dsTam[currentPage];
-		    XoaVungContent();
-		    ShowCur(true);
-		
-		    gotoxy(65, 6); SetColor(0, 11); cout << "--- SUA CAU HOI ---"; SetColor(0, 7);
-		
-		    // Vẽ tiêu đề cố định
-		    gotoxy(35, 8);  cout << "Noi dung:";
-		    gotoxy(35, 14); cout << "A.";
-		    gotoxy(35, 16); cout << "B.";
-		    gotoxy(35, 18); cout << "C.";
-		    gotoxy(35, 20); cout << "D.";
-		    gotoxy(35, 22); cout << "Dap an:";
-		
-		    struct FieldConfig {
-		        int x, y, width, height;
-		        char* data;
-		    };
-		
-		    FieldConfig fields[5] = {
-		        {50, 8,  65, 3, node->noiDung}, 
-		        {39, 14, 75, 1, node->a},      
-		        {39, 16, 75, 1, node->b},       
-		        {39, 18, 75, 1, node->c},       
-		        {39, 20, 75, 1, node->d}        
-		    };
-		
-		    int field = 0;  // ✅ BẮT ĐẦU Ở TRƯỜNG 0 (NỘI DUNG CÂU HỎI)
-		    int key = 0;
-		    bool loop = true;
-		
-		    while (loop) {
-		        InNoiDungCanLe(node->noiDung, 50, 8, 65);
-		        gotoxy(39, 14); cout << node->a;
-		        gotoxy(39, 16); cout << node->b;
-		        gotoxy(39, 18); cout << node->c;
-		        gotoxy(39, 20); cout << node->d;
-		        gotoxy(50, 22); cout << node->dapAn;
-		
-		        if (field < 5) {
-		            // Nhập liệu chung cho 5 trường đầu tiên
-		            string temp = NhapCoDieuHuong(
-		                fields[field].x, fields[field].y, 
-		                fields[field].width, fields[field].height, 
-		                fields[field].data, key
-		            );
-		            
-		            // Cập nhật dữ liệu vào node
-		            strcpy(fields[field].data, temp.c_str());
-		
-		            // Logic di chuyển biến field
-		            if (key == 13 || key == 80) { // Enter hoặc Down
-		                field++;
-		            } else if (key == 72) { // Up
-		                if (field > 0) field--;
-		            }
-		        } 
-		        else if (field == 5) {
-		            // Trường hợp cuối: Chọn đáp án đúng
-		            char da = ChonDapAn(50, 22);
-		            if (da != '\0') {
-		                node->dapAn = da;
-		                loop = false; // Thoát vòng lặp sau khi chọn đáp án
-		            } else {
-		                // Nếu người dùng nhấn phím mũi tên lên khi đang ở mục Đáp án
-		                field = 4; 
-		            }
-		        }
-		    }
-		
-		    ShowCur(false);
-		    LuuFileCauHoiTheoMon(maMH, tenMH, root);
-		    InThongBaoContent("Cap nhat thanh cong!", 10, 50, 26);
-		    _getch();
-		}
-		
-		// ===== PHẦN XÓA CÂU HỎI - XÓA CÂU ĐANG XEM, CÓ XÁC NHẬN =====
-		// Thay thế dòng 508-527
-		
-		else if (toupper(ch) == 'D') { // Nhấn phím D để xóa
-		    // Kiểm tra nếu danh sách không rỗng (dựa trên totalItems bạn đang dùng trong flow)
+        else if (toupper(ch) == 'E') {
 		    if (totalItems > 0) {
+		        CauHoi* q = dsTam[currentPage];
 		        
-		        // 1. Lấy node cần xóa từ mảng dsTam (mảng này đã có sẵn trong flow của bạn)
-		        int index = currentPage * itemsPerPage + rowOnScreen;
-		        PTR_CAUHOI nodeXoa = dsTam[index];
+		        // 1. Chuẩn bị giao diện
+		        XoaVungContent(); 
+		        SetColor(0, 11);
+		        InGiuaKhung("--- SUA NOI DUNG CAU HOI ---", 30, 6, 88);
 		
-		        // 2. Gọi hàm xác nhận từ hamtienich.h
-		        if (XacNhan(50, 24) == 'Y') {
-		            
-		            // 3. Xóa trực tiếp trên cây root (Dùng đúng hàm XoaCauHoi trong hamchinh.h)
-		            // Trong hamchinh.h, struct CauHoi dùng trường tên là 'id'
-		            root = XoaCauHoi(root, nodeXoa->id); 
+		        string t_ND = q->noiDung, t_A = q->a, t_B = q->b, t_C = q->c, t_D = q->d;
+		        char t_DA = q->dapAn;
 		
-		            // 4. Cập nhật lại số lượng và mảng dsTam 
-		            // Vì không có hàm ChuyenCayThanhMang, ta phải duyệt lại cây để đổ vào mảng
-		            // Bạn có thể viết trực tiếp logic duyệt LNR tại đây hoặc gọi hàm tương ứng nếu có
-		            totalItems = 0;
-		            // Logic đổ lại mảng (Nếu bạn chưa có hàm, hãy thêm logic duyệt này vào)
-		            // Duyet_LNR_De_Do_Mang(root, dsTam, totalItems); 
+		        SetColor(0, 15);
+		        gotoxy(35, 8);  cout << "Noi Dung   : ";
+		        gotoxy(35, 14); cout << "A. ";
+		        gotoxy(35, 16); cout << "B. ";
+		        gotoxy(35, 18); cout << "C. ";
+		        gotoxy(35, 20); cout << "D. ";
+		        gotoxy(35, 22); cout << "Dap An Dung: ";
+		                
+		        int field = 0, keyLog = 0;
+		        bool exitForm = false;
 		
-		            // 5. Điều chỉnh vị trí vệt sáng (rowOnScreen)
-		            if (index >= totalItems && rowOnScreen > 0) {
-		                rowOnScreen--;
+		        while (!exitForm) {
+		            SetColor(0, 7); 
+		            switch (field) {
+		                case 0: t_ND = NhapCoDieuHuong(50, 8, 65, 4, t_ND, keyLog); break;
+		                case 1: t_A  = NhapCoDieuHuong(39, 14, 75, 2, t_A, keyLog); break;
+		                case 2: t_B  = NhapCoDieuHuong(39, 16, 75, 2, t_B, keyLog); break;
+		                case 3: t_C  = NhapCoDieuHuong(39, 18, 75, 2, t_C, keyLog); break;
+		                case 4: t_D  = NhapCoDieuHuong(39, 20, 75, 2, t_D, keyLog); break;
+		                case 5: 
+		                    t_DA = ChonDapAn(50, 22); 
+		                    keyLog = 13; // Sau khi chọn xong, tự động hiểu là nhấn Enter để lưu
+		                    break;
 		            }
-		            if (totalItems % itemsPerPage == 0 && currentPage > 0 && totalItems > 0) {
-		                currentPage--;
-		                rowOnScreen = itemsPerPage - 1;
+		
+		            // --- XỬ LÝ NHẤN ESC: HỎI XÁC NHẬN TRƯỚC KHI THOÁT ---
+		            if (keyLog == 27) {
+		                gotoxy(40, 24); SetColor(0, 14); cout << "Ban co chac muon thoat khong?";
+		                if (XacNhan(82, 24) == 'Y') {
+		                    exitForm = true;
+		                } else {
+
+		                    gotoxy(40, 24); cout << "                                             ";
+		                    continue; 
+		                }
 		            }
-		
-		            // 6. Lưu file (Hàm có sẵn trong file của bạn)
-		            LuuFileCauHoiTheoMon(maMH, tenMH, root);
-		
-		            // 7. Thông báo và làm mới nội dung
-		            XoaVungContent();
-		            InThongBaoContent("Da xoa cau hoi thanh cong!", 10, 50, 24);
-		            _getch();
 		            
-		            // Break để thoát vòng lặp hiện tại, bắt chương trình vẽ lại danh sách mới
-		            break; 
+		            if (keyLog == 72) {
+		                field = (field > 0) ? field - 1 : 5;
+		            }
+		            else if (keyLog == 80 || keyLog == 13) { 
+		                if (field == 5 && keyLog == 13) {
+
+		                    strcpy(q->noiDung, t_ND.c_str());
+		                    strcpy(q->a, t_A.c_str());
+		                    strcpy(q->b, t_B.c_str());
+		                    strcpy(q->c, t_C.c_str());
+		                    strcpy(q->d, t_D.c_str());
+		                    q->dapAn = t_DA;
+		
+		                    LuuFileCauHoiTheoMon(maMH, tenMH, root); 
+		                    InThongBaoContent(" CAP NHAT THANH CONG! ", 10, 55, 24);
+							Sleep(1500);
+		                    exitForm = true; 
+		                } else {
+		                    field = (field < 5) ? field + 1 : 0;
+		                }
+		            }
 		        }
+		        continue; 
 		    }
 		}
+		
+        else if (toupper(ch) == 'D') {
+            if (totalItems > 0) { 
+                gotoxy(65, 25); 
+                SetColor(0, 14); 
+                cout << "Xac nhan xoa cau hoi (y/n)? ";
+                
+                char confirm;
+                while (true) {
+                    confirm = _getch();
+                    confirm = toupper(confirm); 
+                    if (confirm == 'Y' || confirm == 'N') {
+                        break;
+                    }
+                }
+                
+                if (confirm == 'Y') {
+                    root = XoaCauHoi(root, dsTam[currentPage]->id);
+                    
+                    LuuFileCauHoiTheoMon(maMH, tenMH, root);
+                    gotoxy(65, 25); 
+                    SetColor(0, 10);
+                    cout << "Da xoa cau hoi!                      "; 
+
+                    if (currentPage > 0) {
+                        currentPage--; 
+                    } 
+
+                    Sleep(800); 
+                } 
+                else { 
+                    gotoxy(65, 25); 
+                    SetColor(0, 12);
+                    cout << "Da huy thao tac!                                 "; 
+                    Sleep(800);
+                }
+            }
+        }
 	}
 }
 

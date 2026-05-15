@@ -19,10 +19,3 @@ float
 double
 char
 C
-INT1154_0004
-fbdshbfhdhsbfsd
-fbhdsbfhsbhdbfhsd
-bfsdbfhsbdhbfsd
-bfhdbfhsdbhfbsd
-fbsdhbfsdbhfshdfbshd
-B

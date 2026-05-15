@@ -36,18 +36,15 @@ void InNoiDungCanLe(string noiDung, int X, int Y, int maxW);
 string NhapCoDieuHuong(int X, int Y, int maxCols, int maxRows, string noiDungCu, int &keyLog) {
     ShowCur(true);
     string result = noiDungCu;
-    int cursor = result.length(); // Con trỏ bắt đầu ở cuối nội dung cũ
+    int cursor = result.length();
 
     while (true) {
-        // Thay vì xóa trắng bằng vòng lặp for (gây nháy), ta ghi đè nội dung mới lên
         gotoxy(X, Y);
-        // Tạm thời xóa vùng này bằng khoảng trắng trước khi in lại
         for(int i=0; i < maxRows; i++) {
             gotoxy(X, Y+i); cout << string(maxCols, ' ');
         }
         InNoiDungCanLe(result, X, Y, maxCols);
 
-        // Tính toán tọa độ hiển thị con trỏ
         int curX = X + (cursor % maxCols);
         int curY = Y + (cursor / maxCols);
         gotoxy(curX, curY);
@@ -59,16 +56,16 @@ string NhapCoDieuHuong(int X, int Y, int maxCols, int maxRows, string noiDungCu,
 
         if (ch == 224 || ch == 0) {
             ch = _getch();
-            if (ch == 75 && cursor > 0) cursor--;           // Trái
-            else if (ch == 77 && cursor < result.length()) cursor++; // Phải
-            else if (ch == 72 || ch == 80) {                // Lên/Xuống
+            if (ch == 75 && cursor > 0) cursor--;      
+            else if (ch == 77 && cursor < result.length()) cursor++; 
+            else if (ch == 72 || ch == 80) {             
                 keyLog = ch;
                 return result; 
             }
             continue;
         }
 
-        if (ch == 8 && cursor > 0) { // Backspace
+        if (ch == 8 && cursor > 0) { 
             result.erase(cursor - 1, 1);
             cursor--;
         }
@@ -288,8 +285,9 @@ char ChonDapAn(int x, int y) {
         }
         
         if (ch == 27) {
-            
-            char xn = XacNhan(80, 26);
+        	
+            gotoxy(50,26); SetColor(0, 14); cout<<"Ban co chac muon thoat khong?";
+            char xn = XacNhan(82, 26);
             
             gotoxy(50, 26); cout << "                                                    ";
             gotoxy(80, 26); cout << "              ";
@@ -375,7 +373,8 @@ string xuongdongGioiHan(int X, int Y, int maxCols, int maxRows, int maxChars, ch
             int savedX = curX;
             int savedY = curY;
             
-            char xn = XacNhan(80, 26);
+            gotoxy(50,26); SetColor(0, 14); cout<<"Ban co chac muon thoat khong?";
+            char xn = XacNhan(82, 26);
          
             gotoxy(50, 26); cout << "                                                    ";
             gotoxy(80, 26); cout << "              ";
@@ -430,7 +429,6 @@ string xuongdongGioiHan(int X, int Y, int maxCols, int maxRows, int maxChars, ch
         result += ch; len++; curX++;
     }
     return result;
-    return s;
 }
 
 void InNoiDungCanLe(string noiDung, int X, int Y, int maxW) {
@@ -726,9 +724,6 @@ char XacNhan(int x, int y) {
     char ch;
 
     ShowCur(false);
-    gotoxy(50, 26);
-    SetColor(0, 14);
-    cout << "Ban co chac muon thoat khong?";
 
     while (true) {
         for (int i = 0; i < numOptions; i++) {
