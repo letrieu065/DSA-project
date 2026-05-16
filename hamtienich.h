@@ -358,25 +358,29 @@ void control(int X, int Y, string &text) {
 // Ham nhap nhieu dong co gioi han vung (maxCols: so ky tu tren 1 dong, maxRows: so dong toi da)
 string xuongdongGioiHan(int X, int Y, int maxCols, int maxRows, int maxChars, char* noiDungCu = NULL) {
     int curX = X, curY = Y, len = 0;
-    int posX[210], posY[210];
+    int posX[230], posY[230];
     string result = "";
     gotoxy(curX, curY);
     
-	string s="";
-	if (noiDungCu != NULL) s = noiDungCu;
-	
+    string s = "";
+    if (noiDungCu != NULL) s = noiDungCu;
+    
     while (true) {
-        char ch = _getch();
+        int ch = _getch(); 
+
+        if (ch == 0 || ch == 224) {
+            _getch(); 
+            continue; 
+        }
         
         if (ch == 27) {
-
             int savedX = curX;
             int savedY = curY;
             
-            gotoxy(50,26); SetColor(0, 14); cout<<"Ban co chac muon thoat khong?";
+            gotoxy(50, 26); SetColor(0, 14); cout << "Ban co chac muon thoat khong?";
             char xn = XacNhan(82, 26);
          
-            gotoxy(50, 26); cout << "                                                    ";
+            gotoxy(50, 26); cout << "                                                  ";
             gotoxy(80, 26); cout << "              ";
             
             if (xn == 'Y') return ""; 
@@ -386,24 +390,24 @@ string xuongdongGioiHan(int X, int Y, int maxCols, int maxRows, int maxChars, ch
                 continue;
             }
         }
-        if (ch == '\r') break; 
+        
+        if (ch == '\r') break;
 
-        if (ch == 8) { // phím backspace
+        if (ch == 8) { 
             if (len > 0) {
                 len--;
                 curX = posX[len]; curY = posY[len];
                 gotoxy(curX, curY); cout << " "; 
-				gotoxy(curX, curY);
+                gotoxy(curX, curY);
                 result.pop_back();
             }
             continue;
         }
 
-        if (ch < 32 || (unsigned char)ch > 126) continue;
+        if (ch < 32 || ch > 126) continue;
         if (len >= maxChars) continue;
 
         if (curX >= X + maxCols) {
-            
             if (curY >= Y + maxRows - 1) continue;
 
             int wordStart = len - 1;
@@ -425,11 +429,15 @@ string xuongdongGioiHan(int X, int Y, int maxCols, int maxRows, int maxChars, ch
         }
 
         posX[len] = curX; posY[len] = curY;
-        gotoxy(curX, curY); cout << ch;
-        result += ch; len++; curX++;
+        gotoxy(curX, curY); cout << (char)ch;
+        result += (char)ch; 
+        len++; curX++;
     }
     return result;
 }
+
+
+
 
 void InNoiDungCanLe(string noiDung, int X, int Y, int maxW) {
     int curX = X, curY = Y;
