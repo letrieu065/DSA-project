@@ -15,8 +15,10 @@ void KiemTraVaTaoFileCauHoi(const char* maMH, const char* tenMH);
 void LuuFileCauHoiTheoMon(const char* maMH, const char* tenMH, PTR_CAUHOI root);
 void LayDanhSachCauHoiTheoMon(PTR_CAUHOI root, const char* maMH, CauHoi* dsTam[], int &n);
 void LoadCauHoiTuFile(const char* maMH, const char* tenMH, PTR_CAUHOI &root);
+void LoadDiemFromFile(DanhSachLop &dsLop);
 void SaveDiemToFile(DanhSachLop &dsLop);
 void saveData(DanhSachLop &dsLop, DanhSachMonHoc &dsMH, PTR_CAUHOI &root);
+
 
 
 int DemSoDiem(DiemThi* headDiem) {
@@ -251,6 +253,7 @@ void saveData(DanhSachLop &dsLop, DanhSachMonHoc &dsMH, PTR_CAUHOI &root) {
 void loadData(DanhSachLop &dsLop, DanhSachMonHoc &dsMH, PTR_CAUHOI &root) {
     LoadMonHoc(dsMH);
     LoadLop(dsLop);
+    LoadDiemFromFile(dsLop);
     for (int i = 0; i < dsMH.soLuong; i++) {
         LoadCauHoiTuFile(dsMH.data[i].maMH, dsMH.data[i].tenMH, root);
     }
@@ -282,6 +285,54 @@ void SaveDiemToFile(DanhSachLop &dsLop) {
                     }
                     fOut.close();
                 }
+            }
+            sv = sv->next;
+        }
+    }
+}
+void LoadDiemFromFile(DanhSachLop &dsLop) {
+	for (int i = 0; i < dsLop.soLuong; i++) {
+        Lop* lop = dsLop.nodes[i];
+        if (lop == NULL) continue;
+
+        SinhVien* sv = lop->headSV;
+        while (sv != NULL) {
+
+            if (strlen(sv->maSV) > 0) {
+                string fileName = "data/diem/diem_" + string(sv->maSV) + ".txt";
+                ifstream fIn(fileName.c_str());
+
+                if (!fIn.is_open()) {
+                    sv = sv->next;
+                    continue;
+                }
+
+                string line;
+                while (getline(fIn, line)) {
+                    char maMH[50];
+                    float diem;
+                    int lanThi;
+
+                    if (sscanf(line.c_str(),
+                        "Mon: %[^|]| Diem: %f | Lan thi: %d",
+                        maMH, &diem, &lanThi) == 3)
+                    {
+
+                        int len = strlen(maMH);
+                        while (len > 0 && maMH[len - 1] == ' ') {
+                            maMH[--len] = '\0';
+                        }
+
+                        DiemThi* node = new DiemThi;
+                        strcpy(node->maMH, maMH);
+                        node->diem = diem;
+                        node->lanThi = lanThi;
+
+                        node->next = sv->headDiem;
+                        sv->headDiem = node;
+                    }
+                }
+                fIn.close();
             }
             sv = sv->next;
         }
