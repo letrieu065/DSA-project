@@ -1,6 +1,6 @@
 #ifndef FLOW_H
 #define FLOW_H
-//
+
 #include "khaibao.h"
 #include "saveload.h"
 #include "hamchinh.h"
@@ -299,17 +299,24 @@ void flowQuanLyMonHoc_CauHoi(DanhSachMonHoc &dsMH, PTR_CAUHOI &root) {
         else if ((ch == 83 || toupper(ch) == 'D') && totalItems > 0) {
             XoaVungContent();
             string thongBao = "XAC NHAN XOA MON: " + string(dsMH.data[cursor].tenMH);
-            
+
             if (XacNhanMenu(40, 12, thongBao)) {
-                for (int i = cursor; i < dsMH.soLuong - 1; i++) {
-                    dsMH.data[i] = dsMH.data[i + 1];
+                char maCan[MAX_MAMH];
+                strcpy(maCan, dsMH.data[cursor].maMH); 
+
+                int err = xoaMonHoc(dsMH, maCan, root);
+
+                if (err == SUCCESS) {
+                    if (cursor >= dsMH.soLuong && cursor > 0) cursor--;
+                    SaveMonHoc(dsMH);
+                    InThongBaoContent("Da xoa mon hoc!", 10, 50, 26);
                 }
-                dsMH.soLuong--;
-                
-                if (cursor >= dsMH.soLuong && cursor > 0) cursor--;
-            
-                SaveMonHoc(dsMH);
-                InThongBaoContent("Da xoa mon hoc!", 10, 50, 26);
+                else if (err == ERR_MH_HAS_QUESTION) {
+                    InThongBaoContent("Khong the xoa! Mon nay con cau hoi.", 12, 40, 26);
+                }
+                else {
+                    InThongBaoContent("Loi: Khong tim thay mon hoc!", 12, 45, 26);
+                }
             } else {
                 InThongBaoContent("Da huy xoa!", 14, 50, 26);
             }
@@ -466,11 +473,10 @@ void flowQuanLyCauHoiCuaMon(const char* maMH, const char* tenMH, PTR_CAUHOI &roo
 		                case 4: t_D  = NhapCoDieuHuong(39, 20, 75, 2, t_D, keyLog); break;
 		                case 5: 
 		                    t_DA = ChonDapAn(50, 22); 
-		                    keyLog = 13; // Sau khi chọn xong, tự động hiểu là nhấn Enter để lưu
+		                    keyLog = 13; 
 		                    break;
 		            }
 		
-		            // --- XỬ LÝ NHẤN ESC: HỎI XÁC NHẬN TRƯỚC KHI THOÁT ---
 		            if (keyLog == 27) {
 		                gotoxy(40, 24); SetColor(0, 14); cout << "Ban co chac muon thoat khong?";
 		                if (XacNhan(82, 24) == 'Y') {
@@ -1086,8 +1092,6 @@ void flowThiTracNghiem(SinhVien* sv, DanhSachMonHoc &dsMH, PTR_CAUHOI &root, Dan
         InThongBaoContent("Ngan hang de da san sang! An phim bat ky de vao thi...", 10, 35, 20);
         _getch();
         TienHanhThiTracNghiem(sv, monChon, deThi, questionCount, testTime);
-
-		SaveDiemToFile(dsLop); 
     }  
 }
 void flowQuanLyDiemSV(DanhSachMonHoc &dsMH, DanhSachLop &dsLop) {

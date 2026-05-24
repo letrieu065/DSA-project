@@ -1,19 +1,13 @@
 2
 D24CQCN01-N
 Cong nghe thong tin 1
-2
-N24DCCN001
-DUA
-GI Vay
 1
-123456789
+A
+A
+A
+1
+123
 0
-TEST
-DEMO
 1
-1
-
-0
-
-
+123
 0

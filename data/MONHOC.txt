@@ -1,4 +1,4 @@
-10
+9
 INTJP2231
 2
 Tin hoc co so 1
@@ -11,9 +11,6 @@ Kien Truc May Tinh
 DSAITD2406
 4
 Cau Truc Du Lieu
-CBITE0231
-4
-Toan Cao Cap 2
 DTEJS0213
 2
 Tu Tuong HO CHI MINH
