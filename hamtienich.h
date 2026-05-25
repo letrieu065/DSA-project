@@ -945,7 +945,25 @@ void TienHanhThiTracNghiem(SinhVien* sv, MonHoc monChon, CauHoi* deThi[], int so
 	newDiem->lanThi = lan;
 	newDiem->next = sv->headDiem;
 	sv->headDiem = newDiem;
-    // TODO: Ghi đáp án đã chọn ra file .txt để xem lại chi tiết (Yêu cầu H)
+	
+    string dsND[1000];
+	char dsDung[1000];
+
+	for (int i = 0; i < soCau; i++) {
+	dsND[i] =
+        string(deThi[i]->noiDung) + "\n" +
+        "A. " + string(deThi[i]->a) + "\n" +
+        "B. " + string(deThi[i]->b) + "\n" +
+        "C. " + string(deThi[i]->c) + "\n" +
+        "D. " + string(deThi[i]->d);
+	
+	dsDung[i] = deThi[i]->dapAn;
+	}
+    SaveBaiLam(sv->maSV, monChon.maMH, dsND, dsDung, dapAnDaChon, soCau);
+
+    gotoxy(40, 16); SetColor(0, 14);
+    cout << "Da luu chi tiet bai lam vao he thong!";
+    SetColor(0, 7);
     
     _getch();
 }
@@ -964,6 +982,24 @@ void InGiuaKhung(string text, int startX, int toaDoY, int doRongKhung) {
     
     gotoxy(xCenter, toaDoY);
     cout << text;
+}
+
+void InTextWrap(string text, int x, int &y, int width) {
+    if (text.empty()) return;
+    while ((int)text.length() > width) {
+        if (y > 25) break;
+        gotoxy(x, y); 
+        int pos = text.rfind(' ', width);
+        if (pos == string::npos) pos = width;
+        cout << text.substr(0, pos);
+        text = text.substr(pos);
+        while (!text.empty() && text[0] == ' ') text.erase(0, 1);
+        y++;
+    }
+    if (!text.empty() && y <= 25) {
+        gotoxy(x, y);
+        cout << text;
+    }
 }
 
 void XoaTitle() {

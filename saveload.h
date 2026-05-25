@@ -15,8 +15,10 @@ void KiemTraVaTaoFileCauHoi(const char* maMH, const char* tenMH);
 void LuuFileCauHoiTheoMon(const char* maMH, const char* tenMH, PTR_CAUHOI root);
 void LayDanhSachCauHoiTheoMon(PTR_CAUHOI root, const char* maMH, CauHoi* dsTam[], int &n);
 void LoadCauHoiTuFile(const char* maMH, const char* tenMH, PTR_CAUHOI &root);
+void LoadDiemFromFile(DanhSachLop &dsLop);
+void SaveDiemToFile(DanhSachLop &dsLop);
 void saveData(DanhSachLop &dsLop, DanhSachMonHoc &dsMH, PTR_CAUHOI &root);
-
+void SaveBaiLam(const char* maSV, const char* maMH, string dsNDCauHoi[], char dsDapAnDung[], char dsDapAnChon[], int soCau);
 
 
 int DemSoDiem(DiemThi* headDiem) {
@@ -192,18 +194,20 @@ void LuuFileCauHoiTheoMon(const char* maMH, const char* tenMH, PTR_CAUHOI root) 
 }
 
 void LoadCauHoiTuFile(const char* maMH, const char* tenMH, PTR_CAUHOI &root) {
+    // Chỉ cần đổi đường dẫn đọc file, không cần _mkdir ở hàm Load
     string fileName = "data/CAUHOI/" + string(tenMH) + " " + string(maMH) + ".txt";
     ifstream fIn(fileName.c_str());
     if (!fIn.is_open()) return;
 
-    char tempID[25];
+    while (!fIn.eof()) {
+        char tempID[25];
+        if (!(fIn.getline(tempID, 25)) || strlen(tempID) == 0) break; 
 
-    while (fIn.getline(tempID, 25) && strlen(tempID) > 0) {
         CauHoi* newNode = new CauHoi();
         strcpy(newNode->id, tempID);
         strcpy(newNode->maMH, maMH);
 
-        fIn.getline(newNode->noiDung, 499);
+        fIn.getline(newNode->noiDung, 800);
         fIn.getline(newNode->a, 200);
         fIn.getline(newNode->b, 200);
         fIn.getline(newNode->c, 200);
@@ -240,6 +244,7 @@ void XoaFileNeuTrong(const char* maMH, const char* tenMH, PTR_CAUHOI root) {
 void saveData(DanhSachLop &dsLop, DanhSachMonHoc &dsMH, PTR_CAUHOI &root) {
     SaveMonHoc(dsMH);
     SaveLop(dsLop);
+    SaveDiemToFile(dsLop);
     for (int i = 0; i < dsMH.soLuong; i++) {
         LuuFileCauHoiTheoMon(dsMH.data[i].maMH, dsMH.data[i].tenMH, root);
     }
@@ -248,9 +253,109 @@ void saveData(DanhSachLop &dsLop, DanhSachMonHoc &dsMH, PTR_CAUHOI &root) {
 void loadData(DanhSachLop &dsLop, DanhSachMonHoc &dsMH, PTR_CAUHOI &root) {
     LoadMonHoc(dsMH);
     LoadLop(dsLop);
+    LoadDiemFromFile(dsLop);
     for (int i = 0; i < dsMH.soLuong; i++) {
         LoadCauHoiTuFile(dsMH.data[i].maMH, dsMH.data[i].tenMH, root);
     }
 }
 
+
+void SaveDiemToFile(DanhSachLop &dsLop) {
+    _mkdir("data/diem");
+
+    for (int i = 0; i < dsLop.soLuong; i++) {
+        Lop* lop = dsLop.nodes[i];
+        if (lop == NULL) continue;
+
+        SinhVien* sv = lop->headSV;
+        while (sv != NULL) {
+ 
+            if (strlen(sv->maSV) > 0 && sv->headDiem != NULL) { 
+
+                string fileName = "data/diem/diem" + string(sv->maSV) + ".txt";
+                ofstream fOut(fileName.c_str(), ios::out); 
+
+                if (fOut.is_open()) {
+                    DiemThi* d = sv->headDiem;
+                    while (d != NULL) {
+                        fOut << "Mon: " << d->maMH
+                             << " | Diem: " << d->diem
+                             << " | Lan thi: " << d->lanThi << endl;
+                        d = d->next;
+                    }
+                    fOut.close();
+                }
+            }
+            sv = sv->next;
+        }
+    }
+}
+void LoadDiemFromFile(DanhSachLop &dsLop) {
+	for (int i = 0; i < dsLop.soLuong; i++) {
+        Lop* lop = dsLop.nodes[i];
+        if (lop == NULL) continue;
+
+        SinhVien* sv = lop->headSV;
+        while (sv != NULL) {
+
+            if (strlen(sv->maSV) > 0) {
+                string fileName = "data/diem/diem" + string(sv->maSV) + ".txt";
+                ifstream fIn(fileName.c_str());
+
+                if (!fIn.is_open()) {
+                    sv = sv->next;
+                    continue;
+                }
+
+                string line;
+                while (getline(fIn, line)) {
+                    char maMH[50];
+                    float diem;
+                    int lanThi;
+
+                    if (sscanf(line.c_str(),
+                        "Mon: %[^|]| Diem: %f | Lan thi: %d",
+                        maMH, &diem, &lanThi) == 3)
+                    {
+
+                        int len = strlen(maMH);
+                        while (len > 0 && maMH[len - 1] == ' ') {
+                            maMH[--len] = '\0';
+                        }
+
+                        DiemThi* node = new DiemThi;
+                        strcpy(node->maMH, maMH);
+                        node->diem = diem;
+                        node->lanThi = lanThi;
+
+                        node->next = sv->headDiem;
+                        sv->headDiem = node;
+                    }
+                }
+                fIn.close();
+            }
+            sv = sv->next;
+        }
+    }
+}
+#include <direct.h> // Để dùng _mkdir
+
+void SaveBaiLam(const char* maSV, const char* maMH, string dsNDCauHoi[], char dsDapAnDung[], char dsDapAnChon[], int soCau) {
+    _mkdir("data");
+    _mkdir("data/bailam");
+
+    string fileName = "data/bailam/" + string(maSV) + " " + string(maMH) + ".txt";
+    ofstream fOut(fileName.c_str());
+
+    if (!fOut.is_open()) {
+        return; 
+    }
+    for (int i = 0; i < soCau; i++) {
+        fOut << "CAU " << i + 1 << ": " << dsNDCauHoi[i] << endl;
+        fOut << "Dap an dung: " << dsDapAnDung[i] << endl;
+        fOut << "Sinh vien chon: " << dsDapAnChon[i] << endl;
+        fOut << "------------------------------------------" << endl; 
+    }
+    fOut.close();
+}
 #endif

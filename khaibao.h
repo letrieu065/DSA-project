@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <cstring>
+#include <string>
 
 const int MAX_MON_HOC = 300;
 const int MAX_LOP = 10000;
@@ -66,7 +67,14 @@ struct DanhSachMonHoc {
     int soLuong = 0;
 };
 
-typedef CauHoi* PTR_CAUHOI; 
+struct TrangChiTiet {
+    std::string noiDungCau[30];
+    int soDong;
+    TrangChiTiet() {
+    	soDong = 0;
+	}
+};
 
+typedef CauHoi* PTR_CAUHOI;
 
 #endif
