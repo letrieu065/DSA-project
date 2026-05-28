@@ -3,6 +3,7 @@
 #define ERROR_CODES_H
 
 const int SUCCESS = 0;
+const int INPUT_CANCELLED = INT_MIN;
 
 // Nhom loi 100: Loi lop//
 const int ERR_LOP_FULL       = 101;

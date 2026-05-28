@@ -29,6 +29,7 @@ void flowChinh(DanhSachLop &dsLop, DanhSachMonHoc &dsMH, PTR_CAUHOI &root) {
         SinhVien* svHienTai = NULL;
         int role = flowDangNhap(dsLop, svHienTai); 
         
+        if (role == 0) break;
         if (role == 1) {
             flowGiaoVien(dsLop, dsMH, root);
         }
@@ -52,6 +53,14 @@ int flowDangNhap(DanhSachLop &dsLop, SinhVien* &svLogined) {
 
         gotoxy(52, 13);
         string user = NhapMa(15);
+
+        if (user == "") {
+            if (XacNhanMenu(38, 20, "Ban co chac muon thoat khong?")) {
+                return 0;  
+            }
+            continue;
+        }
+
         SinhVien* svHienTai = NULL;
         int role = kiemTraTaiKhoan(dsLop, user, svHienTai);
 
@@ -227,12 +236,12 @@ void flowQuanLyMonHoc_CauHoi(DanhSachMonHoc &dsMH, PTR_CAUHOI &root) {
 			continue;
 			}
 			ShowCur(true);
-            gotoxy(xNhap, 14); int stc = NhapSo();
-            if (stc <= 0) {
-            	InThongBaoContent("Da huy thao tac them mon hoc", 14, 56, 26);
-            	_getch();
-			continue;
-			}
+            gotoxy(xNhap, 14); 
+            int stc = NhapSo(-1, 2, 1, 10);
+            if (stc == INPUT_CANCELLED) {
+                InThongBaoContent("Da huy!", 14, 50, 26);
+                _getch(); continue;
+            }
 			
 			ShowCur(false);
 			
@@ -281,10 +290,10 @@ void flowQuanLyMonHoc_CauHoi(DanhSachMonHoc &dsMH, PTR_CAUHOI &root) {
 		    gotoxy(57, 14); 
 		    int stcMoi = NhapSo(dsMH.data[cursor].soTinChi);
 		    
-		    if (stcMoi == -1) {
-		        ShowCur(false); InThongBaoContent("Da huy!", 14, 50, 26);
-		        _getch(); continue;
-		    }
+		    if (stcMoi == INPUT_CANCELLED) {
+                InThongBaoContent("Da huy!", 14, 50, 26);
+                _getch(); continue;
+            }
 		
 		    strcpy(dsMH.data[cursor].tenMH, tenMoi.c_str());
 		    dsMH.data[cursor].soTinChi = stcMoi;
@@ -979,7 +988,7 @@ void flowThiTracNghiem(SinhVien* sv, DanhSachMonHoc &dsMH, PTR_CAUHOI &root, Dan
 
         while (true) {
             gotoxy(63, 12); testTime = NhapSo();
-            if (testTime == -1) { ShowCur(false); return; }
+            if (testTime == INPUT_CANCELLED) { ShowCur(false); return; }
             if (testTime > 0) break;
             InThongBaoContent("Thoi gian phai > 0!", 12, 70, 12);
             Sleep(800); gotoxy(70, 12); cout << "                   ";   
@@ -987,7 +996,7 @@ void flowThiTracNghiem(SinhVien* sv, DanhSachMonHoc &dsMH, PTR_CAUHOI &root, Dan
 
         while (true) {
                 gotoxy(63, 14); questionCount = NhapSo();
-                if (questionCount == -1) { ShowCur(false); return; } 
+                if (questionCount == INPUT_CANCELLED) { ShowCur(false); return; }
                 if (questionCount > 0 && questionCount <= tongCauHoiKho) break;
                 
                 InThongBaoContent("So cau vuot qua ngan hang!", 12, 70, 14);
@@ -1006,7 +1015,6 @@ void flowThiTracNghiem(SinhVien* sv, DanhSachMonHoc &dsMH, PTR_CAUHOI &root, Dan
         _getch();
         TienHanhThiTracNghiem(sv, monChon, deThi, questionCount, testTime);
 
-		SaveDiemToFile(dsLop);
     }
     
 }
@@ -1090,9 +1098,10 @@ void flowQuanLyDiemSV(DanhSachMonHoc &dsMH, DanhSachLop &dsLop) {
                     XoaVungContent();
                     Lop* lopChon = dsLop.nodes[cursorLop];
                     string targetMaMH = string(dsMH.data[cursorMH].maMH);
-                    
-                    gotoxy(55, 6); SetColor(0, 11); cout << "BANG DIEM LOP: " << lopChon->tenLop;
-                    gotoxy(63, 7); cout << "MON: " << dsMH.data[cursorMH].tenMH;
+
+                    SetColor(0, 11);
+                    InTitle("BANG DIEM LOP: " + string(lopChon->tenLop));
+                    InSmallTitle("Mon: " + string(dsMH.data[cursorMH].tenMH));
 
                     int yHeader = 9;
                     SetColor(0, 14);
@@ -1128,7 +1137,10 @@ void flowQuanLyDiemSV(DanhSachMonHoc &dsMH, DanhSachLop &dsLop) {
                             }
 
                             gotoxy(105, y);
-                            if (found) cout << score; else cout << "_";
+                            if (found) cout << score; 
+                            else { 
+                                SetColor(0, 12); cout << "Chua thi"; SetColor(0, 7); 
+                            }
 
                             sv = sv->next;
                             
@@ -1148,7 +1160,6 @@ void flowQuanLyDiemSV(DanhSachMonHoc &dsMH, DanhSachLop &dsLop) {
                         
                         SetColor(0, 14);
                         gotoxy(38, 25);
-                        cout << "(*)Dau '_' nghia la sinh vien chua co diem.";
                     }
                     _getch();
                 }
@@ -1206,8 +1217,6 @@ void flowXemDiemSinhVien(SinhVien* sv, DanhSachMonHoc &dsMH) {
             if (!daThi) { gotoxy(105, yPos); cout << "_"; }
             yPos += 2;
         }
-		SetColor(0, 12);
-        gotoxy(57, 25); cout << "*Chu thich '_' la do chua thi!";
         SetColor(0, 10);
         gotoxy(95, 27); cout << "(Trang " << currentPage + 1 << "/" << totalPages << ")";
         SetColor(0, 8);
@@ -1240,14 +1249,13 @@ void flowXemLaiBaiLam(const char* maSV, const char* maMH) {
         _getch(); return;
     }
 
-    static TrangChiTiet dsCau[200];
-    for(int i = 0; i < 200; i++) dsCau[i].soDong = 0;
+    TrangChiTiet dsCau[200];
 
     int idx = -1;
     string line;
     while (getline(fIn, line)) {
         while(!line.empty() && (line[line.size()-1] == '\r' || line[line.size()-1] == '\n')) 
-            line.erase(line.size()-1);
+            line.pop_back();
         
         if (line.empty()) continue;
 

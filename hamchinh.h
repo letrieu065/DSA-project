@@ -3,8 +3,7 @@
 
 #include "ErrorCodes.h"
 #include "khaibao.h"
-#include "hamtienich.h"
-#include "dohoa.h"
+#include "hamve.h"
 
 // Ham lop
 int KiemTraTrungMaLop(DanhSachLop &dsLop, char* maNhap);
@@ -32,13 +31,18 @@ bool kiemTraTrungMaMonHoc(DanhSachMonHoc &dsMH, const char* ma);
 bool kiemTraMonHocDaCoCauHoi(PTR_CAUHOI root, const char* maMH);
 
 // Ham cau hoi
+int& getNextSTT(const char* maMH);
 void TaoIdCauHoi(char* bufOut, const char* maMH, int soThuTu);
-int timViTriMonHoc(DanhSachMonHoc &dsMH, const char* ma);
-bool kiemTraTrungMaMonHoc(DanhSachMonHoc &dsMH, const char* ma);
-bool kiemTraMonHocDaCoCauHoi(PTR_CAUHOI root, const char* maMH);
+PTR_CAUHOI ThemCauHoi(PTR_CAUHOI root, CauHoi* node);
+CauHoi* TimCauHoi(PTR_CAUHOI root, const char* id);
+CauHoi* LayNhoNhat(CauHoi* node);
+PTR_CAUHOI XoaCauHoi(PTR_CAUHOI root, const char* id);
+void CapNhatSTT(PTR_CAUHOI root);
+void InOrderCauHoi(PTR_CAUHOI root, int &y, int x);
 
-int InChuoiGioiHan(string s, int x, int y, int maxCols);
+DiemThi* saoChepDanhSachDiem(DiemThi* src); 
 
+using namespace std;
 
 int KiemTraTrungMaLop(DanhSachLop &dsLop, char* maNhap) {
     for (int i = 0; i < dsLop.soLuong; i++) {
@@ -157,10 +161,11 @@ int kiemTraTrungMaSinhVien(DanhSachLop &dsLop, const char* maSV) {
 
 int themSinhVien(Lop* lop, SinhVien sv) {
 	if (lop == NULL) return ERR_LOP_NOT_FOUND;
-	SinhVien * newNode = new SinhVien;
+	SinhVien* newNode = new SinhVien;
 	
 	*newNode = sv;
 	
+    newNode->headDiem = saoChepDanhSachDiem(sv.headDiem);
 	newNode->next = lop->headSV;
 	lop->headSV = newNode;
 	
@@ -435,4 +440,27 @@ PTR_CAUHOI XoaCauHoi(PTR_CAUHOI root, const char* id) {
     }
     return root;
 }
+
+DiemThi* saoChepDanhSachDiem(DiemThi* src) {
+    if (src == NULL) return NULL;
+
+    DiemThi* head = NULL;
+    DiemThi* tail = NULL;
+
+    while (src != NULL) {
+        DiemThi* newDiem = new DiemThi;
+        strcpy(newDiem->maMH, src->maMH);
+        newDiem->diem   = src->diem;
+        newDiem->lanThi = src->lanThi;
+        newDiem->next   = NULL;
+
+        if (head == NULL) head = newDiem;  
+        else              tail->next = newDiem;
+        tail = newDiem;
+
+        src = src->next;
+    }
+    return head;
+}
+
 #endif

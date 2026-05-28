@@ -11,9 +11,10 @@
 #include <sstream>
 #include "khaibao.h"
 #include "hamchinh.h"
-#include "dohoa.h"
+#include "hamve.h"
 #include "saveload.h"
 #include "ErrorCodes.h"
+#include "dohoa.h"
 
 //// Trong hamtienich.h
 
@@ -76,43 +77,50 @@ string NhapCoDieuHuong(int X, int Y, int maxCols, int maxRows, string noiDungCu,
     }
 }
 // Ham nhap lieu
-int NhapSo(int suggest = -1) {
+int NhapSo(int suggest = -1, int maxLength = 6, int minVal = 1, int maxVal = 999999) {
     string strNum = "";
-    
+
     if (suggest != -1) {
         strNum = to_string(suggest);
         cout << strNum;
     }
 
-    char ch;
     while (true) {
-        ch = _getch();
+        int ch = _getch();
 
         if (isdigit(ch)) {
-            if (strNum.length() < 2) { 
-                strNum += ch;
-                cout << ch;
+            if ((int)strNum.length() < maxLength) {
+                if (strNum.empty() && ch == '0') continue;
+                strNum += (char)ch;
+                cout << (char)ch;
             }
         }
-        else if (ch == 8) {
+        else if (ch == 8) {  
             if (!strNum.empty()) {
                 strNum.pop_back();
                 cout << "\b \b";
             }
         }
-        else if (ch == 13) {
-            if (!strNum.empty())
-                break;
+        else if (ch == 13) { 
+            if (strNum.empty()) continue;
+
+            int val = stoi(strNum);
+
+            if (val < minVal || val > maxVal) {
+                for (int i = 0; i < (int)strNum.length(); i++) cout << "\b \b";
+                strNum = "";
+                continue;
+            }
+
+            return val;
         }
-        else if (ch == 27) {
-            return -1; 
+        else if (ch == 27) {  
+            return INT_MIN;  
         }
-        else if (ch == 0 || ch == -32 || ch == 224) {
-            _getch();
+        else if (ch == 0 || ch == (char)-32 || ch == 224) {
+            _getch();  
         }
     }
-
-    return stoi(strNum);
 }
 
 string NhapChuoiChu() {
@@ -455,24 +463,6 @@ void InNoiDungCanLe(string noiDung, int X, int Y, int maxW) {
         cout << word << " ";
         curX += word.length() + 1;
     }
-}
-
-int InChuoiGioiHan(string s, int x, int y, int maxCols) {
-    int curX = x, curY = y;
-    int startY = y;
-
-    for (int i = 0; i < s.length(); i++) {
-        if (curX >= x + maxCols) {
-            curX = x;
-            curY++;
-        }
-
-        gotoxy(curX, curY);
-        cout << s[i];
-        curX++;
-    }
-
-    return curY - startY + 1; 
 }
 
 //Ham khoi tao
