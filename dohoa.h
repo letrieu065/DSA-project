@@ -4,7 +4,7 @@
 
 #include <windows.h>
 #include "khaibao.h"
-#include "hamve.h"
+#include "hamve.h"  
 
 using namespace std;
 
@@ -58,31 +58,33 @@ void VeLayoutChinh(string tenNguoiDung, string maso = "") {
 // UI thi trac nghiem
 void VeKhungPhongThi(SinhVien* sv, string monThi, int tongSoCau) {
     system("cls");
-    SetColor(0, 11); 
-    VeKhung(0, 0, 118, 28); 
+    SetColor(0, 11);
+    VeKhung(0, 0, 118, 28);
 
     gotoxy(3, 1); cout << "MSSV: ";
-    SetColor(0, 14); cout << sv->maSV; 
-    
+    SetColor(0, 14); cout << sv->maSV;
     SetColor(0, 11); gotoxy(30, 1); cout << "Ho ten: ";
     SetColor(0, 14); cout << sv->ho << " " << sv->ten;
 
+    // ✅ Thêm placeholder counter bên phải row 1
+    SetColor(0, 11); gotoxy(85, 1); cout << "Da lam: 0/" << tongSoCau;
+
     SetColor(0, 11);
     gotoxy(3, 2); cout << "Mon thi: ";
-    SetColor(0, 15); cout << monThi; 
-
+    SetColor(0, 15); cout << monThi;
     SetColor(0, 11);
     gotoxy(60, 2); cout << "Tong so cau: ";
     SetColor(0, 15); cout << tongSoCau;
 
     SetColor(0, 11);
-    gotoxy(1, 3); 
-    for(int i=0; i<116; i++) cout << (char)196; 
+    gotoxy(1, 3);
+    for (int i = 0; i < 116; i++) cout << (char)196;
 
-    gotoxy(2, 25); 
-    for(int i=0; i<116; i++) cout << (char)196; 
-    
-    gotoxy(4, 26); 
+    gotoxy(2, 25);
+    for (int i = 0; i < 116; i++) cout << (char)196;
+
+    // ✅ Bỏ legend màu, chỉ giữ navigation hints
+    gotoxy(4, 26);
     SetColor(0, 8);
     cout << "Dieu huong: [<-] Cau truoc | [->] Cau tiep | [A/B/C/D] Chon | [ESC] Nop bai";
     SetColor(0, 7);
@@ -120,17 +122,6 @@ void HienThiCauHoiThi(CauHoi* cau, int cauSo, int tongSoCau, char dapAnDaChon) {
     if (dapAnDaChon == 'D') SetColor(11, 0); else SetColor(0, 15);
     gotoxy(60, 18); cout << "[ D ]"; SetColor(0, 7); InNoiDungCanLe(cau->d, 67, 18, 45);
 
-    // In thanh Nút bấm trạng thái
-    gotoxy(35, 23); SetColor(0, 11); cout << "DAP AN DA CHON: ";
-    char dsDapAn[] = {'A', 'B', 'C', 'D'};
-    for (int i = 0; i < 4; i++) {
-        gotoxy(53 + i * 12, 23);
-        if (dapAnDaChon == dsDapAn[i]) {
-            SetColor(12, 14); cout << " ( " << dsDapAn[i] << " ) "; // Nổi bần bật khi chọn
-        } else {
-            SetColor(0, 8); cout << " [ " << dsDapAn[i] << " ] ";   // Chìm đi khi chưa chọn
-        }
-    }
     SetColor(0, 7);
 }
 
@@ -154,6 +145,57 @@ void VeGiaoDienDoiMatKhau() {
     
     SetColor(0, 14);
     gotoxy(sX + 2, sY + 10); cout << "(*) Mat khau moi phai khac mat khau mac dinh '123456'";
+}
+
+// Hàm 1: vẽ mini map tại row 23
+void VeMiniMap(char dapAnDaChon[], int soCau, int cauHienTai) {
+    int mapY   = 22;
+    int startX = 2;
+    int totalW = 116;
+
+    int boxW = totalW / soCau;
+    if (boxW < 3) boxW = 3;
+    if (boxW > 9) boxW = 9;
+
+    gotoxy(startX, mapY);
+    for (int i = 0; i < totalW; i++) cout << " ";
+
+    for (int i = 0; i < soCau; i++) {
+        int x = startX + i * boxW;
+        if (x + boxW > startX + totalW) break;
+
+        bool answered  = (dapAnDaChon[i] != ' ');
+        bool isCurrent = (i == cauHienTai);
+
+        gotoxy(x, mapY);
+
+        if (isCurrent)     SetColor(14, 0);
+        else if (answered) SetColor(2,  0);
+        else               SetColor(4,  15);
+
+        // ✅ Chỉ hiện số, không có ký tự thêm
+        string label = to_string(i + 1);
+        int pad  = (boxW - (int)label.size()) / 2;
+        int rpad = boxW - pad - (int)label.size();
+        for (int p = 0; p < pad;  p++) cout << " ";
+        cout << label;
+        for (int p = 0; p < rpad; p++) cout << " ";
+
+        SetColor(0, 7);
+    }
+}
+
+// Hàm 2: cập nhật counter "Đã làm X/Y" trên header
+void CapNhatCounter(char dapAnDaChon[], int soCau) {
+    int daDone = 0;
+    for (int i = 0; i < soCau; i++)
+        if (dapAnDaChon[i] != ' ') daDone++; // ✅ ' ' không phải '\0'
+
+    gotoxy(85, 1);
+    SetColor(0, 11); cout << "Da lam: ";
+    SetColor(0, daDone == soCau ? 10 : 14);
+    cout << daDone << "/" << soCau << "   ";
+    SetColor(0, 7);
 }
 
 #endif

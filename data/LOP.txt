@@ -1,13 +1,13 @@
 2
 D24CQCN01-N
 Cong nghe thong tin 1
-1
-A
-A
-A
-1
-123
 0
+A
+A
 1
 123
+1
+INT1154
+0
+A
 0

@@ -18,6 +18,12 @@ void LayDanhSachCauHoiTheoMon(PTR_CAUHOI root, const char* maMH, CauHoi* dsTam[]
 void LoadCauHoiTuFile(const char* maMH, const char* tenMH, PTR_CAUHOI &root);
 void saveData(DanhSachLop &dsLop, DanhSachMonHoc &dsMH, PTR_CAUHOI &root);
 void SaveBaiLam(const char* maSV, const char* maMH, string dsNDCauHoi[], char dsDapAnDung[], char dsDapAnChon[], int soCau);
+void XoaFileNeuTrong(const char* maMH, const char* tenMH, PTR_CAUHOI root);
+void LoadMonHoc(DanhSachMonHoc &dsMH);
+void LoadLop(DanhSachLop &dsLop);
+void SaveMonHoc(DanhSachMonHoc &dsMH);
+void SaveLop(DanhSachLop &dsLop);
+
 
 
 int DemSoDiem(DiemThi* headDiem) {
