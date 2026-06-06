@@ -123,6 +123,7 @@ int xoaLop(DanhSachLop &dsLop, char* ma) {
     return SUCCESS;
 }
 
+
 SinhVien* timKiemSinhVien(Lop* lop, const char* maSV) {
     if (lop == NULL) return NULL;
 

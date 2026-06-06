@@ -444,8 +444,12 @@ string xuongdongGioiHan(int X, int Y, int maxCols, int maxRows, int maxChars, ch
     return result;
 }
 
-
-
+inline string ToLower(string s) {
+    for (int i = 0; i < s.length(); i++) {
+        s[i] = tolower((unsigned char)s[i]);
+    }
+    return s;
+}
 
 void InNoiDungCanLe(string noiDung, int X, int Y, int maxW) {
     int curX = X, curY = Y;
