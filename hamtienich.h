@@ -930,7 +930,6 @@ void TienHanhThiTracNghiem(SinhVien* sv, MonHoc monChon, CauHoi* deThi[], int so
 	DiemThi* newDiem = new DiemThi;
 	strcpy(newDiem->maMH, monChon.maMH);
 	newDiem->diem = diemThi;
-	newDiem->lanThi = lan;
 	newDiem->next = sv->headDiem;
 	sv->headDiem = newDiem;
 	

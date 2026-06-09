@@ -1,13 +1,59 @@
 2
-D24CQCN01-N
+D24CQCN01
 Cong nghe thong tin 1
-0
-A
-A
+4
+N24DCCN001
+Nguyen Van
+An
 1
-123
+123456
+2
+INT1154
+8.5
+INT1155
+7
+N24DCCN002
+Tran Thi
+Binh
+0
+123456
 1
 INT1154
+6.5
+N24DCCN003
+Le Minh
+Chau
+1
+123456
 0
-A
+N24DCCN004
+Pham Ngoc
+Dung
+0
+abc123
+1
+KTMT01
+9
+D24CQCN02
+Cong nghe thong tin 2
+3
+N24DCCN101
+Hoang Gia
+Khanh
+1
+123456
+0
+N24DCCN102
+Do Thanh
+Lam
+1
+123456
+1
+INT1155
+8
+N24DCCN103
+Bui Ha
+My
+0
+123456
 0

@@ -452,7 +452,6 @@ DiemThi* saoChepDanhSachDiem(DiemThi* src) {
         DiemThi* newDiem = new DiemThi;
         strcpy(newDiem->maMH, src->maMH);
         newDiem->diem   = src->diem;
-        newDiem->lanThi = src->lanThi;
         newDiem->next   = NULL;
 
         if (head == NULL) head = newDiem;  

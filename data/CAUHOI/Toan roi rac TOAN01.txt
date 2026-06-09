@@ -1,0 +1,14 @@
+TOAN01_0001
+Menh de nao sau day la menh de logic?
+Hom nay troi mua
+Hay hoc bai
+Dung noi chuyen
+Ban co khoe khong
+A
+TOAN01_0002
+Phep keo theo P suy ra Q chi sai khi nao?
+P dung Q sai
+P sai Q dung
+P sai Q sai
+P dung Q dung
+A

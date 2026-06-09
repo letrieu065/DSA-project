@@ -1,0 +1,56 @@
+INT1155_0001
+Danh sach lien ket don gom nhung thanh phan co ban nao trong moi node?
+Du lieu va con tro next
+Chi co du lieu
+Chi co con tro prev
+Du lieu va hai con tro left right
+A
+INT1155_0002
+Stack hoat dong theo nguyen tac nao?
+FIFO
+LIFO
+Random
+Priority
+B
+INT1155_0003
+Queue hoat dong theo nguyen tac nao?
+FIFO
+LIFO
+DFS
+Binary
+A
+INT1155_0004
+Trong cay nhi phan tim kiem, khoa nho hon nut goc nam o dau?
+Cay con trai
+Cay con phai
+Nut cha
+Bat ky vi tri nao
+A
+INT1155_0005
+Duyet inorder tren BST se cho ket qua nhu the nao neu so sanh tang dan?
+Nguoc thu tu
+Ngau nhien
+Tang dan
+Khong xac dinh
+C
+INT1155_0006
+Do phuc tap tim kiem trung binh tren BST can bang la bao nhieu?
+O(1)
+O(log n)
+O(n)
+O(n^2)
+B
+INT1155_0007
+Node la trong cay la node co dac diem nao?
+Khong co con
+Co dung mot con
+Co hai con
+La nut goc
+A
+INT1155_0008
+Hang doi uu tien thuong duoc cai dat hieu qua bang cau truc nao?
+Heap
+Stack
+Array tinh duy nhat
+File text
+A

@@ -1,0 +1,35 @@
+KTMT01_0001
+CPU la viet tat cua cum tu nao?
+Central Processing Unit
+Control Program Unit
+Computer Personal Unit
+Central Print Unit
+A
+KTMT01_0002
+RAM la bo nho co dac diem nao?
+Luu tru vinh vien khi tat may
+Chi doc du lieu
+Mat du lieu khi mat dien
+Khong the ghi du lieu
+C
+KTMT01_0003
+He nhi phan su dung bao nhieu ky tu co ban?
+2
+8
+10
+16
+A
+KTMT01_0004
+Thanh ghi nam o dau trong he thong may tinh?
+Trong CPU
+Trong o cung
+Trong man hinh
+Trong ban phim
+A
+KTMT01_0005
+Don vi nho nhat de bieu dien thong tin trong may tinh la gi?
+Byte
+Bit
+Word
+Sector
+B

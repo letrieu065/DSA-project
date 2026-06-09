@@ -19,7 +19,6 @@ const int MAX_PASS = 20;
 struct DiemThi {
     char maMH[MAX_MAMH];
     float diem;
-    int lanThi;
     DiemThi* next = NULL;
 };
 
