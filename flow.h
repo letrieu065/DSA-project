@@ -55,7 +55,10 @@ int flowDangNhap(DanhSachLop &dsLop, SinhVien* &svLogined) {
         string user = NhapMa(15);
 
         if (user == "") {
-            if (XacNhanMenu(38, 20, "Ban co chac muon thoat khong?")) {
+            gotoxy(38, 26); SetColor(0, 14); cout << "Ban co chac muon thoat khong?";
+            char xn = XacNhan(70, 26);
+            gotoxy(38, 26); cout << "                                                    ";
+            if (xn == 'Y') {
                 return 0;  
             }
             continue;
@@ -151,7 +154,7 @@ void flowQuanLyMonHoc_CauHoi(DanhSachMonHoc &dsMH, PTR_CAUHOI &root) {
             if (totalItems == 0) {
                 SetColor(0, 12);
                 gotoxy(55, 12); cout << "Danh sach mon hoc dang trong!";
-                gotoxy(53, 13); cout << "(Vui long them mon hoc truoc)";
+                gotoxy(55, 13); cout << "(Vui long them mon hoc truoc)";
                 SetColor(0, 7);
             } else {
                 for (int i = startIdx; i < endIdx; i++) {
@@ -305,10 +308,12 @@ void flowQuanLyMonHoc_CauHoi(DanhSachMonHoc &dsMH, PTR_CAUHOI &root) {
             forceRedraw = true;
 		}
         else if ((ch == 83 || toupper(ch) == 'D') && totalItems > 0) {
-            XoaVungContent();
-            string thongBao = "XAC NHAN XOA MON: " + string(dsMH.data[cursor].tenMH);
+            gotoxy(40, 25); SetColor(0, 14); 
+            string thongBao = "Xac nhan xoa mon: " + string(dsMH.data[cursor].tenMH) + " ";
+            cout << thongBao;
             
-            if (XacNhanMenu(40, 12, thongBao)) {
+            if (XacNhan(40 + thongBao.length(), 25) == 'Y') {
+
                 for (int i = cursor; i < dsMH.soLuong - 1; i++) {
                     dsMH.data[i] = dsMH.data[i + 1];
                 }
@@ -317,11 +322,14 @@ void flowQuanLyMonHoc_CauHoi(DanhSachMonHoc &dsMH, PTR_CAUHOI &root) {
                 if (cursor >= dsMH.soLuong && cursor > 0) cursor--;
             
                 SaveMonHoc(dsMH);
-                InThongBaoContent("Da xoa mon hoc!", 10, 50, 26);
+                gotoxy(40, 25); cout << "                                             ";
+                InThongBaoContent("Da xoa mon hoc thanh cong!", 10, 40, 25);
             } else {
-                InThongBaoContent("Da huy xoa!", 14, 50, 26);
+            	gotoxy(40, 25); cout << "                                             ";
+                InThongBaoContent("Da huy thao tac xoa!", 10, 40, 25);
             }
-            _getch();
+            
+            _getch(); 
             forceRedraw = true;
         }
     }
@@ -519,19 +527,9 @@ void flowQuanLyCauHoiCuaMon(const char* maMH, const char* tenMH, PTR_CAUHOI &roo
         else if (toupper(ch) == 'D') {
             if (totalItems > 0) { 
                 gotoxy(65, 25); 
-                SetColor(0, 14); 
-                cout << "Xac nhan xoa cau hoi (y/n)? ";
+                SetColor(0, 14);  cout << "Xac nhan xoa cau hoi ";
                 
-                char confirm;
-                while (true) {
-                    confirm = _getch();
-                    confirm = toupper(confirm); 
-                    if (confirm == 'Y' || confirm == 'N') {
-                        break;
-                    }
-                }
-                
-                if (confirm == 'Y') {
+                if (XacNhan(88, 25) == 'Y') {
                     root = XoaCauHoi(root, dsTam[currentPage]->id);
                     
                     LuuFileCauHoiTheoMon(maMH, tenMH, root);
@@ -672,7 +670,7 @@ void flowQuanLyLop_SinhVien(DanhSachLop &dsLop) {
         XoaVungContent();
         gotoxy(62, 6); SetColor(0, 10); 
         cout << "DANH SACH LOP HOC";
-        gotoxy(105, 25); cout << "(Trang " << currentPage + 1 << "/" << totalPages << ")"; 
+        gotoxy(105, 27); cout << "(Trang " << currentPage + 1 << "/" << totalPages << ")"; 
         SetColor(0, 7);
         
         gotoxy(35, 8); SetColor(0, 14);
@@ -705,9 +703,9 @@ void flowQuanLyLop_SinhVien(DanhSachLop &dsLop) {
         }
         
         gotoxy(35, 26); SetColor(0, 8);
-        cout << "Up/Down: Chon | Left/Right: Chuyen trang";
+        cout << "Up/Down: Chon | Left/Right: Chuyen trang | [ENTER] Xem SV"; 
         gotoxy(35, 27); SetColor(0, 11);
-        cout << "[INS/I] Them | [E] Sua | [DEL] Xoa | [F| Tim Kiem | [ENTER] Xem SV | [ESC] Thoat";
+        cout << "[INS/I] Them | [E] Sua | [DEL] Xoa | [F| Tim Kiem  | [ESC] Thoat";
         SetColor(0, 7);
         
         int ch = _getch();
