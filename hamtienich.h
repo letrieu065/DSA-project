@@ -338,7 +338,7 @@ void control(int X, int Y, string &text) {
     }
 }
 
-// Ham nhap nhieu dong co gioi han vung (maxCols: so ky tu tren 1 dong, maxRows: so dong toi da)
+// Ham nhap nhieu dong co gioi han vung (maxCols: so ky tu tren 1 dong, maxRows: so dong toi da)/
 string xuongdongGioiHan(int X, int Y, int maxCols, int maxRows, int maxChars, char* noiDungCu = NULL) {
     int curX = X, curY = Y, len = 0;
     int posX[230], posY[230];
