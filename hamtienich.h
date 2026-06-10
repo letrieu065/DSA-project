@@ -374,7 +374,41 @@ string xuongdongGioiHan(int X, int Y, int maxCols, int maxRows, int maxChars, ch
             }
         }
         
-        if (ch == '\r') break;
+        if (ch == '\r')
+		{
+		    bool hopLe = false;
+		
+		    for (int i = 0; i < result.length(); i++)
+		    {
+		        if (result[i] != ' ')
+		        {
+		            hopLe = true;
+		            break;
+		        }
+		    }
+		
+		    if (!hopLe)
+			{
+			    int saveX = curX;
+			    int saveY = curY;
+			
+			    gotoxy(45, 25);
+			    SetColor(0, 12);
+			    cout << "Phan nay khong duoc de trong!";
+			
+			    Sleep(800);
+			
+			    gotoxy(45, 25);
+			    cout << "                               ";
+			
+			    SetColor(0, 7);      // trả màu về bình thường
+			    gotoxy(saveX, saveY);
+			
+			    continue;
+			}
+		
+		    break;
+		}
 
         if (ch == 8) { 
             if (len > 0) {
@@ -389,27 +423,50 @@ string xuongdongGioiHan(int X, int Y, int maxCols, int maxRows, int maxChars, ch
 
         if (ch < 32 || ch > 126) continue;
         if (len >= maxChars) continue;
+        if (len == 0 && ch == ' ')
+ 		   continue;
 
         if (curX >= X + maxCols) {
-            if (curY >= Y + maxRows - 1) continue;
 
-            int wordStart = len - 1;
-            while (wordStart > 0 && result[wordStart - 1] != ' ') wordStart--;
-
-            if (wordStart > 0 && result[wordStart - 1] == ' ') {
-                for (int i = wordStart; i < len; i++) {
-                    gotoxy(posX[i], posY[i]); cout << " ";
-                }
-                curY++; curX = X;
-                for (int i = wordStart; i < len; i++) {
-                    posX[i] = curX; posY[i] = curY;
-                    gotoxy(curX, curY); cout << result[i];
-                    curX++;
-                }
-            } else {
-                curY++; curX = X;
-            }
-        }
+		    if (curY >= Y + maxRows - 1)
+		        continue;
+		
+		    // Tìm đầu từ hiện tại
+		    int wordStart = len;
+		
+		    while (wordStart > 0 && result[wordStart - 1] != ' ')
+		        wordStart--;
+		
+		    // Nếu đang ở giữa một từ
+		    if (wordStart < len) {
+		
+		        // Xóa từ đó khỏi dòng cũ
+		        for (int i = wordStart; i < len; i++) {
+		            gotoxy(posX[i], posY[i]);
+		            cout << ' ';
+		        }
+		
+		        // Xuống dòng mới
+		        curY++;
+		        curX = X;
+		
+		        // Vẽ lại nguyên từ ở dòng mới
+		        for (int i = wordStart; i < len; i++) {
+		
+		            posX[i] = curX;
+		            posY[i] = curY;
+		
+		            gotoxy(curX, curY);
+		            cout << result[i];
+		
+		            curX++;
+		        }
+		    }
+		    else {
+		        curY++;
+		        curX = X;
+		    }
+		}
 
         posX[len] = curX; posY[len] = curY;
         gotoxy(curX, curY); cout << (char)ch;
