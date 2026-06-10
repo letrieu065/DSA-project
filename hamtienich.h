@@ -20,6 +20,13 @@
 
 using namespace std;
 
+void getXY(int &x, int &y) {
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+    if (GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi)) {
+        x = csbi.dwCursorPosition.X;
+        y = csbi.dwCursorPosition.Y;
+    }
+}
 
 void control(int X, int Y);
 void ShowCur(bool CursorVisibility);
@@ -182,38 +189,56 @@ string NhapMa(int maxLength) {
 }
 
 string NhapTen(string suggest = "") {
-    string str = suggest; 
+    string str = suggest;
+    int startX, startY;
+    getXY(startX, startY); 
+
+    int indexX = str.length(); 
     cout << str; 
-    
+
     char ch;
     while (true) {
-        
+        gotoxy(startX + indexX, startY);
         ch = _getch();
-        
-        if (ch == 0 || ch == -32 || ch == 224) {
-            _getch(); continue;
+
+        if (ch == -32 || ch == 224) {
+            ch = _getch();
+            if (ch == 75 && indexX > 0) indexX--;
+            else if (ch == 77 && indexX < str.length()) indexX++; 
+            continue;
         }
 
-        if (isprint(ch)) {
-            if (ch == ' ') {
-                if (str.length() == 0 || str.back() == ' ') continue;
-            }
-            if (str.length() < 50) {
-                str += ch;
-                cout << ch;
-            }
+        if (ch == 8 && indexX > 0) {
+            str.erase(indexX - 1, 1);
+            indexX--;
+            gotoxy(startX, startY);
+            cout << str << "  "; 
+            continue;
         }
-        else if (ch == 27) return ""; 
-        else if (ch == 8 && str.length() > 0) { 
-            str.pop_back();
-            cout << "\b \b";
-        }
-        else if (ch == 13) { 
-            while (!str.empty() && str.back() == ' ') {
-                str.pop_back();
-                cout << "\b \b";
-            }
+        if (ch == 27) return ""; 
+        if (ch == 13) {
+            while (!str.empty() && str.back() == ' ') str.pop_back();
             if (!str.empty()) break;
+            else continue;
+        }
+        if (isalpha(ch) || ch == ' ') {
+            if (ch == ' ') {
+                if (indexX == 0 || str[indexX - 1] == ' ') continue;
+            }
+            
+            if (str.length() < 50) {
+                if (isalpha(ch)) {
+                    if (indexX == 0 || str[indexX - 1] == ' ') ch = toupper(ch);
+                    else ch = tolower(ch);
+                }
+
+                string s(1, ch);
+                str.insert(indexX, s);
+                indexX++;
+
+                gotoxy(startX, startY);
+                cout << str;
+            }
         }
     }
     return str;
@@ -338,7 +363,7 @@ void control(int X, int Y, string &text) {
     }
 }
 
-// Ham nhap nhieu dong co gioi han vung (maxCols: so ky tu tren 1 dong, maxRows: so dong toi da)/
+// Ham nhap nhieu dong co gioi han vung (maxCols: so ky tu tren 1 dong, maxRows: so dong toi da)
 string xuongdongGioiHan(int X, int Y, int maxCols, int maxRows, int maxChars, char* noiDungCu = NULL) {
     int curX = X, curY = Y, len = 0;
     int posX[230], posY[230];
@@ -374,41 +399,7 @@ string xuongdongGioiHan(int X, int Y, int maxCols, int maxRows, int maxChars, ch
             }
         }
         
-        if (ch == '\r')
-		{
-		    bool hopLe = false;
-		
-		    for (int i = 0; i < result.length(); i++)
-		    {
-		        if (result[i] != ' ')
-		        {
-		            hopLe = true;
-		            break;
-		        }
-		    }
-		
-		    if (!hopLe)
-			{
-			    int saveX = curX;
-			    int saveY = curY;
-			
-			    gotoxy(45, 25);
-			    SetColor(0, 12);
-			    cout << "Phan nay khong duoc de trong!";
-			
-			    Sleep(800);
-			
-			    gotoxy(45, 25);
-			    cout << "                               ";
-			
-			    SetColor(0, 7);      // trả màu về bình thường
-			    gotoxy(saveX, saveY);
-			
-			    continue;
-			}
-		
-		    break;
-		}
+        if (ch == '\r') break;
 
         if (ch == 8) { 
             if (len > 0) {
@@ -423,50 +414,27 @@ string xuongdongGioiHan(int X, int Y, int maxCols, int maxRows, int maxChars, ch
 
         if (ch < 32 || ch > 126) continue;
         if (len >= maxChars) continue;
-        if (len == 0 && ch == ' ')
- 		   continue;
 
         if (curX >= X + maxCols) {
+            if (curY >= Y + maxRows - 1) continue;
 
-		    if (curY >= Y + maxRows - 1)
-		        continue;
-		
-		    // Tìm đầu từ hiện tại
-		    int wordStart = len;
-		
-		    while (wordStart > 0 && result[wordStart - 1] != ' ')
-		        wordStart--;
-		
-		    // Nếu đang ở giữa một từ
-		    if (wordStart < len) {
-		
-		        // Xóa từ đó khỏi dòng cũ
-		        for (int i = wordStart; i < len; i++) {
-		            gotoxy(posX[i], posY[i]);
-		            cout << ' ';
-		        }
-		
-		        // Xuống dòng mới
-		        curY++;
-		        curX = X;
-		
-		        // Vẽ lại nguyên từ ở dòng mới
-		        for (int i = wordStart; i < len; i++) {
-		
-		            posX[i] = curX;
-		            posY[i] = curY;
-		
-		            gotoxy(curX, curY);
-		            cout << result[i];
-		
-		            curX++;
-		        }
-		    }
-		    else {
-		        curY++;
-		        curX = X;
-		    }
-		}
+            int wordStart = len - 1;
+            while (wordStart > 0 && result[wordStart - 1] != ' ') wordStart--;
+
+            if (wordStart > 0 && result[wordStart - 1] == ' ') {
+                for (int i = wordStart; i < len; i++) {
+                    gotoxy(posX[i], posY[i]); cout << " ";
+                }
+                curY++; curX = X;
+                for (int i = wordStart; i < len; i++) {
+                    posX[i] = curX; posY[i] = curY;
+                    gotoxy(curX, curY); cout << result[i];
+                    curX++;
+                }
+            } else {
+                curY++; curX = X;
+            }
+        }
 
         posX[len] = curX; posY[len] = curY;
         gotoxy(curX, curY); cout << (char)ch;
@@ -779,7 +747,6 @@ char XacNhan(int x, int y) {
             ShowCur(true);
             return option[index][0]; // trả về 'Y' hoặc 'N'
         }
-        
 
         if (ch == 27) { // ESC
             ShowCur(true);
@@ -798,6 +765,31 @@ char XacNhan(int x, int y) {
     SetColor(0, 7);
 }
 
+bool XacNhanMenu(int x, int y, string thongBao) {
+    int choice = 0;
+    while (true) {
+        gotoxy(x, y); 
+        SetColor(0, 12); cout << thongBao;
+        
+        gotoxy(x + thongBao.length() + 2, y);
+        if (choice == 0) SetColor(11, 0); else SetColor(0, 7);
+        cout << " CO ";
+
+        gotoxy(x + thongBao.length() + 8, y);
+        if (choice == 1) SetColor(11, 0); else SetColor(0, 7);
+        cout << " KHONG ";
+
+        SetColor(0, 7);
+
+        char ch = _getch();
+        if (ch == 224 || ch == -32) {
+            ch = _getch();
+            if (ch == 75 || ch == 77) choice = 1 - choice;
+        }
+        else if (ch == 13) return (choice == 0);
+        else if (ch == 27) return false; 
+    }
+}
 
 void changePass(DanhSachLop &dsLop, SinhVien* svHienTai) {
     bool isChanged = false; 
