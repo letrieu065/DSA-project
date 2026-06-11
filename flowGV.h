@@ -777,11 +777,11 @@ void flowQuanLyCauHoiCuaMon(const char* maMH, const char* tenMH, PTR_CAUHOI &roo
             gotoxy(35, 20); cout << "D. ";
             gotoxy(35, 22); cout << "Dap An Dung: ";
 
-            gotoxy(50, 8); string noiDung = xuongdongGioiHan(50, 8, 63, 4, 230); if (noiDung == "") continue;
-            gotoxy(39, 14); string pA 	  = xuongdongGioiHan(39, 14, 75, 2, 148); if (pA == "") continue;
-            gotoxy(39, 16); string pB     = xuongdongGioiHan(39, 16, 75, 2, 148); if (pB == "") continue;
-            gotoxy(39, 28); string pC     = xuongdongGioiHan(39, 18, 75, 2, 148); if (pC == "") continue;
-            gotoxy(39, 20); string pD     = xuongdongGioiHan(39, 20, 75, 2, 148); if (pD == "") continue;
+            gotoxy(48, 8); string noiDung = xuongdongGioiHan(48, 8, 67, 4, 244); if (noiDung == "") continue;
+            gotoxy(38, 14); string pA 	  = xuongdongGioiHan(38, 14, 75, 2, 153); if (pA == "") continue;
+            gotoxy(38, 16); string pB     = xuongdongGioiHan(38, 16, 75, 2, 153); if (pB == "") continue;
+            gotoxy(38, 28); string pC     = xuongdongGioiHan(38, 18, 75, 2, 153); if (pC == "") continue;
+            gotoxy(38, 20); string pD     = xuongdongGioiHan(38, 20, 75, 2, 153); if (pD == "") continue;
             char dapAn = ChonDapAn(60, 22); if (dapAn == '\0') continue;
 
             CauHoi* newNode = new CauHoi();
@@ -831,18 +831,18 @@ void flowQuanLyCauHoiCuaMon(const char* maMH, const char* tenMH, PTR_CAUHOI &roo
 		        while (!exitForm) {
 		            SetColor(0, 7); 
 		            switch (field) {
-		                case 0: t_ND = NhapCoDieuHuong(50, 8, 65, 4, t_ND, keyLog); break;
-		                case 1: t_A  = NhapCoDieuHuong(39, 14, 75, 2, t_A, keyLog); break;
-		                case 2: t_B  = NhapCoDieuHuong(39, 16, 75, 2, t_B, keyLog); break;
-		                case 3: t_C  = NhapCoDieuHuong(39, 18, 75, 2, t_C, keyLog); break;
-		                case 4: t_D  = NhapCoDieuHuong(39, 20, 75, 2, t_D, keyLog); break;
+		                case 0: t_ND = NhapCoDieuHuong(48, 8, 70, 4, t_ND, keyLog); break;
+		                case 1: t_A  = NhapCoDieuHuong(38, 14, 75, 2, t_A, keyLog); break;
+		                case 2: t_B  = NhapCoDieuHuong(38, 16, 75, 2, t_B, keyLog); break;
+		                case 3: t_C  = NhapCoDieuHuong(38, 18, 75, 2, t_C, keyLog); break;
+		                case 4: t_D  = NhapCoDieuHuong(38, 20, 75, 2, t_D, keyLog); break;
 		                case 5: 
 		                    t_DA = ChonDapAn(50, 22); 
-		                    keyLog = 13; // Sau khi chọn xong, tự động hiểu là nhấn Enter để lưu
+		                    keyLog = 13; // Sau khi chá»n xong, tá»± Ä‘á»™ng hiá»ƒu lÃ  nháº¥n Enter Ä‘á»ƒ lÆ°u
 		                    break;
 		            }
 		
-		            // --- XỬ LÝ NHẤN ESC: HỎI XÁC NHẬN TRƯỚC KHI THOÁT ---
+		            // --- Xá»¬ LÃ NHáº¤N ESC: Há»ŽI XÃC NHáº¬N TRÆ¯á»šC KHI THOÃT ---
 		            if (keyLog == 27) {
 		                gotoxy(40, 24); SetColor(0, 14); cout << "Ban co chac muon thoat khong?";
 		                if (XacNhan(82, 24) == 'Y') {
