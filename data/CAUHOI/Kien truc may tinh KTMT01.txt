@@ -2,34 +2,209 @@ KTMT01_0001
 CPU la viet tat cua cum tu nao?
 Central Processing Unit
 Control Program Unit
-Computer Personal Unit
-Central Print Unit
+Computer Print Unit
+Central Power Unit
 A
 KTMT01_0002
-RAM la bo nho co dac diem nao?
-Luu tru vinh vien khi tat may
-Chi doc du lieu
+RAM co dac diem nao?
+Luu vinh vien
+Chi doc
 Mat du lieu khi mat dien
-Khong the ghi du lieu
+Khong the ghi
 C
 KTMT01_0003
-He nhi phan su dung bao nhieu ky tu co ban?
+He nhi phan dung bao nhieu ky tu?
 2
 8
 10
 16
 A
 KTMT01_0004
-Thanh ghi nam o dau trong he thong may tinh?
-Trong CPU
-Trong o cung
-Trong man hinh
-Trong ban phim
-A
-KTMT01_0005
-Don vi nho nhat de bieu dien thong tin trong may tinh la gi?
+Don vi nho nhat cua thong tin?
 Byte
 Bit
 Word
 Sector
 B
+KTMT01_0005
+Thanh ghi nam o dau?
+Trong CPU
+Trong o cung
+Trong man hinh
+Trong ban phim
+A
+KTMT01_0006
+CPU la viet tat cua cum tu nao? Cau mo rong so 6.
+Central Processing Unit
+Control Program Unit
+Computer Print Unit
+Central Power Unit
+A
+KTMT01_0007
+RAM co dac diem nao? Cau mo rong so 7.
+Luu vinh vien
+Chi doc
+Mat du lieu khi mat dien
+Khong the ghi
+C
+KTMT01_0008
+He nhi phan dung bao nhieu ky tu? Cau mo rong so 8.
+2
+8
+10
+16
+A
+KTMT01_0009
+Don vi nho nhat cua thong tin? Cau mo rong so 9.
+Byte
+Bit
+Word
+Sector
+B
+KTMT01_0010
+Thanh ghi nam o dau? Cau mo rong so 10.
+Trong CPU
+Trong o cung
+Trong man hinh
+Trong ban phim
+A
+KTMT01_0011
+CPU la viet tat cua cum tu nao? Cau mo rong so 11.
+Central Processing Unit
+Control Program Unit
+Computer Print Unit
+Central Power Unit
+A
+KTMT01_0012
+RAM co dac diem nao? Cau mo rong so 12.
+Luu vinh vien
+Chi doc
+Mat du lieu khi mat dien
+Khong the ghi
+C
+KTMT01_0013
+He nhi phan dung bao nhieu ky tu? Cau mo rong so 13.
+2
+8
+10
+16
+A
+KTMT01_0014
+Don vi nho nhat cua thong tin? Cau mo rong so 14.
+Byte
+Bit
+Word
+Sector
+B
+KTMT01_0015
+Thanh ghi nam o dau? Cau mo rong so 15.
+Trong CPU
+Trong o cung
+Trong man hinh
+Trong ban phim
+A
+KTMT01_0016
+CPU la viet tat cua cum tu nao? Cau mo rong so 16.
+Central Processing Unit
+Control Program Unit
+Computer Print Unit
+Central Power Unit
+A
+KTMT01_0017
+RAM co dac diem nao? Cau mo rong so 17.
+Luu vinh vien
+Chi doc
+Mat du lieu khi mat dien
+Khong the ghi
+C
+KTMT01_0018
+He nhi phan dung bao nhieu ky tu? Cau mo rong so 18.
+2
+8
+10
+16
+A
+KTMT01_0019
+Don vi nho nhat cua thong tin? Cau mo rong so 19.
+Byte
+Bit
+Word
+Sector
+B
+KTMT01_0020
+Thanh ghi nam o dau? Cau mo rong so 20.
+Trong CPU
+Trong o cung
+Trong man hinh
+Trong ban phim
+A
+KTMT01_0021
+CPU la viet tat cua cum tu nao? Cau mo rong so 21.
+Central Processing Unit
+Control Program Unit
+Computer Print Unit
+Central Power Unit
+A
+KTMT01_0022
+RAM co dac diem nao? Cau mo rong so 22.
+Luu vinh vien
+Chi doc
+Mat du lieu khi mat dien
+Khong the ghi
+C
+KTMT01_0023
+He nhi phan dung bao nhieu ky tu? Cau mo rong so 23.
+2
+8
+10
+16
+A
+KTMT01_0024
+Don vi nho nhat cua thong tin? Cau mo rong so 24.
+Byte
+Bit
+Word
+Sector
+B
+KTMT01_0025
+Thanh ghi nam o dau? Cau mo rong so 25.
+Trong CPU
+Trong o cung
+Trong man hinh
+Trong ban phim
+A
+KTMT01_0026
+CPU la viet tat cua cum tu nao? Cau mo rong so 26.
+Central Processing Unit
+Control Program Unit
+Computer Print Unit
+Central Power Unit
+A
+KTMT01_0027
+RAM co dac diem nao? Cau mo rong so 27.
+Luu vinh vien
+Chi doc
+Mat du lieu khi mat dien
+Khong the ghi
+C
+KTMT01_0028
+He nhi phan dung bao nhieu ky tu? Cau mo rong so 28.
+2
+8
+10
+16
+A
+KTMT01_0029
+Don vi nho nhat cua thong tin? Cau mo rong so 29.
+Byte
+Bit
+Word
+Sector
+B
+KTMT01_0030
+Thanh ghi nam o dau? Cau mo rong so 30.
+Trong CPU
+Trong o cung
+Trong man hinh
+Trong ban phim
+A

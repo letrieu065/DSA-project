@@ -1,0 +1,210 @@
+CSDL01_0001
+Khai niem co ban nao dung trong mon Co so du lieu?
+Lua chon dung
+Lua chon sai 1
+Lua chon sai 2
+Lua chon sai 3
+A
+CSDL01_0002
+Muc tieu chinh cua Co so du lieu la gi?
+Giai quyet bai toan
+Trang tri giao dien
+Tat may tinh
+Xoa du lieu
+A
+CSDL01_0003
+Phat bieu nao phu hop voi Co so du lieu?
+Can nam nguyen ly
+Khong can kiem tra
+Chi hoc thuoc ma khong hieu
+Khong lien quan lap trinh
+A
+CSDL01_0004
+Khi lam bai Co so du lieu, dieu nao nen lam?
+Doc ky de bai
+Bo qua dieu kien
+Chon ngau nhien tat ca
+Khong luu ket qua
+A
+CSDL01_0005
+Yeu cau nao quan trong trong Co so du lieu?
+Tinh dung dan
+Ten file dai
+Mau sac ruc ro
+Khong can logic
+A
+CSDL01_0006
+Khai niem co ban nao dung trong mon Co so du lieu? Cau mo rong so 6.
+Lua chon dung
+Lua chon sai 1
+Lua chon sai 2
+Lua chon sai 3
+A
+CSDL01_0007
+Muc tieu chinh cua Co so du lieu la gi? Cau mo rong so 7.
+Giai quyet bai toan
+Trang tri giao dien
+Tat may tinh
+Xoa du lieu
+A
+CSDL01_0008
+Phat bieu nao phu hop voi Co so du lieu? Cau mo rong so 8.
+Can nam nguyen ly
+Khong can kiem tra
+Chi hoc thuoc ma khong hieu
+Khong lien quan lap trinh
+A
+CSDL01_0009
+Khi lam bai Co so du lieu, dieu nao nen lam? Cau mo rong so 9.
+Doc ky de bai
+Bo qua dieu kien
+Chon ngau nhien tat ca
+Khong luu ket qua
+A
+CSDL01_0010
+Yeu cau nao quan trong trong Co so du lieu? Cau mo rong so 10.
+Tinh dung dan
+Ten file dai
+Mau sac ruc ro
+Khong can logic
+A
+CSDL01_0011
+Khai niem co ban nao dung trong mon Co so du lieu? Cau mo rong so 11.
+Lua chon dung
+Lua chon sai 1
+Lua chon sai 2
+Lua chon sai 3
+A
+CSDL01_0012
+Muc tieu chinh cua Co so du lieu la gi? Cau mo rong so 12.
+Giai quyet bai toan
+Trang tri giao dien
+Tat may tinh
+Xoa du lieu
+A
+CSDL01_0013
+Phat bieu nao phu hop voi Co so du lieu? Cau mo rong so 13.
+Can nam nguyen ly
+Khong can kiem tra
+Chi hoc thuoc ma khong hieu
+Khong lien quan lap trinh
+A
+CSDL01_0014
+Khi lam bai Co so du lieu, dieu nao nen lam? Cau mo rong so 14.
+Doc ky de bai
+Bo qua dieu kien
+Chon ngau nhien tat ca
+Khong luu ket qua
+A
+CSDL01_0015
+Yeu cau nao quan trong trong Co so du lieu? Cau mo rong so 15.
+Tinh dung dan
+Ten file dai
+Mau sac ruc ro
+Khong can logic
+A
+CSDL01_0016
+Khai niem co ban nao dung trong mon Co so du lieu? Cau mo rong so 16.
+Lua chon dung
+Lua chon sai 1
+Lua chon sai 2
+Lua chon sai 3
+A
+CSDL01_0017
+Muc tieu chinh cua Co so du lieu la gi? Cau mo rong so 17.
+Giai quyet bai toan
+Trang tri giao dien
+Tat may tinh
+Xoa du lieu
+A
+CSDL01_0018
+Phat bieu nao phu hop voi Co so du lieu? Cau mo rong so 18.
+Can nam nguyen ly
+Khong can kiem tra
+Chi hoc thuoc ma khong hieu
+Khong lien quan lap trinh
+A
+CSDL01_0019
+Khi lam bai Co so du lieu, dieu nao nen lam? Cau mo rong so 19.
+Doc ky de bai
+Bo qua dieu kien
+Chon ngau nhien tat ca
+Khong luu ket qua
+A
+CSDL01_0020
+Yeu cau nao quan trong trong Co so du lieu? Cau mo rong so 20.
+Tinh dung dan
+Ten file dai
+Mau sac ruc ro
+Khong can logic
+A
+CSDL01_0021
+Khai niem co ban nao dung trong mon Co so du lieu? Cau mo rong so 21.
+Lua chon dung
+Lua chon sai 1
+Lua chon sai 2
+Lua chon sai 3
+A
+CSDL01_0022
+Muc tieu chinh cua Co so du lieu la gi? Cau mo rong so 22.
+Giai quyet bai toan
+Trang tri giao dien
+Tat may tinh
+Xoa du lieu
+A
+CSDL01_0023
+Phat bieu nao phu hop voi Co so du lieu? Cau mo rong so 23.
+Can nam nguyen ly
+Khong can kiem tra
+Chi hoc thuoc ma khong hieu
+Khong lien quan lap trinh
+A
+CSDL01_0024
+Khi lam bai Co so du lieu, dieu nao nen lam? Cau mo rong so 24.
+Doc ky de bai
+Bo qua dieu kien
+Chon ngau nhien tat ca
+Khong luu ket qua
+A
+CSDL01_0025
+Yeu cau nao quan trong trong Co so du lieu? Cau mo rong so 25.
+Tinh dung dan
+Ten file dai
+Mau sac ruc ro
+Khong can logic
+A
+CSDL01_0026
+Khai niem co ban nao dung trong mon Co so du lieu? Cau mo rong so 26.
+Lua chon dung
+Lua chon sai 1
+Lua chon sai 2
+Lua chon sai 3
+A
+CSDL01_0027
+Muc tieu chinh cua Co so du lieu la gi? Cau mo rong so 27.
+Giai quyet bai toan
+Trang tri giao dien
+Tat may tinh
+Xoa du lieu
+A
+CSDL01_0028
+Phat bieu nao phu hop voi Co so du lieu? Cau mo rong so 28.
+Can nam nguyen ly
+Khong can kiem tra
+Chi hoc thuoc ma khong hieu
+Khong lien quan lap trinh
+A
+CSDL01_0029
+Khi lam bai Co so du lieu, dieu nao nen lam? Cau mo rong so 29.
+Doc ky de bai
+Bo qua dieu kien
+Chon ngau nhien tat ca
+Khong luu ket qua
+A
+CSDL01_0030
+Yeu cau nao quan trong trong Co so du lieu? Cau mo rong so 30.
+Tinh dung dan
+Ten file dai
+Mau sac ruc ro
+Khong can logic
+A
