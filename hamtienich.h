@@ -33,6 +33,12 @@ void ShowCur(bool CursorVisibility);
 char XacNhan(int x, int y);
 int InChuoiGioiHan(string s, int x, int y, int maxCols);
 void InNoiDungCanLe(string noiDung, int X, int Y, int maxW);
+void XoaVungContent();
+void InThongBaoContent(string thongBao, int maMau, int x, int y);
+void XoaThongBao(int x, int y, int length);
+string NhapMa(int maxLength);
+void XoaTitle();
+void XoaSmallTitle();
 
 string NhapCoDieuHuong(int X, int Y, int maxCols, int maxRows, string noiDungCu, int &keyLog) {
     ShowCur(true);
@@ -639,6 +645,8 @@ void XoaVungContent() {
         gotoxy(33, i);
         cout << "                                                                                   "; 
     }
+    XoaTitle();
+    XoaSmallTitle();
 }
 
 void InThongBaoContent(string thongBao, int maMau, int x, int y) {
