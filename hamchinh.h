@@ -29,8 +29,9 @@ int xoaMonHoc(DanhSachMonHoc &dsMH, const char* ma, PTR_CAUHOI root);
 int timViTriMonHoc(DanhSachMonHoc &dsMH, const char* ma);
 bool kiemTraTrungMaMonHoc(DanhSachMonHoc &dsMH, const char* ma);
 bool kiemTraMonHocDaCoCauHoi(PTR_CAUHOI root, const char* maMH);
-
+bool KiemTraMonHocDaDuocThi(DanhSachLop &dsLop, const char* maMH);
 // Ham cau hoi
+
 int& getNextSTT(const char* maMH);
 void TaoIdCauHoi(char* bufOut, const char* maMH, int soThuTu);
 PTR_CAUHOI ThemCauHoi(PTR_CAUHOI root, CauHoi* node);
@@ -297,7 +298,18 @@ bool kiemTraMonHocDaCoCauHoi(PTR_CAUHOI root, const char* maMH) {
 	return kiemTraMonHocDaCoCauHoi(root->left, maMH) ||
 	       kiemTraMonHocDaCoCauHoi(root->right, maMH);
 }
-
+bool KiemTraMonHocDaDuocThi(DanhSachLop &dsLop, const char* maMH) {
+    for (int i = 0; i < dsLop.soLuong; i++) {
+        for (SinhVien* pSV = dsLop.nodes[i]->headSV; pSV != NULL; pSV = pSV->next) {
+            for (DiemThi* pDiem = pSV->headDiem; pDiem != NULL; pDiem = pDiem->next) {
+                if (strcmp(pDiem->maMH, maMH) == 0) {
+                    return true; // Đã có người thi môn này!
+                }
+            }
+        }
+    }
+    return false; // Chưa có ai thi
+}
 int& getNextSTT(const char* maMH) {
     struct DemMon { char ma[20]; int dem; };
     static DemMon ds[100];
@@ -452,7 +464,6 @@ DiemThi* saoChepDanhSachDiem(DiemThi* src) {
         DiemThi* newDiem = new DiemThi;
         strcpy(newDiem->maMH, src->maMH);
         newDiem->diem   = src->diem;
-        newDiem->lanThi = src->lanThi;
         newDiem->next   = NULL;
 
         if (head == NULL) head = newDiem;  

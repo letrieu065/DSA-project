@@ -12,19 +12,6 @@
 
 int flowDangNhap(DanhSachLop &dsLop, SinhVien* &svLogined);
 
-void flowGiaoVien(DanhSachLop &dsLop, DanhSachMonHoc &dsMH, PTR_CAUHOI &root);
-void flowQuanLyLop_SinhVien(DanhSachLop &dsLop);
-void flowQuanLySinhVienCuaLop(DanhSachLop &dsLop, Lop* lopHienTai);
-void flowQuanLyMonHoc_CauHoi(DanhSachMonHoc &dsMH, PTR_CAUHOI &root);
-void flowQuanLyCauHoiCuaMon(const char* maMH,const char* tenMH ,PTR_CAUHOI &root);
-void flowQuanLyDiemSV(DanhSachMonHoc &dsMH, DanhSachLop &dsLop);
-
-void flowSinhVien(DanhSachLop &dsLop, DanhSachMonHoc &dsMH, PTR_CAUHOI &root, SinhVien* sv);
-void flowXemThongTinSinhVien(SinhVien* sv);
-void flowXemDiemSinhVien(SinhVien* sv, DanhSachMonHoc &dsMH);
-void flowThiTracNghiem(SinhVien* sv, DanhSachMonHoc &dsMH, PTR_CAUHOI &root, DanhSachLop &dsLop);
-void flowXemLaiBaiLam(const char* maSV, const char* maMH);
-
 void flowChinh(DanhSachLop &dsLop, DanhSachMonHoc &dsMH, PTR_CAUHOI &root) {
 	CapNhatSTT(root);
     while (true) {
