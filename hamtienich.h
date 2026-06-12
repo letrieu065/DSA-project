@@ -199,7 +199,37 @@ string NhapTen(string suggest = "") {
     }
     return str;
 }
+string NhapCoDieuHuong(int X, int Y, int maxCols, int maxRows, string noiDungCu, int &keyLog) {
+    ShowCur(true);
+    string s = noiDungCu;
 
+    gotoxy(X, Y);
+    cout << s;
+    
+    while (true) {
+        gotoxy(X + s.length(), Y);
+        int ch = _getch();
+        if (ch == 224 || ch == 0) {
+            ch = _getch();
+            keyLog = ch;
+            return s;
+        }
+        else if (ch == 13 || ch == 27) { 
+            keyLog = ch;
+            return s;
+        }
+        else if (ch == 8 && s.length() > 0) { 
+            s.pop_back();
+            gotoxy(X + s.length(), Y);
+            cout << " ";
+            gotoxy(X + s.length(), Y);
+        }
+        else if (ch >= 32 && ch <= 126 && s.length() < maxCols) { 
+            s += (char)ch;
+            cout << (char)ch;
+        }
+    }
+}
 bool NhapGioiTinh(int x, int y, bool defaultPhai = true) {
     bool phai = defaultPhai;
     char ch;

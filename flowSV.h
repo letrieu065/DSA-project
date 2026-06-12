@@ -12,7 +12,6 @@ void flowSinhVien(DanhSachLop &dsLop, DanhSachMonHoc &dsMH, PTR_CAUHOI &root, Si
 void flowXemThongTinSinhVien(SinhVien* sv);
 void flowXemDiemSinhVien(SinhVien* sv, DanhSachMonHoc &dsMH);
 void flowThiTracNghiem(SinhVien* sv, DanhSachMonHoc &dsMH, PTR_CAUHOI &root, DanhSachLop &dsLop);
-void flowXemLaiBaiLam(const char* maSV, const char* maMH);
 
 
 void flowSinhVien(DanhSachLop &dsLop, DanhSachMonHoc &dsMH, PTR_CAUHOI &root, SinhVien* sv) {
