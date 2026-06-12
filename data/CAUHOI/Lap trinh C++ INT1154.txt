@@ -1,5 +1,5 @@
 INT1154_0001
-Kieu du lieu nao dung de luu so nguyen?
+Kieu du lieu nao dung de luu so nguyen?ABC
 int
 float
 char

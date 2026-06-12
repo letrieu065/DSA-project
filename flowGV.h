@@ -23,6 +23,7 @@ void flowGiaoVien(DanhSachLop &dsLop, DanhSachMonHoc &dsMH, PTR_CAUHOI &root) {
     char menuChinh[4][50] = {"1. Quan Ly Lop", "2. Quan Ly Mon Hoc", "3. Xem Diem Sinh Vien", "4. Dang Xuat "};
     
     while (true) {
+        XoaVungContent();
         SetupConsoleLayout();
         VeLayoutChinh("GIANG VIEN"); 
         
@@ -401,7 +402,7 @@ void flowQuanLySinhVienCuaLop(DanhSachLop &dsLop, Lop* lopHienTai) {
         XoaVungContent();
         InTitle("DANH SACH SINH VIEN");
         InSmallTitle(string(lopHienTai->maLop) + " - " + string(lopHienTai->tenLop));
-        gotoxy(105, 25); cout << "(Trang " << currentPage + 1 << "/" << totalPages << ")"; 
+        gotoxy(105, 27); cout << "(Trang " << currentPage + 1 << "/" << totalPages << ")"; 
         SetColor(0, 7);
         
         gotoxy(33, 8); SetColor(0, 14);
@@ -438,9 +439,9 @@ void flowQuanLySinhVienCuaLop(DanhSachLop &dsLop, Lop* lopHienTai) {
         SetColor(0, 7);
         
         gotoxy(35, 26); SetColor(0, 8);
-        cout << "Up/Down: Chon | Left/Right: Chuyen trang";
+        cout << "Up/Down: Chon | Left/Right: Chuyen trang"; 
         gotoxy(35, 27); SetColor(0, 11);
-        cout << "[INS/I] Them | [E] Sua | [F] Tim Kiem | [DEL] Xoa | [ESC] Thoat";
+        cout << "[INS/I] Them | [E] Sua | [DEL] Xoa | [F| Tim Kiem  | [ESC] Thoat";
         SetColor(0, 7);
         
         int ch = _getch();
@@ -635,9 +636,9 @@ void flowQuanLyMonHoc_CauHoi(DanhSachLop &dsLop, DanhSachMonHoc &dsMH, PTR_CAUHO
                 }
             }
             gotoxy(35, 26); SetColor(0, 8);
-            cout << "[ENTER] Quan ly cau hoi cua mon";
+            cout << "Up/Down: Chon | Left/Right: Chuyen trang | [ENTER] Xem cau hoi"; 
             gotoxy(35, 27); SetColor(0, 11);
-            cout << "[INS/I] Them | [E] Sua | [DEL] Xoa | [ESC] Thoat";
+            cout << "[INS/I] Them | [E] Sua | [DEL] Xoa | [F| Tim Kiem  | [ESC] Thoat";
             SetColor(0, 7);
 
             oldPage = currentPage;
@@ -873,10 +874,10 @@ void flowQuanLyCauHoiCuaMon(const char* maMH, const char* tenMH, PTR_CAUHOI &roo
 		}
 		
 		gotoxy(35, 26); SetColor(0, 8);
-		cout << "Left/Right: Chuyen cau hoi";
-		gotoxy(35, 27); SetColor(0, 11);
-		cout << "[INS/I] Them | [E] Sua | [DEL] Xoa | [ESC] Thoat";
-		SetColor(0, 7);
+        cout << "Left/Right: Chuyen cau hoi"; 
+        gotoxy(35, 27); SetColor(0, 11);
+        cout << "[INS/I] Them | [E] Sua | [DEL] Xoa | [ESC] Thoat";
+        SetColor(0, 7);
 		
 		int ch = _getch();
 		if (ch == 224 || ch == 0 || ch == -32) {
@@ -892,116 +893,269 @@ void flowQuanLyCauHoiCuaMon(const char* maMH, const char* tenMH, PTR_CAUHOI &roo
             XoaVungContent();
             ShowCur(true);
             while (_kbhit()) _getch();
-            gotoxy(57, 6); SetColor(0, 11); cout << "--- THEM CAU HOI MOI ---"; SetColor(0, 7);
-            gotoxy(35, 8); cout << "Noi Dung   : ";
+            InTitle("THEM CAU HOI");
+            InSmallTitle("MON: " + string(tenMH) + " - MA: " + string(maMH));
+            gotoxy(35, 8);  cout << "Noi Dung   : ";
             gotoxy(35, 14); cout << "A. ";
             gotoxy(35, 16); cout << "B. ";
             gotoxy(35, 18); cout << "C. ";
             gotoxy(35, 20); cout << "D. ";
             gotoxy(35, 22); cout << "Dap An Dung: ";
-
-            gotoxy(48, 8); string noiDung = xuongdongGioiHan(48, 8, 67, 4, 244); if (noiDung == "") continue;
-            gotoxy(38, 14); string pA 	  = xuongdongGioiHan(38, 14, 75, 2, 153); if (pA == "") continue;
-            gotoxy(38, 16); string pB     = xuongdongGioiHan(38, 16, 75, 2, 153); if (pB == "") continue;
-            gotoxy(38, 28); string pC     = xuongdongGioiHan(38, 18, 75, 2, 153); if (pC == "") continue;
-            gotoxy(38, 20); string pD     = xuongdongGioiHan(38, 20, 75, 2, 153); if (pD == "") continue;
-            char dapAn = ChonDapAn(60, 22); if (dapAn == '\0') continue;
-
-            CauHoi* newNode = new CauHoi();
-            TaoIdCauHoi(newNode->id, maMH, getNextSTT(maMH)++);
-            newNode->dapAn = dapAn;
-            newNode->left = newNode->right = NULL;
-            strcpy(newNode->maMH, maMH);
-            strcpy(newNode->noiDung, noiDung.c_str());
-            strcpy(newNode->a, pA.c_str());
-            strcpy(newNode->b, pB.c_str());
-            strcpy(newNode->c, pC.c_str());
-            strcpy(newNode->d, pD.c_str());
-
-            root = ThemCauHoi(root, newNode);
             
-			LuuFileCauHoiTheoMon(maMH, tenMH, root);
-			InThongBaoContent("Them cau hoi thanh cong!", 10, 45, 26);
-        
-            _getch();
+            SetColor(0, 7);
+ 
+            // Du lieu tam cua form
+            string t_ND = "", t_A = "", t_B = "", t_C = "", t_D = "";
+            char t_DA = 'A';
+ 
+            int field = 0;   // 0=ND, 1=A, 2=B, 3=C, 4=D, 5=DapAn
+            int keyLog = 0;
+            bool exitForm = false;
+            bool huyBo = false;
+ 
+            while (!exitForm) {
+                // Highlight label cua field hien tai
+                SetColor(0, 11);
+                switch (field) {
+                    case 0: gotoxy(35, 8);  cout << "Noi Dung   :"; break;
+                    case 1: gotoxy(35, 14); cout << "A."; break;
+                    case 2: gotoxy(35, 16); cout << "B."; break;
+                    case 3: gotoxy(35, 18); cout << "C."; break;
+                    case 4: gotoxy(35, 20); cout << "D."; break;
+                    case 5: gotoxy(35, 22); cout << "Dap An Dung:"; break;
+                }
+                SetColor(0, 7);
+ 
+                // Nhap field hien tai
+                switch (field) {
+                    case 0: t_ND = xuongdongGioiHan(48, 8,  67, 4, 244, (t_ND.empty() ? NULL : (char*)t_ND.c_str()), &keyLog); break;
+                    case 1: t_A  = xuongdongGioiHan(38, 14, 75, 2, 153, (t_A.empty()  ? NULL : (char*)t_A.c_str()),  &keyLog); break;
+                    case 2: t_B  = xuongdongGioiHan(38, 16, 75, 2, 153, (t_B.empty()  ? NULL : (char*)t_B.c_str()),  &keyLog); break;
+                    case 3: t_C  = xuongdongGioiHan(38, 18, 75, 2, 153, (t_C.empty()  ? NULL : (char*)t_C.c_str()),  &keyLog); break;
+                    case 4: t_D  = xuongdongGioiHan(38, 20, 75, 2, 153, (t_D.empty()  ? NULL : (char*)t_D.c_str()),  &keyLog); break;
+                    case 5:
+                        t_DA = ChonDapAn(48, 22, &keyLog);
+                        break;
+                }
+ 
+                // Tat highlight label
+                SetColor(0, 7);
+                switch (field) {
+                    case 0: gotoxy(35, 8);  cout << "Noi Dung   :"; break;
+                    case 1: gotoxy(35, 14); cout << "A."; break;
+                    case 2: gotoxy(35, 16); cout << "B."; break;
+                    case 3: gotoxy(35, 18); cout << "C."; break;
+                    case 4: gotoxy(35, 20); cout << "D."; break;
+                    case 5: gotoxy(35, 22); cout << "Dap An Dung:"; break;
+                }
+ 
+                // Xu ly ket qua phim
+                if (keyLog == 27) {
+                    gotoxy(40, 24); SetColor(0, 14); cout << "Ban co chac muon huy them cau hoi?";
+                    if (XacNhan(76, 24) == 'Y') {
+                        huyBo = true;
+                        exitForm = true;
+                    } else {
+                        gotoxy(40, 24); cout << "                                                  ";
+                    }
+                    continue;
+                }
+ 
+                if (keyLog == 72) {          // Up: chuyen len field truoc
+                    field = (field > 0) ? field - 1 : 5;
+                }
+                else if (keyLog == 80 || keyLog == 13) {  // Down hoac Enter
+                    if (field == 5 && keyLog == 13) {
+                        // Validate truoc khi luu
+                        bool ok = true;
+                        if (t_ND.empty()) {
+                            InThongBaoContent("Noi dung khong duoc de trong!", 12, 45, 26);
+                            ok = false; field = 0;
+                        } else if (t_A.empty()) {
+                            InThongBaoContent("Dap an A khong duoc de trong!", 12, 45, 26);
+                            ok = false; field = 1;
+                        } else if (t_B.empty()) {
+                            InThongBaoContent("Dap an B khong duoc de trong!", 12, 45, 26);
+                            ok = false; field = 2;
+                        } else if (t_C.empty()) {
+                            InThongBaoContent("Dap an C khong duoc de trong!", 12, 45, 26);
+                            ok = false; field = 3;
+                        } else if (t_D.empty()) {
+                            InThongBaoContent("Dap an D khong duoc de trong!", 12, 45, 26);
+                            ok = false; field = 4;
+                        }
+ 
+                        if (ok) {
+                            CauHoi* newNode = new CauHoi();
+                            TaoIdCauHoi(newNode->id, maMH, getNextSTT(maMH)++);
+                            newNode->dapAn = t_DA;
+                            newNode->left = newNode->right = NULL;
+                            strcpy(newNode->maMH, maMH);
+                            strcpy(newNode->noiDung, t_ND.c_str());
+                            strcpy(newNode->a, t_A.c_str());
+                            strcpy(newNode->b, t_B.c_str());
+                            strcpy(newNode->c, t_C.c_str());
+                            strcpy(newNode->d, t_D.c_str());
+ 
+                            root = ThemCauHoi(root, newNode);
+                            LuuFileCauHoiTheoMon(maMH, tenMH, root);
+                            InThongBaoContent("Them cau hoi thanh cong!", 10, 45, 26);
+                            exitForm = true;
+                        } else {
+                            _getch();
+                            gotoxy(45, 26); cout << "                                        ";
+                        }
+                    } else {
+                        field = (field < 5) ? field + 1 : 0;
+                    }
+                }
+            }
+            if (!huyBo) _getch();
         }
+        
         
 		// --- Logic Sua (E) ---
 
-        else if (toupper(ch) == 'E') {
-		    if (totalItems > 0) {
-		        CauHoi* q = dsTam[currentPage];
-		        
-		        // 1. Chuẩn bị giao diện
-		        XoaVungContent(); 
-		        SetColor(0, 11);
-		        InGiuaKhung("--- SUA NOI DUNG CAU HOI ---", 30, 6, 88);
-		
-		        string t_ND = q->noiDung, t_A = q->a, t_B = q->b, t_C = q->c, t_D = q->d;
-		        char t_DA = q->dapAn;
-		
-		        SetColor(0, 15);
-		        gotoxy(35, 8);  cout << "Noi Dung   : ";
-		        gotoxy(35, 14); cout << "A. ";
-		        gotoxy(35, 16); cout << "B. ";
-		        gotoxy(35, 18); cout << "C. ";
-		        gotoxy(35, 20); cout << "D. ";
-		        gotoxy(35, 22); cout << "Dap An Dung: ";
-		                
-		        int field = 0, keyLog = 0;
-		        bool exitForm = false;
-		
-		        while (!exitForm) {
-		            SetColor(0, 7); 
-		            switch (field) {
-		                case 0: t_ND = NhapCoDieuHuong(48, 8, 70, 4, t_ND, keyLog); break;
-		                case 1: t_A  = NhapCoDieuHuong(38, 14, 75, 2, t_A, keyLog); break;
-		                case 2: t_B  = NhapCoDieuHuong(38, 16, 75, 2, t_B, keyLog); break;
-		                case 3: t_C  = NhapCoDieuHuong(38, 18, 75, 2, t_C, keyLog); break;
-		                case 4: t_D  = NhapCoDieuHuong(38, 20, 75, 2, t_D, keyLog); break;
-		                case 5: 
-		                    t_DA = ChonDapAn(50, 22); 
-		                    keyLog = 13; // Sau khi chá»n xong, tá»± Ä‘á»™ng hiá»ƒu lÃ  nháº¥n Enter Ä‘á»ƒ lÆ°u
-		                    break;
-		            }
-		
-		            // --- Xá»¬ LÃ NHáº¤N ESC: Há»ŽI XÃC NHáº¬N TRÆ¯á»šC KHI THOÃT ---
-		            if (keyLog == 27) {
-		                gotoxy(40, 24); SetColor(0, 14); cout << "Ban co chac muon thoat khong?";
-		                if (XacNhan(82, 24) == 'Y') {
-		                    exitForm = true;
-		                } else {
-
-		                    gotoxy(40, 24); cout << "                                             ";
-		                    continue; 
-		                }
-		            }
-		            
-		            if (keyLog == 72) {
-		                field = (field > 0) ? field - 1 : 5;
-		            }
-		            else if (keyLog == 80 || keyLog == 13) { 
-		                if (field == 5 && keyLog == 13) {
-
-		                    strcpy(q->noiDung, t_ND.c_str());
-		                    strcpy(q->a, t_A.c_str());
-		                    strcpy(q->b, t_B.c_str());
-		                    strcpy(q->c, t_C.c_str());
-		                    strcpy(q->d, t_D.c_str());
-		                    q->dapAn = t_DA;
-		
-		                    LuuFileCauHoiTheoMon(maMH, tenMH, root); 
-		                    InThongBaoContent(" CAP NHAT THANH CONG! ", 10, 55, 24);
-							Sleep(1500);
-		                    exitForm = true; 
-		                } else {
-		                    field = (field < 5) ? field + 1 : 0;
-		                }
-		            }
-		        }
-		        continue; 
-		    }
-		}
+         else if (toupper(ch) == 'E') {
+            if (totalItems > 0) {
+                CauHoi* q = dsTam[currentPage];
+ 
+                XoaVungContent();
+                ShowCur(true);
+                while (_kbhit()) _getch();
+                SetColor(0, 11);
+                InTitle("SUA CAU HOI");
+                InSmallTitle("MON: " + string(tenMH) + " - MA: " + string(maMH));
+ 
+                // Load du lieu cu vao bien tam
+                string t_ND = q->noiDung, t_A = q->a, t_B = q->b, t_C = q->c, t_D = q->d;
+                char t_DA = q->dapAn;
+ 
+                // In nhan cac truong
+                SetColor(0, 7);
+                gotoxy(35, 8);  cout << "Noi Dung   : ";
+                gotoxy(35, 14); cout << "A. ";
+                gotoxy(35, 16); cout << "B. ";
+                gotoxy(35, 18); cout << "C. ";
+                gotoxy(35, 20); cout << "D. ";
+                gotoxy(35, 22); cout << "Dap An Dung: ";
+                gotoxy(35, 25); SetColor(0, 8);
+                cout << "Up/Down/Enter: Chuyen truong | Enter o Dap An: Luu | ESC: Huy";
+                SetColor(0, 7);
+ 
+                // Render toan bo du lieu cu ngay tu dau
+                InNoiDungCanLe(t_ND, 48, 8,  67);
+                InNoiDungCanLe(t_A,  38, 14, 75);
+                InNoiDungCanLe(t_B,  38, 16, 75);
+                InNoiDungCanLe(t_C,  38, 18, 75);
+                InNoiDungCanLe(t_D,  38, 20, 75);
+                {
+                    char dsDapAn[] = {'A','B','C','D'};
+                    for (int i = 0; i < 4; i++) {
+                        gotoxy(48 + i * 6, 22);
+                        if (dsDapAn[i] == t_DA) { SetColor(0, 11); cout << "[" << dsDapAn[i] << "]"; }
+                        else                     { SetColor(0, 7);  cout << " " << dsDapAn[i] << " "; }
+                    }
+                    SetColor(0, 7);
+                }
+ 
+                int field = 0, keyLog = 0;
+                bool exitForm = false;
+ 
+                while (!exitForm) {
+                    // Highlight label field dang active
+                    SetColor(0, 11);
+                    switch (field) {
+                        case 0: gotoxy(35, 8);  cout << "Noi Dung   :"; break;
+                        case 1: gotoxy(35, 14); cout << "A."; break;
+                        case 2: gotoxy(35, 16); cout << "B."; break;
+                        case 3: gotoxy(35, 18); cout << "C."; break;
+                        case 4: gotoxy(35, 20); cout << "D."; break;
+                        case 5: gotoxy(35, 22); cout << "Dap An Dung:"; break;
+                    }
+                    SetColor(0, 7);
+ 
+                    // Nhap: dung xuongdongGioiHan (pre-load + word-wrap chinh xac + cursor cuoi)
+                    switch (field) {
+                        case 0: t_ND = xuongdongGioiHan(48, 8,  67, 4, 244, (char*)t_ND.c_str(), &keyLog); break;
+                        case 1: t_A  = xuongdongGioiHan(38, 14, 75, 2, 153, (char*)t_A.c_str(),  &keyLog); break;
+                        case 2: t_B  = xuongdongGioiHan(38, 16, 75, 2, 153, (char*)t_B.c_str(),  &keyLog); break;
+                        case 3: t_C  = xuongdongGioiHan(38, 18, 75, 2, 153, (char*)t_C.c_str(),  &keyLog); break;
+                        case 4: t_D  = xuongdongGioiHan(38, 20, 75, 2, 153, (char*)t_D.c_str(),  &keyLog); break;
+                        case 5:
+                            t_DA = ChonDapAn(48, 22, &keyLog);
+                            break;
+                    }
+ 
+                    // Tat highlight label
+                    SetColor(0, 7);
+                    switch (field) {
+                        case 0: gotoxy(35, 8);  cout << "Noi Dung   :"; break;
+                        case 1: gotoxy(35, 14); cout << "A."; break;
+                        case 2: gotoxy(35, 16); cout << "B."; break;
+                        case 3: gotoxy(35, 18); cout << "C."; break;
+                        case 4: gotoxy(35, 20); cout << "D."; break;
+                        case 5: gotoxy(35, 22); cout << "Dap An Dung:"; break;
+                    }
+ 
+                    // Xu ly phim
+                    if (keyLog == 27) {
+                        gotoxy(40, 24); SetColor(0, 14); cout << "Ban co chac muon huy sua cau hoi?";
+                        if (XacNhan(76, 24) == 'Y') {
+                            exitForm = true;
+                        } else {
+                            gotoxy(40, 24); cout << "                                                  ";
+                        }
+                        continue;
+                    }
+ 
+                    if (keyLog == 72) {          // Up
+                        field = (field > 0) ? field - 1 : 5;
+                    }
+                    else if (keyLog == 80 || keyLog == 13) {  // Down hoac Enter
+                        if (field == 5 && keyLog == 13) {
+                            // Validate
+                            bool ok = true;
+                            if (t_ND.empty()) {
+                                InThongBaoContent("Noi dung khong duoc de trong!", 12, 45, 26);
+                                ok = false; field = 0;
+                            } else if (t_A.empty()) {
+                                InThongBaoContent("Dap an A khong duoc de trong!", 12, 45, 26);
+                                ok = false; field = 1;
+                            } else if (t_B.empty()) {
+                                InThongBaoContent("Dap an B khong duoc de trong!", 12, 45, 26);
+                                ok = false; field = 2;
+                            } else if (t_C.empty()) {
+                                InThongBaoContent("Dap an C khong duoc de trong!", 12, 45, 26);
+                                ok = false; field = 3;
+                            } else if (t_D.empty()) {
+                                InThongBaoContent("Dap an D khong duoc de trong!", 12, 45, 26);
+                                ok = false; field = 4;
+                            }
+ 
+                            if (ok) {
+                                strcpy(q->noiDung, t_ND.c_str());
+                                strcpy(q->a, t_A.c_str());
+                                strcpy(q->b, t_B.c_str());
+                                strcpy(q->c, t_C.c_str());
+                                strcpy(q->d, t_D.c_str());
+                                q->dapAn = t_DA;
+                                LuuFileCauHoiTheoMon(maMH, tenMH, root);
+                                InThongBaoContent(" CAP NHAT THANH CONG! ", 10, 55, 24);
+                                Sleep(1500);
+                                exitForm = true;
+                            } else {
+                                _getch();
+                                gotoxy(45, 26); cout << "                                        ";
+                            }
+                        } else {
+                            field = (field < 5) ? field + 1 : 0;
+                        }
+                    }
+                }
+                continue;
+            }
+        }
 		
         else if (toupper(ch) == 'D') {
             if (totalItems > 0) { 
@@ -1050,10 +1204,12 @@ void flowQuanLyDiemSV(DanhSachMonHoc &dsMH, DanhSachLop &dsLop) {
         int currentPageMH = cursorMH / itemsPerPage;
 
         XoaVungContent();
-        gotoxy(56, 6); SetColor(0, 11); cout << "--- XEM DIEM MON HOC ---";
-        gotoxy(95, 27); SetColor(0, 10); cout << "(Trang " << currentPageMH + 1 << "/" << totalPagesMH << ")";
-        gotoxy(35, 26); SetColor(0, 8); cout << "Nhan ESC de quay lai";
-        gotoxy(35, 8); SetColor(0, 14); cout << "Vui long chon mon hoc:";
+        InTitle("QUAN LY DIEM SINH VIEN");
+        gotoxy(35, 26); SetColor(0, 8);
+        cout << "Up/Down: Chon | Left/Right: Chuyen trang | [ENTER] Xem Diem"; 
+        gotoxy(35, 27); SetColor(0, 11);
+        cout << "[INS/I] Them | [E] Sua | [DEL] Xoa | [F| Tim Kiem  | [ESC] Thoat";
+        SetColor(0, 7);
         
         int startMH = currentPageMH * itemsPerPage;
         int endMH = (startMH + itemsPerPage > totalMH) ? totalMH : (startMH + itemsPerPage);
@@ -1084,10 +1240,12 @@ void flowQuanLyDiemSV(DanhSachMonHoc &dsMH, DanhSachLop &dsLop) {
                 int currentPageLop = cursorLop / itemsPerPage;
                 
                 XoaVungContent();
-                gotoxy(56, 6); SetColor(0, 11); cout << "Mon: " << dsMH.data[cursorMH].tenMH;
-                gotoxy(95, 27); SetColor(0, 10); cout << "(Trang Lop: " << currentPageLop + 1 << "/" << totalPagesLop << ")";
-                gotoxy(35, 26); SetColor(0, 8); cout << "ESC: Quay lai chon Mon | ENTER: Xem diem";
-                gotoxy(35, 8); SetColor(0, 14); cout << "2. Vui long chon lop:";
+                InTitle("Mon: " + string(dsMH.data[cursorMH].tenMH) + " - " + string(dsMH.data[cursorMH].maMH));
+                gotoxy(35, 26); SetColor(0, 8);
+                cout << "Up/Down: Chon | Left/Right: Chuyen trang | [ENTER] Xem diem"; 
+                gotoxy(35, 27); SetColor(0, 11);
+                cout << "[INS/I] Them | [E] Sua | [DEL] Xoa | [F| Tim Kiem  | [ESC] Thoat";
+                SetColor(0, 7);
 
                 int startLop = currentPageLop * itemsPerPage;
                 int endLop = (startLop + itemsPerPage > totalLop) ? totalLop : (startLop + itemsPerPage);
@@ -1232,10 +1390,11 @@ void flowXemDiemSinhVien(SinhVien* sv, DanhSachMonHoc &dsMH) {
             if (!daThi) { gotoxy(105, yPos); cout << "_"; }
             yPos += 2;
         }
-        SetColor(0, 10);
-        gotoxy(95, 27); cout << "(Trang " << currentPage + 1 << "/" << totalPages << ")";
-        SetColor(0, 8);
-        gotoxy(35, 27); cout << "ENTER: Chi tiet | ESC: Thoat";
+        gotoxy(35, 26); SetColor(0, 8);
+        cout << "Up/Down: Chon | Left/Right: Chuyen trang | [ENTER] Xem SV"; 
+        gotoxy(35, 27); SetColor(0, 11);
+        cout << "[INS/I] Them | [E] Sua | [DEL] Xoa | [F| Tim Kiem  | [ESC] Thoat";
+        SetColor(0, 7);
         int ch = _getch();
         if (ch == 224 || ch == 0) {
             ch = _getch();
@@ -1290,7 +1449,7 @@ void flowXemLaiBaiLam(const char* maSV, const char* maMH) {
     while (true) {
         XoaVungContent();
 		SetColor(0, 11);
-		gotoxy(60, 5); cout << "--- CHI TIET BAI LAM ---";
+		InTitle("CHI TIET BAI LAM - " + string(maSV) + " | " + string(maMH));
 		gotoxy(35, 6); cout << "Mon: " << maMH << " | Cau: " << cur + 1 << "/" << tongSoCau;
 		int yPos = 9; 
 
