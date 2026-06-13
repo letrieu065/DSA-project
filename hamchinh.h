@@ -6,12 +6,13 @@
 #include "hamve.h"
 
 // Ham lop
-int KiemTraTrungMaLop(DanhSachLop &dsLop, char* maNhap);
-int KiemTraTrungTenLop(DanhSachLop &dsLop, char* tenNhap);
-int themLop(DanhSachLop &dsLop, char* ma, char* ten);
+int KiemTraTrungMaLop(DanhSachLop &dsLop, const char* maNhap);
+int KiemTraTrungTenLop(DanhSachLop &dsLop, const char* tenNhap);
+int themLop(DanhSachLop &dsLop, const char* ma, const char* ten);
 int timViTriLop(DanhSachLop &dsLop, const char* maLop_nhap);
-int suaLop(DanhSachLop &dsLop, char* ma, char* tenMoi);
-int xoaLop(DanhSachLop &dsLop, char* ma);
+int suaLop(DanhSachLop &dsLop, const char* ma, const char* tenMoi);
+int xoaLop(DanhSachLop &dsLop, const char* ma);
+int KiemTraLopCoSinhVien(DanhSachLop &dsLop, const char* maLop);
 
 // Ham sinh vien
 SinhVien* timKiemSinhVien(Lop* lop, const char* maSV);
@@ -39,13 +40,12 @@ CauHoi* TimCauHoi(PTR_CAUHOI root, const char* id);
 CauHoi* LayNhoNhat(CauHoi* node);
 PTR_CAUHOI XoaCauHoi(PTR_CAUHOI root, const char* id);
 void CapNhatSTT(PTR_CAUHOI root);
-void InOrderCauHoi(PTR_CAUHOI root, int &y, int x);
 
 DiemThi* saoChepDanhSachDiem(DiemThi* src); 
 
 using namespace std;
 
-int KiemTraTrungMaLop(DanhSachLop &dsLop, char* maNhap) {
+int KiemTraTrungMaLop(DanhSachLop &dsLop, const char* maNhap) {
     for (int i = 0; i < dsLop.soLuong; i++) {
         if (strcmp(dsLop.nodes[i]->maLop, maNhap) == 0) {
             return i; 
@@ -54,7 +54,7 @@ int KiemTraTrungMaLop(DanhSachLop &dsLop, char* maNhap) {
     return -1; 
 }
 
-int KiemTraTrungTenLop(DanhSachLop &dsLop, char* tenNhap) {
+int KiemTraTrungTenLop(DanhSachLop &dsLop, const char* tenNhap) {
     for (int i = 0; i < dsLop.soLuong; i++) {
         if (strcmp(dsLop.nodes[i]->tenLop, tenNhap) == 0) {
             return i; 
@@ -63,7 +63,7 @@ int KiemTraTrungTenLop(DanhSachLop &dsLop, char* tenNhap) {
     return -1; 
 }
 
-int themLop(DanhSachLop &dsLop, char* ma, char* ten) {
+int themLop(DanhSachLop &dsLop, const char* ma, const char* ten) {
 	if (dsLop.soLuong >= MAX_LOP) return ERR_LOP_FULL;
 	
 	if (KiemTraTrungMaLop(dsLop, ma) != -1) return ERR_LOP_DUPLICATE;
@@ -90,19 +90,28 @@ int timViTriLop(DanhSachLop &dsLop, const char* maLop_nhap) {
     return ERR_LOP_NOT_FOUND;
 }
 
-int suaLop(DanhSachLop &dsLop, char* ma, char* tenMoi) {
+int suaLop(DanhSachLop &dsLop, const char* ma, const char* maMoi, const char* tenMoi) {
     int index = timViTriLop(dsLop, ma);
     
     if (index == ERR_LOP_NOT_FOUND) {
         return ERR_LOP_NOT_FOUND;
     }
+
+    if (KiemTraTrungTenLop(dsLop, tenMoi) != -1 && strcmp(dsLop.nodes[index]->tenLop, tenMoi) != 0) {
+        return ERR_LOP_DUPLICATE_NAME;
+    }
+
+    if (KiemTraTrungMaLop(dsLop, maMoi) != -1 && strcmp(dsLop.nodes[index]->maLop, maMoi) != 0) {
+        return ERR_LOP_DUPLICATE;
+    }
     
+    strcpy(dsLop.nodes[index]->maLop, maMoi);
     strcpy(dsLop.nodes[index]->tenLop, tenMoi);
     
     return SUCCESS;
 }
 
-int xoaLop(DanhSachLop &dsLop, char* ma) {
+int xoaLop(DanhSachLop &dsLop, const char* ma) {
 	int index = timViTriLop(dsLop, ma);
 	
 	if (index == ERR_LOP_NOT_FOUND) {
@@ -120,6 +129,19 @@ int xoaLop(DanhSachLop &dsLop, char* ma) {
     }
     
     dsLop.soLuong--;
+    
+    return SUCCESS;
+}
+
+int KiemTraLopCoSinhVien(DanhSachLop &dsLop, const char* maLop) {
+    int index = timViTriLop(dsLop, maLop);
+    if (index == ERR_LOP_NOT_FOUND) {
+        return ERR_LOP_NOT_FOUND;
+    }
+    
+    if (dsLop.nodes[index]->headSV != NULL) {
+        return ERR_LOP_HAS_SV; 
+    }
     
     return SUCCESS;
 }
@@ -328,42 +350,6 @@ void TaoIdCauHoi(char* bufOut, const char* maMH, int soThuTu) {
     snprintf(bufOut, 25, "%s_%04d", maMH, soThuTu);
 }
 
-void InOrderCauHoi(PTR_CAUHOI root, int &y, int x) {
-    if (root == NULL) return;
-
-    InOrderCauHoi(root->left, y, x);
-
-    gotoxy(x, y);
-    SetColor(0, 11);
-    cout << "[" << root->id << "] ";
-    SetColor(0, 7);
-
-    int usedLines = InChuoiGioiHan(root->noiDung, x + 16, y, 65);
-
-    y += usedLines; 
-
-    gotoxy(x + 2, y++);
-    cout << "A. " << root->a;
-
-    gotoxy(x + 2, y++);
-    cout << "B. " << root->b;
-
-    gotoxy(x + 2, y++);
-    cout << "C. " << root->c;
-
-    gotoxy(x + 2, y++);
-    cout << "D. " << root->d;
-
-    // 👉 Đáp án đúng
-    SetColor(0, 10);
-    gotoxy(x + 2, y++);
-    cout << "=> Dap an: " << root->dapAn;
-    SetColor(0, 7);
-
-    y += 1; // cách dòng giữa các câu
-
-    InOrderCauHoi(root->right, y, x);
-}
 
 void CapNhatSTT(PTR_CAUHOI root) {
     if (root == NULL) return;

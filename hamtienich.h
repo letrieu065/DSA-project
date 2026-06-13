@@ -20,7 +20,6 @@
 
 using namespace std;
 
-void control(int X, int Y);
 void ShowCur(bool CursorVisibility);
 char XacNhan(int x, int y);
 int InChuoiGioiHan(string s, int x, int y, int maxCols);
@@ -145,41 +144,91 @@ string NhapMa(int maxLength) {
 }
 
 string NhapTen(string suggest = "") {
-    string str = suggest; 
+    string str = suggest;
+    int startX, startY;
+    //getXY(startX, startY); 
+
+    int indexX = str.length(); 
     cout << str; 
-    
+
     char ch;
     while (true) {
-        
+        gotoxy(startX + indexX, startY);
         ch = _getch();
-        
-        if (ch == 0 || ch == -32 || ch == 224) {
-            _getch(); continue;
+
+        if (ch == -32 || ch == 224) {
+            ch = _getch();
+            if (ch == 75 && indexX > 0) indexX--;
+            else if (ch == 77 && indexX < str.length()) indexX++; 
+            continue;
         }
 
-        if (isprint(ch)) {
-            if (ch == ' ') {
-                if (str.length() == 0 || str.back() == ' ') continue;
-            }
-            if (str.length() < 50) {
-                str += ch;
-                cout << ch;
-            }
+        if (ch == 8 && indexX > 0) {
+            str.erase(indexX - 1, 1);
+            indexX--;
+            gotoxy(startX, startY);
+            cout << str << "  "; 
+            continue;
         }
-        else if (ch == 27) return ""; 
-        else if (ch == 8 && str.length() > 0) { 
-            str.pop_back();
-            cout << "\b \b";
-        }
-        else if (ch == 13) { 
-            while (!str.empty() && str.back() == ' ') {
-                str.pop_back();
-                cout << "\b \b";
-            }
+        if (ch == 27) return ""; 
+        if (ch == 13) {
+            while (!str.empty() && str.back() == ' ') str.pop_back();
             if (!str.empty()) break;
+            else continue;
+        }
+        if (isalpha(ch) || ch == ' ') {
+            if (ch == ' ') {
+                if (indexX == 0 || str[indexX - 1] == ' ') continue;
+            }
+            
+            if (str.length() < 50) {
+                if (isalpha(ch)) {
+                    if (indexX == 0 || str[indexX - 1] == ' ') ch = toupper(ch);
+                    else ch = tolower(ch);
+                }
+
+                string s(1, ch);
+                str.insert(indexX, s);
+                indexX++;
+
+                gotoxy(startX, startY);
+                cout << str;
+            }
         }
     }
     return str;
+}
+
+string NhapCoDieuHuong(int X, int Y, int maxCols, int maxRows, string noiDungCu, int &keyLog) {
+    ShowCur(true);
+    string s = noiDungCu;
+
+    gotoxy(X, Y);
+    cout << s;
+    
+    while (true) {
+        gotoxy(X + s.length(), Y);
+        int ch = _getch();
+        if (ch == 224 || ch == 0) {
+            ch = _getch();
+            keyLog = ch;
+            return s;
+        }
+        else if (ch == 13 || ch == 27) { 
+            keyLog = ch;
+            return s;
+        }
+        else if (ch == 8 && s.length() > 0) { 
+            s.pop_back();
+            gotoxy(X + s.length(), Y);
+            cout << " ";
+            gotoxy(X + s.length(), Y);
+        }
+        else if (ch >= 32 && ch <= 126 && s.length() < maxCols) { 
+            s += (char)ch;
+            cout << (char)ch;
+        }
+    }
 }
 
 bool NhapGioiTinh(int x, int y, bool defaultPhai = true) {
@@ -261,63 +310,12 @@ char ChonDapAn(int x, int y, int* keyLog = NULL) {
     }
 }
 
-void control(int X, int Y, string &text) {
-    int indexX = X;
-    int indexY = Y; 
-    int ch;
 
-    while (true) {
-        gotoxy(0, indexY); 
-        cout << text << "        "; 
-        gotoxy(indexX, indexY);
-
-        ch = _getch();
-
-        if (ch == -32 || ch == 224) {
-            ch = _getch();
-            if (ch == 75) { 
-                if (indexX > 0) indexX--;
-            }
-            else if (ch == 77) { 
-                if (indexX < text.length()) indexX++;
-            }
-            else if (ch == 72) { 
-                if (indexY > 0) indexY--;
-            }
-            else if (ch == 80) { 
-                if (indexY < 30) indexY++; 
-            }
-        }
-        else if (ch == 8) { 
-            if (indexX > 0) {
-                text.erase(indexX - 1, 1);
-                indexX--;
-            }
-        }
-        else if (ch >= 32 && ch <= 126) { 
-            string s(1, (char)ch);
-            text.insert(indexX, s);
-            indexX++;
-        }
-        else if (ch == 13) { 
-            break;
-        }
-    }
-}
-
-// Ham nhap nhieu dong co gioi han vung (maxCols: so ky tu tren 1 dong, maxRows: so dong toi da)
 string xuongdongGioiHan(int X, int Y, int maxCols, int maxRows, int maxChars, char* noiDungCu = NULL, int* keyLog = NULL) {
     int curX = X, curY = Y, len = 0;
     int posX[230], posY[230];
     string result = "";
 
-    // Xoa vung nhap truoc
-    for (int i = 0; i < maxRows; i++) {
-        gotoxy(X, Y + i);
-        cout << string(maxCols, ' ');
-    }
-
-    // Pre-load noiDungCu: replay tung ky tu de xay posX/posY dung
     if (noiDungCu != NULL && noiDungCu[0] != '\0') {
         string src = noiDungCu;
         for (int si = 0; si < (int)src.size() && len < maxChars; si++) {
@@ -325,7 +323,6 @@ string xuongdongGioiHan(int X, int Y, int maxCols, int maxRows, int maxChars, ch
             if (c < 32 || c > 126) continue;
             if (len == 0 && c == ' ') continue;
 
-            // Word-wrap khi het chieu ngang
             if (curX >= X + maxCols) {
                 if (curY >= Y + maxRows - 1) break;
                 int wordStart = len;
@@ -353,38 +350,29 @@ string xuongdongGioiHan(int X, int Y, int maxCols, int maxRows, int maxChars, ch
         }
     }
 
-    // Dat cursor o cuoi noi dung hien tai
     gotoxy(curX, curY);
 
     while (true) {
         int ch = _getch(); 
-
         if (ch == 0 || ch == 224) {
             int ext = _getch();
-            // Up hoac Down => thoat de nhay field
             if ((ext == 72 || ext == 80) && keyLog != NULL) {
                 *keyLog = ext;
                 return result;
             }
             continue; 
         }
-        
         if (ch == 27) {
-            // Neu co keyLog (goi tu form dieu huong), tra ve cho vong ngoai xu ly
             if (keyLog != NULL) {
                 *keyLog = 27;
                 return result;
             }
-            // Khong co keyLog: tu xu ly xac nhan thoat (hanh vi cu)
             int savedX = curX;
             int savedY = curY;
             
             gotoxy(50, 26); SetColor(0, 14); cout << "Ban co chac muon thoat khong?";
             char xn = XacNhan(82, 26);
-         
-            gotoxy(50, 26); cout << "                                                  ";
-            gotoxy(80, 26); cout << "              ";
-            
+            gotoxy(50, 26); cout << "                                                                ";
             if (xn == 'Y') return ""; 
             else {
                 ShowCur(true);
@@ -393,29 +381,11 @@ string xuongdongGioiHan(int X, int Y, int maxCols, int maxRows, int maxChars, ch
             }
         }
         
-        if (ch == '\r')
-        {
-            // Neu co keyLog (goi tu form dieu huong): Enter = chuyen xuong field tiep
+        if (ch == '\r'){
             if (keyLog != NULL) {
                 *keyLog = 13;
                 return result;
             }
-
-            // Khong co keyLog (goi doc lap): validate khong de trong
-		    bool hopLe = false;
-		    for (int i = 0; i < (int)result.length(); i++) {
-		        if (result[i] != ' ') { hopLe = true; break; }
-		    }
-		    if (!hopLe) {
-			    int saveX = curX, saveY = curY;
-			    gotoxy(45, 25); SetColor(0, 12);
-			    cout << "Phan nay khong duoc de trong!";
-			    Sleep(800);
-			    gotoxy(45, 25); cout << "                               ";
-			    SetColor(0, 7);
-			    gotoxy(saveX, saveY);
-			    continue;
-			}
 		    break;
 		}
 
@@ -439,35 +409,23 @@ string xuongdongGioiHan(int X, int Y, int maxCols, int maxRows, int maxChars, ch
 
 		    if (curY >= Y + maxRows - 1)
 		        continue;
-		
-		    // Tìm đầu từ hiện tại
 		    int wordStart = len;
-		
 		    while (wordStart > 0 && result[wordStart - 1] != ' ')
 		        wordStart--;
-		
-		    // Nếu đang ở giữa một từ
+
 		    if (wordStart < len) {
-		
-		        // Xóa từ đó khỏi dòng cũ
 		        for (int i = wordStart; i < len; i++) {
 		            gotoxy(posX[i], posY[i]);
 		            cout << ' ';
 		        }
-		
-		        // Xuống dòng mới
 		        curY++;
 		        curX = X;
-		
-		        // Vẽ lại nguyên từ ở dòng mới
+		        
 		        for (int i = wordStart; i < len; i++) {
-		
 		            posX[i] = curX;
 		            posY[i] = curY;
-		
 		            gotoxy(curX, curY);
 		            cout << result[i];
-		
 		            curX++;
 		        }
 		    }
@@ -476,7 +434,6 @@ string xuongdongGioiHan(int X, int Y, int maxCols, int maxRows, int maxChars, ch
 		        curX = X;
 		    }
 		}
-
         posX[len] = curX; posY[len] = curY;
         gotoxy(curX, curY); cout << (char)ch;
         result += (char)ch; 
@@ -484,7 +441,6 @@ string xuongdongGioiHan(int X, int Y, int maxCols, int maxRows, int maxChars, ch
     }
     return result;
 }
-
 inline string ToLower(string s) {
     for (int i = 0; i < s.length(); i++) {
         s[i] = tolower((unsigned char)s[i]);
@@ -682,6 +638,7 @@ void XoaVungContent() {
     }
     XoaTitle();
     XoaSmallTitle();
+    SetColor(0, 7);
 }
 
 void InThongBaoContent(string thongBao, int maMau, int x, int y) {
@@ -807,7 +764,7 @@ char XacNhan(int x, int y) {
     }
     SetColor(0, 7);
 }
-
+ 
 
 void changePass(DanhSachLop &dsLop, SinhVien* svHienTai) {
     bool isChanged = false; 
