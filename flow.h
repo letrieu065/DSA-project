@@ -29,6 +29,7 @@ void flowChinh(DanhSachLop &dsLop, DanhSachMonHoc &dsMH, PTR_CAUHOI &root) {
 }
 
 int flowDangNhap(DanhSachLop &dsLop, SinhVien* &svLogined) {
+    ShowCur(true);
     while (true) {
         system("cls");
     	cout << "TAB: hien mat khau";

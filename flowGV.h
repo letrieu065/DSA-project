@@ -1413,8 +1413,8 @@ void flowQuanLyCauHoiCuaMon(const char* maMH, const char* tenMH, PTR_CAUHOI &roo
         if (currentPage >= totalPages) currentPage = totalPages - 1;
         if (currentPage < 0) currentPage = 0;
 
-        gotoxy(104, 27); SetColor(0, 10);
-        cout << "(Trang " << currentPage + 1 << "/" << totalPages << ")";
+        gotoxy(103, 27); SetColor(0, 10);
+        cout << "(Trang " << currentPage + 1 << "/" << totalPages << ") ";
         SetColor(0, 7);
 
         if (totalItems == 0) {
