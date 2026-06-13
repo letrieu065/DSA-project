@@ -1563,7 +1563,7 @@ void flowQuanLyCauHoiCuaMon(const char* maMH, const char* tenMH, PTR_CAUHOI &roo
  
                         if (ok) {
                             CauHoi* newNode = new CauHoi();
-                            TaoIdCauHoi(newNode->id, maMH, getNextSTT(maMH)++);
+                            TaoIdCauHoi(newNode->id, maMH, root); // Truyền root vào để tự sinh và check trùng
                             newNode->dapAn = t_DA;
                             newNode->left = newNode->right = NULL;
                             strcpy(newNode->maMH, maMH);

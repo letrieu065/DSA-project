@@ -219,6 +219,7 @@ bool LoadMonHoc(DanhSachMonHoc &dsMH) {
 }
 
 void KiemTraVaTaoFileCauHoi(const char* maMH, const char* tenMH) {
+    _mkdir("data");
     _mkdir("data/CAUHOI"); // Lệnh này sẽ tự tạo folder CAUHOI nếu nó chưa tồn tại
     string fileName = "data/CAUHOI/" + string(tenMH) + " " + string(maMH) + ".txt";
     ifstream f(fileName.c_str());
@@ -242,7 +243,7 @@ bool LuuFileCauHoiTheoMon(const char* maMH, const char* tenMH, PTR_CAUHOI root) 
     CauHoi* dsTam[1000];
     int n = 0;
     LayDanhSachCauHoiTheoMon(root, maMH, dsTam, n); 
-    
+    _mkdir("data");
     _mkdir("data/CAUHOI"); // Tự tạo folder trước khi lưu
     string fileName = "data/CAUHOI/" + string(tenMH) + " " + string(maMH) + ".txt";
     string tempName = fileName + ".tmp";
@@ -286,15 +287,6 @@ bool LoadCauHoiTuFile(const char* maMH, const char* tenMH, PTR_CAUHOI &root) {
         fIn.ignore();
         newNode->left = newNode->right = NULL;
         root = ThemCauHoi(root, newNode);
-
-        string idStr = tempID;
-        size_t pos = idStr.find_last_of('_');
-        if (pos != string::npos) {
-            int stt = atoi(idStr.substr(pos + 1).c_str()); 
-            if (stt >= getNextSTT(maMH)) {
-                getNextSTT(maMH) = stt + 1; 
-            }
-        }
     }
     fIn.close();
     return true;

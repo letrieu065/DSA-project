@@ -13,7 +13,6 @@
 int flowDangNhap(DanhSachLop &dsLop, SinhVien* &svLogined);
 
 void flowChinh(DanhSachLop &dsLop, DanhSachMonHoc &dsMH, PTR_CAUHOI &root) {
-	CapNhatSTT(root);
     while (true) {
         SinhVien* svHienTai = NULL;
         int role = flowDangNhap(dsLop, svHienTai); 

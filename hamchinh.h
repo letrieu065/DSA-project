@@ -33,8 +33,8 @@ bool kiemTraMonHocDaCoCauHoi(PTR_CAUHOI root, const char* maMH);
 bool KiemTraMonHocDaDuocThi(DanhSachLop &dsLop, const char* maMH);
 // Ham cau hoi
 
-int& getNextSTT(const char* maMH);
-void TaoIdCauHoi(char* bufOut, const char* maMH, int soThuTu);
+unsigned int LCG(unsigned int &seed);
+void TaoIdCauHoi(char* id, const char* maMH, PTR_CAUHOI root);
 PTR_CAUHOI ThemCauHoi(PTR_CAUHOI root, CauHoi* node);
 CauHoi* TimCauHoi(PTR_CAUHOI root, const char* id);
 CauHoi* LayNhoNhat(CauHoi* node);
@@ -346,39 +346,35 @@ bool KiemTraMonHocDaDuocThi(DanhSachLop &dsLop, const char* maMH) {
     }
     return false; // Chưa có ai thi
 }
-int& getNextSTT(const char* maMH) {
-    struct DemMon { char ma[20]; int dem; };
-    static DemMon ds[100];
-    static int soLuong = 0;
 
-    for (int i = 0; i < soLuong; i++)
-        if (strcmp(ds[i].ma, maMH) == 0)
-            return ds[i].dem;
-
-    strcpy(ds[soLuong].ma, maMH);
-    ds[soLuong].dem = 1;
-    return ds[soLuong++].dem;
+// Hàm sinh số ngẫu nhiên theo thuật toán LCG
+// Dùng unsigned int (32-bit) để tự động tràn (overflow) tương đương phép Modulo 2^32
+unsigned int LCG_Next(unsigned int &seed) {
+    unsigned int a = 1664525;
+    unsigned int c = 1013904223;
+    seed = a * seed + c;
+    return seed;
 }
 
-void TaoIdCauHoi(char* bufOut, const char* maMH, int soThuTu) {
-    snprintf(bufOut, 25, "%s_%04d", maMH, soThuTu);
-}
-
-
-void CapNhatSTT(PTR_CAUHOI root) {
-    if (root == NULL) return;
+// Hàm tạo ID Câu Hỏi ngẫu nhiên không trùng lặp
+void TaoIdCauHoi(char* bufOut, const char* maMH, PTR_CAUHOI root) {
+    // Biến static lưu trạng thái seed trong suốt thời gian app chạy
+    // Khởi tạo 1 lần duy nhất bằng thời gian thực khi gọi hàm lần đầu
+    static unsigned int currentSeed = (unsigned int)time(NULL); 
     
-    // Tìm phần số trong ID (ví dụ "IT_0015" lấy ra 15)
-    string idStr = root->id;
-    size_t pos = idStr.find_last_of('_');
-    if (pos != string::npos) {
-        int soHienTai = atoi(idStr.substr(pos + 1).c_str());
-        if (soHienTai >= getNextSTT(root->maMH)) {
-            getNextSTT(root->maMH) = soHienTai + 1; // Số tiếp theo sẽ lớn hơn số lớn nhất hiện tại
+    while (true) {
+        unsigned int randomNum = LCG_Next(currentSeed);
+        
+        // Tạo chuỗi ID (Ví dụ: IT001_8F3A2B1C)
+        // Dùng %08X để in số ngẫu nhiên ra hệ Thập lục phân (Hex) cho ngắn gọn và chuyên nghiệp
+        snprintf(bufOut, 25, "%s_%010u", maMH, randomNum);
+        
+        // Kiểm tra xem ID sinh ra đã tồn tại trong cây BST chưa?
+        // Xác suất trùng của LCG 32-bit là 1/4 tỷ, nhưng vẫn check cho chuẩn tuyệt đối 100%
+        if (TimCauHoi(root, bufOut) == NULL) {
+            break; // Nếu cây chưa có ID này -> Chốt ID và thoát vòng lặp
         }
     }
-    CapNhatSTT(root->left);
-    CapNhatSTT(root->right);
 }
 
 PTR_CAUHOI ThemCauHoi(PTR_CAUHOI root, CauHoi* node) {
