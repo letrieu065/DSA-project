@@ -87,17 +87,16 @@ void flowQuanLyLop_SinhVien(DanhSachLop &dsLop) {
             gotoxy(35, 26); SetColor(0, 8);
             cout << "Up/Down: Chon | Left/Right: Chuyen trang | [ENTER] Xem SV"; 
             gotoxy(35, 27); SetColor(0, 11);
-            cout << "[INS/I] Them | [E] Sua | [DEL] Xoa | [F| Tim Kiem  | [ESC] Thoat";
+            cout << "[INS/I] Them | [E] Sua | [DEL] Xoa | [F] Tim Kiem  | [ESC] Thoat";
             SetColor(0, 7);
             oldPage = currentPage;
             oldCursor = cursor;
-            forceRedraw = false; // Reset cờ sau lần vẽ đầu tiên
+            forceRedraw = false; 
         }
 
         else if (oldCursor != cursor) {
             int startIdx = currentPage * itemsPerPage;
             
-            // Trả lại màu bình thường cho dòng cũ (nếu dòng cũ nằm trong trang hiện tại)
             if (oldCursor >= startIdx && oldCursor < startIdx + itemsPerPage) {
                 int toadoY_old = 9 + (oldCursor - startIdx) * 2;
                 SetColor(0, 7);
@@ -105,7 +104,6 @@ void flowQuanLyLop_SinhVien(DanhSachLop &dsLop) {
                 printf(" %-5d %-16s %-35s", oldCursor + 1, dsLop.nodes[oldCursor]->maLop, dsLop.nodes[oldCursor]->tenLop);
             }
             
-            // Bôi màu highlight cho dòng mới
             int toadoY_new = 9 + (cursor - startIdx) * 2;
             SetColor(11, 0);
             gotoxy(35, toadoY_new);
@@ -251,8 +249,7 @@ void flowQuanLyLop_SinhVien(DanhSachLop &dsLop) {
 
             ShowCur(true);
 
-            int currentField = 0; // 0: Đang ở Mã, 1: Đang ở Tên
-            bool isDone = false;
+            int currentField = 0; // 0: Dang nhap ma, 1: Dang nhap ten
             bool isCancel = false;
 
             while (!isDone && !isCancel) {
@@ -1207,7 +1204,6 @@ void flowQuanLyCauHoiCuaMon(const char* maMH, const char* tenMH, PTR_CAUHOI &roo
 		int ch = _getch();
 		if (ch == 224 || ch == 0 || ch == -32) {
 		    ch = _getch();
-		    // Chuyển câu hỏi (trang)
 		    if (ch == 75 && currentPage > 0) currentPage--;     
 		    else if (ch == 77 && currentPage < totalItems - 1) currentPage++; 
 		}

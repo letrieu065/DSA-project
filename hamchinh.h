@@ -40,7 +40,6 @@ CauHoi* TimCauHoi(PTR_CAUHOI root, const char* id);
 CauHoi* LayNhoNhat(CauHoi* node);
 PTR_CAUHOI XoaCauHoi(PTR_CAUHOI root, const char* id);
 void CapNhatSTT(PTR_CAUHOI root);
-void InOrderCauHoi(PTR_CAUHOI root, int &y, int x);
 
 DiemThi* saoChepDanhSachDiem(DiemThi* src); 
 
@@ -351,42 +350,6 @@ void TaoIdCauHoi(char* bufOut, const char* maMH, int soThuTu) {
     snprintf(bufOut, 25, "%s_%04d", maMH, soThuTu);
 }
 
-void InOrderCauHoi(PTR_CAUHOI root, int &y, int x) {
-    if (root == NULL) return;
-
-    InOrderCauHoi(root->left, y, x);
-
-    gotoxy(x, y);
-    SetColor(0, 11);
-    cout << "[" << root->id << "] ";
-    SetColor(0, 7);
-
-    int usedLines = InChuoiGioiHan(root->noiDung, x + 16, y, 65);
-
-    y += usedLines; 
-
-    gotoxy(x + 2, y++);
-    cout << "A. " << root->a;
-
-    gotoxy(x + 2, y++);
-    cout << "B. " << root->b;
-
-    gotoxy(x + 2, y++);
-    cout << "C. " << root->c;
-
-    gotoxy(x + 2, y++);
-    cout << "D. " << root->d;
-
-    // 👉 Đáp án đúng
-    SetColor(0, 10);
-    gotoxy(x + 2, y++);
-    cout << "=> Dap an: " << root->dapAn;
-    SetColor(0, 7);
-
-    y += 1; // cách dòng giữa các câu
-
-    InOrderCauHoi(root->right, y, x);
-}
 
 void CapNhatSTT(PTR_CAUHOI root) {
     if (root == NULL) return;
