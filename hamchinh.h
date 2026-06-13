@@ -6,12 +6,13 @@
 #include "hamve.h"
 
 // Ham lop
-int KiemTraTrungMaLop(DanhSachLop &dsLop, char* maNhap);
-int KiemTraTrungTenLop(DanhSachLop &dsLop, char* tenNhap);
-int themLop(DanhSachLop &dsLop, char* ma, char* ten);
+int KiemTraTrungMaLop(DanhSachLop &dsLop, const char* maNhap);
+int KiemTraTrungTenLop(DanhSachLop &dsLop, const char* tenNhap);
+int themLop(DanhSachLop &dsLop, const char* ma, const char* ten);
 int timViTriLop(DanhSachLop &dsLop, const char* maLop_nhap);
-int suaLop(DanhSachLop &dsLop, char* ma, char* tenMoi);
-int xoaLop(DanhSachLop &dsLop, char* ma);
+int suaLop(DanhSachLop &dsLop, const char* ma, const char* tenMoi);
+int xoaLop(DanhSachLop &dsLop, const char* ma);
+int KiemTraLopCoSinhVien(DanhSachLop &dsLop, const char* maLop);
 
 // Ham sinh vien
 SinhVien* timKiemSinhVien(Lop* lop, const char* maSV);
@@ -45,7 +46,7 @@ DiemThi* saoChepDanhSachDiem(DiemThi* src);
 
 using namespace std;
 
-int KiemTraTrungMaLop(DanhSachLop &dsLop, char* maNhap) {
+int KiemTraTrungMaLop(DanhSachLop &dsLop, const char* maNhap) {
     for (int i = 0; i < dsLop.soLuong; i++) {
         if (strcmp(dsLop.nodes[i]->maLop, maNhap) == 0) {
             return i; 
@@ -54,7 +55,7 @@ int KiemTraTrungMaLop(DanhSachLop &dsLop, char* maNhap) {
     return -1; 
 }
 
-int KiemTraTrungTenLop(DanhSachLop &dsLop, char* tenNhap) {
+int KiemTraTrungTenLop(DanhSachLop &dsLop, const char* tenNhap) {
     for (int i = 0; i < dsLop.soLuong; i++) {
         if (strcmp(dsLop.nodes[i]->tenLop, tenNhap) == 0) {
             return i; 
@@ -63,7 +64,7 @@ int KiemTraTrungTenLop(DanhSachLop &dsLop, char* tenNhap) {
     return -1; 
 }
 
-int themLop(DanhSachLop &dsLop, char* ma, char* ten) {
+int themLop(DanhSachLop &dsLop, const char* ma, const char* ten) {
 	if (dsLop.soLuong >= MAX_LOP) return ERR_LOP_FULL;
 	
 	if (KiemTraTrungMaLop(dsLop, ma) != -1) return ERR_LOP_DUPLICATE;
@@ -90,19 +91,28 @@ int timViTriLop(DanhSachLop &dsLop, const char* maLop_nhap) {
     return ERR_LOP_NOT_FOUND;
 }
 
-int suaLop(DanhSachLop &dsLop, char* ma, char* tenMoi) {
+int suaLop(DanhSachLop &dsLop, const char* ma, const char* maMoi, const char* tenMoi) {
     int index = timViTriLop(dsLop, ma);
     
     if (index == ERR_LOP_NOT_FOUND) {
         return ERR_LOP_NOT_FOUND;
     }
+
+    if (KiemTraTrungTenLop(dsLop, tenMoi) != -1 && strcmp(dsLop.nodes[index]->tenLop, tenMoi) != 0) {
+        return ERR_LOP_DUPLICATE_NAME;
+    }
+
+    if (KiemTraTrungMaLop(dsLop, maMoi) != -1 && strcmp(dsLop.nodes[index]->maLop, maMoi) != 0) {
+        return ERR_LOP_DUPLICATE;
+    }
     
+    strcpy(dsLop.nodes[index]->maLop, maMoi);
     strcpy(dsLop.nodes[index]->tenLop, tenMoi);
     
     return SUCCESS;
 }
 
-int xoaLop(DanhSachLop &dsLop, char* ma) {
+int xoaLop(DanhSachLop &dsLop, const char* ma) {
 	int index = timViTriLop(dsLop, ma);
 	
 	if (index == ERR_LOP_NOT_FOUND) {
@@ -120,6 +130,19 @@ int xoaLop(DanhSachLop &dsLop, char* ma) {
     }
     
     dsLop.soLuong--;
+    
+    return SUCCESS;
+}
+
+int KiemTraLopCoSinhVien(DanhSachLop &dsLop, const char* maLop) {
+    int index = timViTriLop(dsLop, maLop);
+    if (index == ERR_LOP_NOT_FOUND) {
+        return ERR_LOP_NOT_FOUND;
+    }
+    
+    if (dsLop.nodes[index]->headSV != NULL) {
+        return ERR_LOP_HAS_SV; 
+    }
     
     return SUCCESS;
 }
