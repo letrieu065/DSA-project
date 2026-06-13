@@ -15,6 +15,17 @@ void gotoxy(int x, int y) {
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
 }
 
+void getXY(int &x, int &y) {
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+    if (GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi)) {
+        x = csbi.dwCursorPosition.X;
+        y = csbi.dwCursorPosition.Y;
+    } else {
+        x = 0;
+        y = 0;
+    }
+}
+
 // Ham doi mau
 void SetColor(int backgound_color, int text_color) {
     HANDLE hDefaultColor = GetStdHandle(STD_OUTPUT_HANDLE);

@@ -30,6 +30,10 @@ void XoaThongBao(int x, int y, int length);
 string NhapMa(int maxLength);
 void XoaTitle();
 void XoaSmallTitle();
+int NhapSo(int suggest, int maxLength, int minVal, int maxVal);
+string NhapChuoiChu();
+string NhapTen(string suggest);
+string NhapCoDieuHuong(int X, int Y, int maxCols, int maxRows, string noiDungCu, int &keyLog);
 
 // Ham nhap lieu
 int NhapSo(int suggest = -1, int maxLength = 6, int minVal = 1, int maxVal = 999999) {
@@ -146,7 +150,7 @@ string NhapMa(int maxLength) {
 string NhapTen(string suggest = "") {
     string str = suggest;
     int startX, startY;
-    //getXY(startX, startY); 
+    getXY(startX, startY); 
 
     int indexX = str.length(); 
     cout << str; 
@@ -198,9 +202,6 @@ string NhapTen(string suggest = "") {
     }
     return str;
 }
-string NhapCoDieuHuong(int X, int Y, int maxCols, int maxRows, string noiDungCu, int &keyLog) {
-    ShowCur(true);
-    string s = noiDungCu;
 
 string NhapCoDieuHuong(int X, int Y, int maxCols, int maxRows, string noiDungCu, int &keyLog) {
     ShowCur(true);

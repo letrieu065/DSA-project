@@ -13,16 +13,45 @@
 using namespace std;
 
 void KiemTraVaTaoFileCauHoi(const char* maMH, const char* tenMH);
-void LuuFileCauHoiTheoMon(const char* maMH, const char* tenMH, PTR_CAUHOI root);
+bool LuuFileCauHoiTheoMon(const char* maMH, const char* tenMH, PTR_CAUHOI root);
 void LayDanhSachCauHoiTheoMon(PTR_CAUHOI root, const char* maMH, CauHoi* dsTam[], int &n);
-void LoadCauHoiTuFile(const char* maMH, const char* tenMH, PTR_CAUHOI &root);
-void saveData(DanhSachLop &dsLop, DanhSachMonHoc &dsMH, PTR_CAUHOI &root);
+bool LoadCauHoiTuFile(const char* maMH, const char* tenMH, PTR_CAUHOI &root);
+bool saveData(DanhSachLop &dsLop, DanhSachMonHoc &dsMH, PTR_CAUHOI &root);
 void SaveBaiLam(const char* maSV, const char* maMH, string dsNDCauHoi[], char dsDapAnDung[], char dsDapAnChon[], int soCau);
 void XoaFileNeuTrong(const char* maMH, const char* tenMH, PTR_CAUHOI root);
-void LoadMonHoc(DanhSachMonHoc &dsMH);
-void LoadLop(DanhSachLop &dsLop);
-void SaveMonHoc(DanhSachMonHoc &dsMH);
-void SaveLop(DanhSachLop &dsLop);
+bool LoadMonHoc(DanhSachMonHoc &dsMH);
+bool LoadLop(DanhSachLop &dsLop);
+bool SaveMonHoc(DanhSachMonHoc &dsMH);
+bool SaveLop(DanhSachLop &dsLop);
+bool loadData(DanhSachLop &dsLop, DanhSachMonHoc &dsMH, PTR_CAUHOI &root);
+
+static bool gDaLoadLopThanhCong = false;
+static bool gDaLoadMonHocThanhCong = false;
+static bool gDaLoadCauHoiThanhCong = false;
+
+bool ThayTheFileAnToan(const string& tempName, const string& fileName) {
+    string backupName = fileName + ".bak";
+    bool coFileCu = false;
+    {
+        ifstream f(fileName.c_str());
+        coFileCu = f.good();
+    }
+
+    remove(backupName.c_str());
+    if (coFileCu && rename(fileName.c_str(), backupName.c_str()) != 0) {
+        remove(tempName.c_str());
+        return false;
+    }
+
+    if (rename(tempName.c_str(), fileName.c_str()) != 0) {
+        if (coFileCu) rename(backupName.c_str(), fileName.c_str());
+        remove(tempName.c_str());
+        return false;
+    }
+
+    remove(backupName.c_str());
+    return true;
+}
 
 
 
@@ -34,9 +63,13 @@ int DemSoDiem(DiemThi* headDiem) {
     return count;
 }
 
-void SaveLop(DanhSachLop &dsLop) {
-    ofstream fOut("data/LOP.txt", ios::out); 
-    if (!fOut.is_open()) return;
+bool SaveLop(DanhSachLop &dsLop) {
+    if (!gDaLoadLopThanhCong) return false;
+
+    string tempName = "data/LOP.txt.tmp";
+    string fileName = "data/LOP.txt";
+    ofstream fOut(tempName.c_str(), ios::out); 
+    if (!fOut.is_open()) return false;
     
     fOut << dsLop.soLuong << endl;
     
@@ -68,11 +101,20 @@ void SaveLop(DanhSachLop &dsLop) {
         }
     }
     fOut.close();
+    if (!fOut) {
+        remove(tempName.c_str());
+        return false;
+    }
+    return ThayTheFileAnToan(tempName, fileName);
 }
 
-void SaveMonHoc(DanhSachMonHoc &dsMH) {
-    ofstream fOut("data/MONHOC.txt", ios::out); 
-    if (!fOut.is_open()) return;
+bool SaveMonHoc(DanhSachMonHoc &dsMH) {
+    if (!gDaLoadMonHocThanhCong) return false;
+
+    string tempName = "data/MONHOC.txt.tmp";
+    string fileName = "data/MONHOC.txt";
+    ofstream fOut(tempName.c_str(), ios::out); 
+    if (!fOut.is_open()) return false;
     fOut << dsMH.soLuong << endl;
     for (int i = 0; i < dsMH.soLuong; i++) {
         fOut << dsMH.data[i].maMH << endl;
@@ -80,80 +122,100 @@ void SaveMonHoc(DanhSachMonHoc &dsMH) {
         fOut << dsMH.data[i].tenMH << endl;
     }
     fOut.close();
+    if (!fOut) {
+        remove(tempName.c_str());
+        return false;
+    }
+    return ThayTheFileAnToan(tempName, fileName);
 }
 
-void LoadLop(DanhSachLop &dsLop) {
+bool LoadLop(DanhSachLop &dsLop) {
     ifstream fIn("data/LOP.txt", ios::in); 
-    if (!fIn.is_open()) return;
+    if (!fIn.is_open()) return false;
     
     int soLop;
-    if (!(fIn >> soLop)) return; 
+    if (!(fIn >> soLop) || soLop < 0 || soLop > MAX_LOP) return false; 
     fIn.ignore();
     
-    dsLop.soLuong = 0; 
+    DanhSachLop dsTam;
+    dsTam.soLuong = 0;
+    for (int i = 0; i < MAX_LOP; i++) dsTam.nodes[i] = NULL;
+
     for (int i = 0; i < soLop; i++) {
-        dsLop.nodes[i] = new Lop;
-        fIn.getline(dsLop.nodes[i]->maLop, MAX_MALOP);
-        fIn.getline(dsLop.nodes[i]->tenLop, MAX_TEN);
-        dsLop.nodes[i]->headSV = NULL;
+        dsTam.nodes[i] = new Lop;
+        if (!fIn.getline(dsTam.nodes[i]->maLop, MAX_MALOP)) return false;
+        if (!fIn.getline(dsTam.nodes[i]->tenLop, MAX_TEN)) return false;
+        dsTam.nodes[i]->headSV = NULL;
         
         int soSV;
-        fIn >> soSV; fIn.ignore();
+        if (!(fIn >> soSV) || soSV < 0) return false;
+        fIn.ignore();
         
         SinhVien* tailSV = NULL;
         for (int j = 0; j < soSV; j++) {
             char tempMa[MAX_MASV] = {0}; 
             if (!fIn.getline(tempMa, MAX_MASV) || strlen(tempMa) < 2) {
-
-                continue; 
+                return false; 
             }
 
             SinhVien* svMoi = new SinhVien;
             strcpy(svMoi->maSV, tempMa);
-            fIn.getline(svMoi->ho, MAX_TEN);
-            fIn.getline(svMoi->ten, MAX_TEN);
-            fIn >> svMoi->phai; fIn.ignore();
-            fIn.getline(svMoi->password, MAX_PASS);
+            if (!fIn.getline(svMoi->ho, MAX_TEN)) return false;
+            if (!fIn.getline(svMoi->ten, MAX_TEN)) return false;
+            if (!(fIn >> svMoi->phai)) return false;
+            fIn.ignore();
+            if (!fIn.getline(svMoi->password, MAX_PASS)) return false;
             svMoi->headDiem = NULL;
             svMoi->next = NULL;
             
 
             int soDiem;
-            fIn >> soDiem; fIn.ignore();
+            if (!(fIn >> soDiem) || soDiem < 0) return false;
+            fIn.ignore();
             DiemThi* tailDiem = NULL;
             for (int k = 0; k < soDiem; k++) {
                 DiemThi* diemMoi = new DiemThi;
-                fIn.getline(diemMoi->maMH, MAX_MAMH);
-                fIn >> diemMoi->diem; fIn.ignore();
+                if (!fIn.getline(diemMoi->maMH, MAX_MAMH)) return false;
+                if (!(fIn >> diemMoi->diem)) return false;
+                fIn.ignore();
                 diemMoi->next = NULL;
                 if (svMoi->headDiem == NULL) svMoi->headDiem = diemMoi;
                 else tailDiem->next = diemMoi;
                 tailDiem = diemMoi;
             }
 
-            if (dsLop.nodes[i]->headSV == NULL) dsLop.nodes[i]->headSV = svMoi;
+            if (dsTam.nodes[i]->headSV == NULL) dsTam.nodes[i]->headSV = svMoi;
             else tailSV->next = svMoi;
             tailSV = svMoi;
         }
-        dsLop.soLuong++;
+        dsTam.soLuong++;
     }
     fIn.close();
+
+    dsLop = dsTam;
+    gDaLoadLopThanhCong = true;
+    return true;
 }
 
-void LoadMonHoc(DanhSachMonHoc &dsMH) {
+bool LoadMonHoc(DanhSachMonHoc &dsMH) {
     ifstream fIn("data/MONHOC.txt", ios::in);
-    if (!fIn.is_open()) return;
+    if (!fIn.is_open()) return false;
     int n;
-    fIn >> n;
+    if (!(fIn >> n) || n < 0 || n > MAX_MON_HOC) return false;
     fIn.ignore();
+    DanhSachMonHoc dsTam;
+    dsTam.soLuong = 0;
     for (int i = 0; i < n; i++) {
-        fIn.getline(dsMH.data[i].maMH, MAX_MAMH);
-        fIn >> dsMH.data[i].soTinChi;
+        if (!fIn.getline(dsTam.data[i].maMH, MAX_MAMH)) return false;
+        if (!(fIn >> dsTam.data[i].soTinChi)) return false;
         fIn.ignore();
-        fIn.getline(dsMH.data[i].tenMH, MAX_TEN);
+        if (!fIn.getline(dsTam.data[i].tenMH, MAX_TEN)) return false;
     }
-    dsMH.soLuong = n; 
+    dsTam.soLuong = n;
+    dsMH = dsTam;
+    gDaLoadMonHocThanhCong = true;
     fIn.close();
+    return true;
 }
 
 void KiemTraVaTaoFileCauHoi(const char* maMH, const char* tenMH) {
@@ -176,15 +238,16 @@ void LayDanhSachCauHoiTheoMon(PTR_CAUHOI root, const char* maMH, CauHoi* dsTam[]
     LayDanhSachCauHoiTheoMon(root->right, maMH, dsTam, n);
 }
 
-void LuuFileCauHoiTheoMon(const char* maMH, const char* tenMH, PTR_CAUHOI root) {
+bool LuuFileCauHoiTheoMon(const char* maMH, const char* tenMH, PTR_CAUHOI root) {
     CauHoi* dsTam[1000];
     int n = 0;
     LayDanhSachCauHoiTheoMon(root, maMH, dsTam, n); 
     
     _mkdir("data/CAUHOI"); // Tự tạo folder trước khi lưu
     string fileName = "data/CAUHOI/" + string(tenMH) + " " + string(maMH) + ".txt";
-    ofstream fout(fileName.c_str());
-    if (!fout.is_open()) return;
+    string tempName = fileName + ".tmp";
+    ofstream fout(tempName.c_str());
+    if (!fout.is_open()) return false;
 
     for (int i = 0; i < n; i++) {
         fout << dsTam[i]->id << endl;
@@ -196,12 +259,17 @@ void LuuFileCauHoiTheoMon(const char* maMH, const char* tenMH, PTR_CAUHOI root) 
         fout << dsTam[i]->dapAn << endl;
     }
     fout.close();
+    if (!fout) {
+        remove(tempName.c_str());
+        return false;
+    }
+    return ThayTheFileAnToan(tempName, fileName);
 }
 
-void LoadCauHoiTuFile(const char* maMH, const char* tenMH, PTR_CAUHOI &root) {
+bool LoadCauHoiTuFile(const char* maMH, const char* tenMH, PTR_CAUHOI &root) {
     string fileName = "data/CAUHOI/" + string(tenMH) + " " + string(maMH) + ".txt";
     ifstream fIn(fileName.c_str());
-    if (!fIn.is_open()) return;
+    if (!fIn.is_open()) return false;
 
     char tempID[25];
     while (fIn.getline(tempID, 25) && strlen(tempID) > 0) {
@@ -209,12 +277,12 @@ void LoadCauHoiTuFile(const char* maMH, const char* tenMH, PTR_CAUHOI &root) {
         CauHoi* newNode = new CauHoi();
         strcpy(newNode->id, tempID);
         strcpy(newNode->maMH, maMH);
-        fIn.getline(newNode->noiDung, 499);
-        fIn.getline(newNode->a, 200);
-        fIn.getline(newNode->b, 200);
-        fIn.getline(newNode->c, 200);
-        fIn.getline(newNode->d, 200);
-        fIn >> newNode->dapAn;
+        if (!fIn.getline(newNode->noiDung, 499)) return false;
+        if (!fIn.getline(newNode->a, 200)) return false;
+        if (!fIn.getline(newNode->b, 200)) return false;
+        if (!fIn.getline(newNode->c, 200)) return false;
+        if (!fIn.getline(newNode->d, 200)) return false;
+        if (!(fIn >> newNode->dapAn)) return false;
         fIn.ignore();
         newNode->left = newNode->right = NULL;
         root = ThemCauHoi(root, newNode);
@@ -229,6 +297,7 @@ void LoadCauHoiTuFile(const char* maMH, const char* tenMH, PTR_CAUHOI &root) {
         }
     }
     fIn.close();
+    return true;
 }
 
 void XoaFileNeuTrong(const char* maMH, const char* tenMH, PTR_CAUHOI root) {
@@ -243,20 +312,27 @@ void XoaFileNeuTrong(const char* maMH, const char* tenMH, PTR_CAUHOI root) {
     }
 }
 
-void saveData(DanhSachLop &dsLop, DanhSachMonHoc &dsMH, PTR_CAUHOI &root) {
-    SaveMonHoc(dsMH);
-    SaveLop(dsLop);
+bool saveData(DanhSachLop &dsLop, DanhSachMonHoc &dsMH, PTR_CAUHOI &root) {
+    bool ok = true;
+    ok = SaveMonHoc(dsMH) && ok;
+    ok = SaveLop(dsLop) && ok;
+    if (!gDaLoadCauHoiThanhCong) return false;
     for (int i = 0; i < dsMH.soLuong; i++) {
-        LuuFileCauHoiTheoMon(dsMH.data[i].maMH, dsMH.data[i].tenMH, root);
+        ok = LuuFileCauHoiTheoMon(dsMH.data[i].maMH, dsMH.data[i].tenMH, root) && ok;
     }
+    return ok;
 }
 
-void loadData(DanhSachLop &dsLop, DanhSachMonHoc &dsMH, PTR_CAUHOI &root) {
-    LoadMonHoc(dsMH);
-    LoadLop(dsLop);
+bool loadData(DanhSachLop &dsLop, DanhSachMonHoc &dsMH, PTR_CAUHOI &root) {
+    bool okMonHoc = LoadMonHoc(dsMH);
+    bool okLop = LoadLop(dsLop);
+    if (!okMonHoc || !okLop) return false;
+    bool okCauHoi = true;
     for (int i = 0; i < dsMH.soLuong; i++) {
-        LoadCauHoiTuFile(dsMH.data[i].maMH, dsMH.data[i].tenMH, root);
+        okCauHoi = LoadCauHoiTuFile(dsMH.data[i].maMH, dsMH.data[i].tenMH, root) && okCauHoi;
     }
+    gDaLoadCauHoiThanhCong = okCauHoi;
+    return okCauHoi;
 }
 
 void SaveBaiLam(const char* maSV, const char* maMH, string dsNDCauHoi[], char dsDapAnDung[], char dsDapAnChon[], int soCau) {

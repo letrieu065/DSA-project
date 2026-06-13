@@ -1,0 +1,140 @@
+INT1154_0001
+Kieu du lieu nao dung de luu so nguyen?
+int
+float
+char
+bool
+A
+INT1154_0002
+Tu khoa nao dung de khai bao hang so?
+const
+static
+public
+return
+A
+INT1154_0003
+Toan tu nao truy cap thanh vien qua con tro?
+.
+->
+::
+&
+B
+INT1154_0004
+Ham main trong C++ thuong tra ve kieu nao?
+void
+char
+int
+float
+C
+INT1154_0005
+Lenh nao giai phong vung nho cap phat bang new?
+free
+delete
+remove
+clear
+B
+INT1154_0006
+Kieu du lieu nao dung de luu so nguyen? Cau so 6.
+int
+float
+char
+bool
+A
+INT1154_0007
+Tu khoa nao dung de khai bao hang so? Cau so 7.
+const
+static
+public
+return
+A
+INT1154_0008
+Toan tu nao truy cap thanh vien qua con tro? Cau so 8.
+.
+->
+::
+&
+B
+INT1154_0009
+Ham main trong C++ thuong tra ve kieu nao? Cau so 9.
+void
+char
+int
+float
+C
+INT1154_0010
+Lenh nao giai phong vung nho cap phat bang new? Cau so 10.
+free
+delete
+remove
+clear
+B
+INT1154_0011
+Kieu du lieu nao dung de luu so nguyen? Cau so 11.
+int
+float
+char
+bool
+A
+INT1154_0012
+Tu khoa nao dung de khai bao hang so? Cau so 12.
+const
+static
+public
+return
+A
+INT1154_0013
+Toan tu nao truy cap thanh vien qua con tro? Cau so 13.
+.
+->
+::
+&
+B
+INT1154_0014
+Ham main trong C++ thuong tra ve kieu nao? Cau so 14.
+void
+char
+int
+float
+C
+INT1154_0015
+Lenh nao giai phong vung nho cap phat bang new? Cau so 15.
+free
+delete
+remove
+clear
+B
+INT1154_0016
+Kieu du lieu nao dung de luu so nguyen? Cau so 16.
+int
+float
+char
+bool
+A
+INT1154_0017
+Tu khoa nao dung de khai bao hang so? Cau so 17.
+const
+static
+public
+return
+A
+INT1154_0018
+Toan tu nao truy cap thanh vien qua con tro? Cau so 18.
+.
+->
+::
+&
+B
+INT1154_0019
+Ham main trong C++ thuong tra ve kieu nao? Cau so 19.
+void
+char
+int
+float
+C
+INT1154_0020
+Lenh nao giai phong vung nho cap phat bang new? Cau so 20.
+free
+delete
+remove
+clear
+B

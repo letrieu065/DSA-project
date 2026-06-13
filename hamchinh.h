@@ -187,8 +187,11 @@ int themSinhVien(Lop* lop, SinhVien sv) {
 	if (lop == NULL) return ERR_LOP_NOT_FOUND;
 	SinhVien* newNode = new SinhVien;
 	
-	*newNode = sv;
-	
+	strcpy(newNode->maSV, sv.maSV);
+	strcpy(newNode->ho, sv.ho);
+	strcpy(newNode->ten, sv.ten);
+	newNode->phai = sv.phai;
+	strcpy(newNode->password, sv.password);
     newNode->headDiem = saoChepDanhSachDiem(sv.headDiem);
 	newNode->next = lop->headSV;
 	lop->headSV = newNode;
@@ -214,6 +217,10 @@ int suaSinhVien(Lop* lop, const char* maSV, SinhVien svMoi) {
         strcpy(p->ten, svMoi.ten);
     }
     
+    if (strlen(svMoi.maSV) > 0) {
+        strcpy(p->maSV, svMoi.maSV);
+    }
+
     p->phai = svMoi.phai;
     
     return SUCCESS;
@@ -236,6 +243,13 @@ int xoaSinhVien(Lop* lop, const char* maSV) {
 	
 	else prev->next = p->next;
 	
+    DiemThi* d = p->headDiem;
+    while (d != NULL) {
+        DiemThi* nextDiem = d->next;
+        delete d;
+        d = nextDiem;
+    }
+
 	delete p;
     return SUCCESS;
 }

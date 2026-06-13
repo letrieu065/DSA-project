@@ -1,0 +1,140 @@
+TOAN01_0001
+Menh de nao la menh de logic?
+Hom nay troi mua
+Hay hoc bai
+Dung noi chuyen
+Ban co khoe khong
+A
+TOAN01_0002
+Phep keo theo P suy ra Q sai khi nao?
+P dung Q sai
+P sai Q dung
+P sai Q sai
+P dung Q dung
+A
+TOAN01_0003
+Tap rong co bao nhieu phan tu?
+0
+1
+2
+Khong xac dinh
+A
+TOAN01_0004
+Giao cua A va B gom cac phan tu nao?
+Thuoc ca A va B
+Chi thuoc A
+Chi thuoc B
+Khong thuoc tap nao
+A
+TOAN01_0005
+Quan he tuong duong can co tinh chat nao?
+Phan xa doi xung bac cau
+Chi phan xa
+Chi doi xung
+Chi bac cau
+A
+TOAN01_0006
+Menh de nao la menh de logic? Cau so 6.
+Hom nay troi mua
+Hay hoc bai
+Dung noi chuyen
+Ban co khoe khong
+A
+TOAN01_0007
+Phep keo theo P suy ra Q sai khi nao? Cau so 7.
+P dung Q sai
+P sai Q dung
+P sai Q sai
+P dung Q dung
+A
+TOAN01_0008
+Tap rong co bao nhieu phan tu? Cau so 8.
+0
+1
+2
+Khong xac dinh
+A
+TOAN01_0009
+Giao cua A va B gom cac phan tu nao? Cau so 9.
+Thuoc ca A va B
+Chi thuoc A
+Chi thuoc B
+Khong thuoc tap nao
+A
+TOAN01_0010
+Quan he tuong duong can co tinh chat nao? Cau so 10.
+Phan xa doi xung bac cau
+Chi phan xa
+Chi doi xung
+Chi bac cau
+A
+TOAN01_0011
+Menh de nao la menh de logic? Cau so 11.
+Hom nay troi mua
+Hay hoc bai
+Dung noi chuyen
+Ban co khoe khong
+A
+TOAN01_0012
+Phep keo theo P suy ra Q sai khi nao? Cau so 12.
+P dung Q sai
+P sai Q dung
+P sai Q sai
+P dung Q dung
+A
+TOAN01_0013
+Tap rong co bao nhieu phan tu? Cau so 13.
+0
+1
+2
+Khong xac dinh
+A
+TOAN01_0014
+Giao cua A va B gom cac phan tu nao? Cau so 14.
+Thuoc ca A va B
+Chi thuoc A
+Chi thuoc B
+Khong thuoc tap nao
+A
+TOAN01_0015
+Quan he tuong duong can co tinh chat nao? Cau so 15.
+Phan xa doi xung bac cau
+Chi phan xa
+Chi doi xung
+Chi bac cau
+A
+TOAN01_0016
+Menh de nao la menh de logic? Cau so 16.
+Hom nay troi mua
+Hay hoc bai
+Dung noi chuyen
+Ban co khoe khong
+A
+TOAN01_0017
+Phep keo theo P suy ra Q sai khi nao? Cau so 17.
+P dung Q sai
+P sai Q dung
+P sai Q sai
+P dung Q dung
+A
+TOAN01_0018
+Tap rong co bao nhieu phan tu? Cau so 18.
+0
+1
+2
+Khong xac dinh
+A
+TOAN01_0019
+Giao cua A va B gom cac phan tu nao? Cau so 19.
+Thuoc ca A va B
+Chi thuoc A
+Chi thuoc B
+Khong thuoc tap nao
+A
+TOAN01_0020
+Quan he tuong duong can co tinh chat nao? Cau so 20.
+Phan xa doi xung bac cau
+Chi phan xa
+Chi doi xung
+Chi bac cau
+A

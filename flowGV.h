@@ -213,6 +213,7 @@ void flowQuanLyLop_SinhVien(DanhSachLop &dsLop) {
                             InThongBaoContent("                               ", 12, 50, 24);
                         }
                         else {
+                            if (ten.back() == ' ') ten.pop_back();
                             int res = themLop(dsLop, ma.c_str(), ten.c_str());
                             if (res == SUCCESS) {
                                 InThongBaoContent("Them lop hoc thanh cong!", 10, 50, 24);
@@ -251,6 +252,7 @@ void flowQuanLyLop_SinhVien(DanhSachLop &dsLop) {
 
             int currentField = 0; // 0: Dang nhap ma, 1: Dang nhap ten
             bool isCancel = false;
+            bool isDone = false;
 
             while (!isDone && !isCancel) {
                 if (currentField == 0) {
@@ -306,6 +308,7 @@ void flowQuanLyLop_SinhVien(DanhSachLop &dsLop) {
                             isCancel = true;
                         }
                         else {
+                            if (ten.back() == ' ') ten.pop_back();
                             int res = suaLop(dsLop, maCu.c_str(), ma.c_str(), ten.c_str());
                             if (res == SUCCESS) {
                                 InThongBaoContent("Sua lop hoc thanh cong!", 10, 50, 24);
@@ -566,56 +569,101 @@ SinhVien* TimKiemSinhVienTrongLopThongMinh(Lop* lop) {
 void flowQuanLySinhVienCuaLop(DanhSachLop &dsLop, Lop* lopHienTai) {
     int cursor = 0;
     int itemsPerPage = 8;
+    int oldCursor = -1;
+    int oldPage = -1;
+    int forceRedraw = 1;
     
     while (true) {
+        ShowCur(false);
         int totalItems = demSoSV(lopHienTai); 
         int totalPages = (totalItems == 0) ? 1 : (totalItems + itemsPerPage - 1) / itemsPerPage;
         int currentPage = (totalItems == 0) ? 0 : (cursor / itemsPerPage);
         
-        XoaVungContent();
-        InTitle("DANH SACH SINH VIEN");
-        InSmallTitle(string(lopHienTai->maLop) + " - " + string(lopHienTai->tenLop));
-        gotoxy(105, 27); cout << "(Trang " << currentPage + 1 << "/" << totalPages << ")"; 
-        SetColor(0, 7);
-        
-        gotoxy(33, 7); SetColor(0, 14);
-        printf(" %-5s %-15s %-25s %-10s", "STT", "Ma SV", "Ho va Ten", "Gioi Tinh"); 
-        SetColor(0, 7);
-        
-        SinhVien* p = lopHienTai->headSV;
-        int startIdx = currentPage * itemsPerPage;
-        int endIdx = startIdx + itemsPerPage;
-        if (endIdx > totalItems) endIdx = totalItems;
-        
-        for (int i = 0; i < startIdx && p != NULL; i++) {
-            p = p->next;
-        }
-        
-        if (totalItems == 0) {
-            gotoxy(50, 10); cout << "(Lop nay chua co sinh vien nao)";
-        } else {
-            for (int i = startIdx; i < endIdx && p != NULL; i++) {
-                int toadoY = 9 + (i - startIdx) * 2;
-                
-                if (i == cursor) SetColor(11, 0); 
-                else SetColor(0, 7);  
-                
-                gotoxy(33, toadoY); 
-                string hoTen = string(p->ho) + " " + string(p->ten);
-                string phaiStr = (p->phai) ? "Nam" : "Nu";
-                
-                printf(" %-5d %-15s %-25s %-10s", i + 1, p->maSV, hoTen.c_str(), phaiStr.c_str());
-                
-                p = p->next; 
+        // 1. VẼ LẠI TOÀN BỘ KHI CHUYỂN TRANG HOẶC CÓ LỆNH (Thêm/Sửa/Xóa/Tìm)
+        if (forceRedraw || currentPage != oldPage) {
+            XoaVungContent();
+            InTitle("DANH SACH SINH VIEN");
+            InSmallTitle(string(lopHienTai->maLop) + " - " + string(lopHienTai->tenLop));
+            gotoxy(105, 27); SetColor(0, 10); cout << "(Trang " << currentPage + 1 << "/" << totalPages << ")"; 
+            
+            gotoxy(33, 7); SetColor(0, 14);
+            printf(" %-5s %-15s %-25s %-10s", "STT", "Ma SV", "Ho va Ten", "Gioi Tinh"); 
+            SetColor(0, 7);
+            
+            SinhVien* p = lopHienTai->headSV;
+            int startIdx = currentPage * itemsPerPage;
+            int endIdx = startIdx + itemsPerPage;
+            if (endIdx > totalItems) endIdx = totalItems;
+            
+            // Trượt con trỏ đến vị trí phần tử đầu tiên của trang
+            for (int i = 0; i < startIdx && p != NULL; i++) {
+                p = p->next;
             }
+            
+            if (totalItems == 0) {
+                gotoxy(50, 10); SetColor(0, 12); cout << "(Lop nay chua co sinh vien nao)"; SetColor(0, 7);
+            } else {
+                for (int i = startIdx; i < endIdx && p != NULL; i++) {
+                    int toadoY = 9 + (i - startIdx) * 2;
+                    
+                    if (i == cursor) SetColor(11, 0); 
+                    else SetColor(0, 7);  
+                    
+                    gotoxy(33, toadoY); 
+                    string hoTen = string(p->ho) + " " + string(p->ten);
+                    string phaiStr = (p->phai) ? "Nam" : "Nu";
+                    
+                    printf(" %-5d %-15s %-25s %-10s", i + 1, p->maSV, hoTen.c_str(), phaiStr.c_str());
+                    p = p->next; 
+                }
+            }
+            SetColor(0, 7);
+            
+            gotoxy(35, 26); SetColor(0, 8);
+            cout << "Up/Down: Chon | Left/Right: Chuyen trang"; 
+            gotoxy(35, 27); SetColor(0, 11);
+            cout << "[INS/I] Them | [E] Sua | [DEL] Xoa | [F] Tim Kiem  | [ESC] Thoat";
+            SetColor(0, 7);
+
+            oldPage = currentPage;
+            oldCursor = cursor;
+            forceRedraw = false;
         }
-        SetColor(0, 7);
-        
-        gotoxy(35, 26); SetColor(0, 8);
-        cout << "Up/Down: Chon | Left/Right: Chuyen trang"; 
-        gotoxy(35, 27); SetColor(0, 11);
-        cout << "[INS/I] Them | [E] Sua | [DEL] Xoa | [F| Tim Kiem  | [ESC] Thoat";
-        SetColor(0, 7);
+        // 2. CHỈ VẼ LẠI 2 DÒNG (DÒNG CŨ VÀ DÒNG MỚI) KHI DI CHUYỂN LÊN XUỐNG
+        else if (oldCursor != cursor) {
+            int startIdx = currentPage * itemsPerPage;
+
+            // --- XÓA HIGHLIGHT DÒNG CŨ ---
+            if (oldCursor >= startIdx && oldCursor < startIdx + itemsPerPage) {
+                SinhVien* pOld = lopHienTai->headSV;
+                for (int i = 0; i < oldCursor && pOld != NULL; i++) pOld = pOld->next;
+                
+                if (pOld != NULL) {
+                    int toadoY_old = 9 + (oldCursor - startIdx) * 2;
+                    SetColor(0, 7); // Trả về màu chữ bình thường
+                    gotoxy(33, toadoY_old);
+                    string hoTenOld = string(pOld->ho) + " " + string(pOld->ten);
+                    string phaiStrOld = (pOld->phai) ? "Nam" : "Nu";
+                    printf(" %-5d %-15s %-25s %-10s", oldCursor + 1, pOld->maSV, hoTenOld.c_str(), phaiStrOld.c_str());
+                }
+            }
+
+            // --- TÔ HIGHLIGHT DÒNG MỚI ---
+            SinhVien* pNew = lopHienTai->headSV;
+            for (int i = 0; i < cursor && pNew != NULL; i++) pNew = pNew->next;
+            
+            if (pNew != NULL) {
+                int toadoY_new = 9 + (cursor - startIdx) * 2;
+                SetColor(11, 0); // Đổi thành màu Highlight
+                gotoxy(33, toadoY_new);
+                string hoTenNew = string(pNew->ho) + " " + string(pNew->ten);
+                string phaiStrNew = (pNew->phai) ? "Nam" : "Nu";
+                printf(" %-5d %-15s %-25s %-10s", cursor + 1, pNew->maSV, hoTenNew.c_str(), phaiStrNew.c_str());
+                SetColor(0, 7);
+            }
+
+            oldCursor = cursor;
+        }
         
         int ch = _getch();
         bool isDelete = false;
@@ -629,33 +677,51 @@ void flowQuanLySinhVienCuaLop(DanhSachLop &dsLop, Lop* lopHienTai) {
             else if (extKey == 83) isDelete = true; 
         } 
         
-        else if (toupper(ch) == 'D') {
-            XoaVungContent();
-		    InTitle("XOA SINH VIEN");
-            InSmallTitle(string(lopHienTai->maLop) + " - " + string(lopHienTai->tenLop));
+        else if (toupper(ch) == 'D' && totalItems > 0) {
+            // 1. Tìm sinh viên tại vị trí con trỏ hiện tại
+            SinhVien* p = lopHienTai->headSV;
+            for (int i = 0; i < cursor && p != NULL; i++) {
+                p = p->next;
+            }
 
-            SinhVien* svTarget = lopHienTai->headSV;
-		    for (int i = 0; i < cursor && svTarget != NULL; i++) {
-		        svTarget = svTarget->next;
-		    }
-
-            if (svTarget != NULL) {
-                gotoxy(40, 10); cout << "Ban co chac muon xoa SV: ";
-		        SetColor(0, 12); cout << svTarget->ho << " " << svTarget->ten;
-		        SetColor(0, 7); cout << " (" << svTarget->maSV << ")? (y/n): ";
-		            
-		        char confirm = _getch();
-		        if (confirm == 'y' || confirm == 'Y') {
-		            int res = xoaSinhVien(lopHienTai, svTarget->maSV);
-		            if (res == SUCCESS) {
-		                InThongBaoContent("Xoa sinh vien thanh cong!", 10, 45, 26);
-		                SaveLop(dsLop);
-		                    
-		                int newTotal = demSoSV(lopHienTai);
-		                if (cursor >= newTotal && cursor > 0) cursor--; 
-		            }
-		        _getch();
+            if (p != NULL) {
+                if (p->headDiem != NULL) {
+                    InThongBaoContent("Loi: SV nay da co diem thi, khong the xoa!", 12, 40, 25);
+                    _getch();
+                    InThongBaoContent("                                          ", 12, 40, 25);
+                    continue; 
                 }
+
+                gotoxy(40, 25); SetColor(0, 14); 
+                string thongBao = "Xac nhan xoa sinh vien: " + string(p->maSV) + " (Y/N)? ";
+                cout << thongBao;
+                
+                // 2. Chờ xác nhận
+                if (XacNhan(40 + thongBao.length(), 25) == 'Y') {
+                    int Res = xoaSinhVien(lopHienTai, p->maSV);
+                    if (Res == SUCCESS) {
+                        // Lùi con trỏ nếu đang đứng ở phần tử cuối cùng
+                        if (cursor >= totalItems - 1 && cursor > 0) cursor--;
+                        SaveLop(dsLop);
+                        
+                        // Xóa bóng dòng chữ xác nhận
+                        gotoxy(40, 25); cout << "                                                            ";
+                        InThongBaoContent("Da xoa sinh vien thanh cong!", 10, 40, 25);
+                    } else {
+                        gotoxy(40, 25); cout << "                                                            ";
+                        InThongBaoContent(layThongBaoLoi(Res), 12, 40, 25);
+                    }
+                } else {
+                    gotoxy(40, 25); cout << "                                                            ";
+                    InThongBaoContent("Da huy thao tac xoa!", 8, 40, 25);
+                }
+                
+                _getch(); 
+                // 3. Dọn dẹp thông báo sau khi người dùng xem xong
+                gotoxy(40, 25); cout << "                                                            ";
+                
+                // 4. BẮT BUỘC BẬT CỜ NÀY ĐỂ BẢNG DANH SÁCH ĐƯỢC VẼ LẠI
+                forceRedraw = 1; 
             }
         }
 
@@ -674,97 +740,282 @@ void flowQuanLySinhVienCuaLop(DanhSachLop &dsLop, Lop* lopHienTai) {
             } else {
                 _getch();
             }
-            
+            forceRedraw = 1;
         }
         else if (toupper(ch) == 'I') { 
             XoaVungContent();
-            gotoxy(100, 27); cout << "ESC: de thoat";
             InTitle("THEM SINH VIEN");
             InSmallTitle(string(lopHienTai->maLop) + " - " + string(lopHienTai->tenLop));
             
             gotoxy(40, 10); cout << "Ma SV:                 ";
             gotoxy(40, 12); cout << "Ho   :                               ";
             gotoxy(40, 14); cout << "Ten  :                 ";
-            gotoxy(40, 16); cout << "Phai :       ";
+            gotoxy(40, 16); cout << "Phai : ";
+
+            gotoxy(35, 26); SetColor(0, 8);
+            cout << "ESC: Thoat | UP/DOWN: Di chuyen | [SPACE]: Doi gioi tinh | ENTER: Xac nhan";
+            SetColor(0, 7);
             
-            gotoxy(47, 10); string ma = NhapMa(MAX_MASV); if (ma == "") continue;
-            
-            if (kiemTraTrungMaSinhVien(dsLop, ma.c_str()) == ERR_SV_DUPLICATE) {
-                InThongBaoContent("Loi: Ma SV nay da ton tai trong he thong!", 12, 45, 26);
-                _getch(); continue;
+            string ma = "";
+            string ho = "";
+            string ten = "";
+            bool phai = true; 
+
+            gotoxy(47, 16); cout << "NAM";
+
+            int currentField = 0; // 0: Ma, 1: Ho, 2: Ten, 3: Phai
+            bool isDone = false;
+            bool isCancel = false;
+
+            ShowCur(true);
+
+            while (!isDone && !isCancel) {
+                if (currentField == 0) gotoxy(47 + ma.length(), 10);
+                else if (currentField == 1) gotoxy(47 + ho.length(), 12);
+                else if (currentField == 2) gotoxy(47 + ten.length(), 14);
+                else if (currentField == 3) {
+                    ShowCur(false);
+                    gotoxy(47, 16); 
+                }
+                if (currentField != 3) ShowCur(true);
+
+                char ch = _getch();
+                if (ch == 224 || ch == 0 || ch == -32) { 
+                    char ext = _getch();
+                    if (ext == 72) { // UP
+                        currentField--;
+                        if (currentField < 0) currentField = 3;
+                    } else if (ext == 80) {
+                        currentField++;
+                        if (currentField > 3) currentField = 0;
+                    }
+                } 
+                else if (ch == 32 && currentField == 3) { 
+                    phai = !phai;
+                    gotoxy(47, 16);
+                    cout << (phai ? "NAM" : "NU") << "   ";
+                }
+                else if (ch == 27) { 
+                    isCancel = true;
+                } 
+                else if (isprint(ch)) {
+                    if ((isalnum(ch) || ch == '-' || ch == '_') && currentField == 0 && ma.length() < MAX_MASV) {
+                        ma += toupper(ch);
+                        cout << (char)toupper(ch);
+                    } else if (currentField == 1 && ho.length() < MAX_TEN) {
+                        if (ch == ' ' && (ho.length() == 0 || ho.back() == ' ')) continue;
+                        ho += toupper(ch);
+                        cout << (char)toupper(ch);
+                    } else if (currentField == 2 && ten.length() < MAX_TEN) {
+                        if (ch == ' ' && (ten.length() == 0 || ten.back() == ' ')) continue;
+                        ten += toupper(ch);
+                        cout << (char)toupper(ch);
+                    }
+                } 
+                else if (ch == 8) { 
+                    if (currentField == 0 && !ma.empty()) {
+                        ma.pop_back();
+                        gotoxy(47 + ma.length(), 10); cout << " \b";
+                    } else if (currentField == 1 && !ho.empty()) {
+                        ho.pop_back();
+                        gotoxy(47 + ho.length(), 12); cout << " \b";
+                    } else if (currentField == 2 && !ten.empty()) {
+                        ten.pop_back();
+                        gotoxy(47 + ten.length(), 14); cout << " \b";
+                    }
+                } 
+                else if (ch == 13) { 
+                    if (currentField < 3) {
+                        currentField++; 
+                    } else {
+                        if (ho.back() == ' ') ho.pop_back();
+                        if (ten.back() == ' ') ten.pop_back();
+                        // Kiểm tra điều kiện khi chốt form
+                        if (ma.empty() || ho.empty() || ten.empty()) {
+                            InThongBaoContent("Vui long nhap day du thong tin!", 12, 45, 24);
+                            _getch();
+                            InThongBaoContent("                               ", 12, 45, 24); 
+                        } 
+                        else if (kiemTraTrungMaSinhVien(dsLop, ma.c_str()) == ERR_SV_DUPLICATE) {
+                            InThongBaoContent("Ma SV da ton tai trong he thong!", 12, 45, 24);
+                            _getch();
+                            InThongBaoContent("                                ", 12, 45, 24);
+                            currentField = 0; 
+                        } 
+                        else {
+                            isDone = true; 
+                        }
+                    }
+                }
             }
 
-            gotoxy(47, 12); string ho = NhapTen(); if (ho == "") continue;
-            gotoxy(47, 14); string ten = NhapTen(); if (ten == "") continue;
-            bool phai = NhapGioiTinh(47, 16);
-        
-            SinhVien svMoi;
-            snprintf(svMoi.maSV, sizeof(svMoi.maSV), "%s", ma.c_str());
-            snprintf(svMoi.ho, sizeof(svMoi.ho), "%s", ho.c_str());
-            snprintf(svMoi.ten, sizeof(svMoi.ten), "%s", ten.c_str());
-            svMoi.phai = phai;
-            strcpy(svMoi.password, "123456"); 
-            svMoi.headDiem = NULL;
-        
-            int res = themSinhVien(lopHienTai, svMoi);
-            if (res == SUCCESS) {
-                InThongBaoContent("Them sinh vien thanh cong!", 10, 45, 26);
-                SaveLop(dsLop); 
-                cursor = 0; 
-            }
-            _getch();
-        } 
-        
-		else if ((toupper(ch) == 'E' || isDelete) && totalItems > 0) {
+            if (isDone) {
+                SinhVien svMoi;
+                snprintf(svMoi.maSV, sizeof(svMoi.maSV), "%s", ma.c_str());
+                snprintf(svMoi.ho, sizeof(svMoi.ho), "%s", ho.c_str());
+                snprintf(svMoi.ten, sizeof(svMoi.ten), "%s", ten.c_str());
+                svMoi.phai = phai;
+                strcpy(svMoi.password, "123456"); 
+                svMoi.headDiem = NULL;
+                svMoi.next = NULL;
 
-		    SinhVien* svTarget = lopHienTai->headSV;
-		    for (int i = 0; i < cursor && svTarget != NULL; i++) {
-		        svTarget = svTarget->next;
-		    }
-		
-		    if (svTarget != NULL) {
-		        if (toupper(ch) == 'E') {
-		            XoaVungContent();
-		            gotoxy(100, 27); cout << "ESC: de thoat";
-		            InTitle("SUA THONG TIN SINH VIEN");
-                    InSmallTitle(string(lopHienTai->maLop) + " - " + string(lopHienTai->tenLop));
-		            
-		            gotoxy(40, 10); cout << "Dang sua SV  : " << svTarget->maSV;
-		            gotoxy(40, 12); cout << "Ho           :                               ";
-		            gotoxy(40, 13); cout << "Ten          :                ";
-		            gotoxy(40, 14); cout << "Phai (Nam/Nu):      ";
-		
-		            gotoxy(57, 12); cout << svTarget->ho;
-		            gotoxy(57, 13); cout << svTarget->ten;
-		            gotoxy(57, 14); cout << (svTarget->phai ? "Nam" : "Nu");
-		
-		            ShowCur(true);
-		
-		            gotoxy(57, 12); 
-		            string hoMoi = NhapTen(svTarget->ho); 
-		            if (hoMoi == "") { ShowCur(false); continue; } 
-		
-		            gotoxy(57, 13);
-		            string tenMoi = NhapTen(svTarget->ten);
-		            if (tenMoi == "") { ShowCur(false); continue; }
-		
-		            ShowCur(false);
-		            bool phaiMoi = NhapGioiTinh(57, 14, svTarget->phai); 
-		            
-		            SinhVien svMoiData;
-		            strcpy(svMoiData.ho, hoMoi.c_str());
-		            strcpy(svMoiData.ten, tenMoi.c_str());
-		            svMoiData.phai = phaiMoi;
-		
-		            int res = suaSinhVien(lopHienTai, svTarget->maSV, svMoiData);
-		            if (res == SUCCESS) {
-		                InThongBaoContent("Cap nhat thong tin thanh cong!", 10, 45, 26);
-		                SaveLop(dsLop); 
-		            }
-		            _getch();
-		        }
-		    }
-		}
+                int res = themSinhVien(lopHienTai, svMoi);
+                if (res == SUCCESS) {
+                    InThongBaoContent("Them sinh vien thanh cong!", 10, 45, 24);
+                    SaveLop(dsLop); 
+                } else {
+                    InThongBaoContent("Loi khi them sinh vien!", 12, 45, 24);
+                }
+                _getch();
+            }
+            ShowCur(false);
+            forceRedraw = 1;
+        }
+        
+		else if (toupper(ch) == 'E' && totalItems > 0) {
+            SinhVien* svTarget = lopHienTai->headSV;
+            for (int i = 0; i < cursor && svTarget != NULL; i++) {
+                svTarget = svTarget->next;
+            }
+
+            if (svTarget != NULL) {
+                XoaVungContent();
+                InTitle("SUA SINH VIEN");
+                InSmallTitle(string(lopHienTai->maLop) + " - " + string(lopHienTai->tenLop));
+
+                gotoxy(40, 10); cout << "Ma SV:                 ";
+                gotoxy(40, 12); cout << "Ho   :                               ";
+                gotoxy(40, 14); cout << "Ten  :                 ";
+                gotoxy(40, 16); cout << "Phai : ";
+
+                gotoxy(35, 26); SetColor(0, 8);
+                cout << "ESC: Thoat | UP/DOWN: Di chuyen | [SPACE]: Doi gioi tinh | ENTER: Xac nhan";
+                SetColor(0, 7);
+
+                string maCu = svTarget->maSV;
+                string ma = svTarget->maSV;
+                string ho = svTarget->ho;
+                string ten = svTarget->ten;
+                bool phai = svTarget->phai;
+
+                gotoxy(47, 10); cout << ma;
+                gotoxy(47, 12); cout << ho;
+                gotoxy(47, 14); cout << ten;
+                gotoxy(47, 16); cout << (phai ? "NAM" : "NU");
+
+                int currentField = 0; // 0: Ma, 1: Ho, 2: Ten, 3: Phai
+                bool isDone = false;
+                bool isCancel = false;
+
+                ShowCur(true);
+
+                while (!isDone && !isCancel)
+                {
+                    if (currentField == 0) gotoxy(47 + ma.length(), 10);
+                    else if (currentField == 1) gotoxy(47 + ho.length(), 12);
+                    else if (currentField == 2) gotoxy(47 + ten.length(), 14);
+                    else if (currentField == 3) {
+                        ShowCur(false);
+                        gotoxy(47, 16); 
+                    }
+                    if (currentField != 3) ShowCur(true);
+
+                    char ch = _getch();
+                    if (ch == 224 || ch == 0 || ch == -32) { 
+                        char ext = _getch();
+                        if (ext == 72) { // UP
+                            currentField--;
+                            if (currentField < 0) currentField = 3;
+                        } else if (ext == 80) {
+                            currentField++;
+                            if (currentField > 3) currentField = 0;
+                        }
+                    } 
+                    else if (ch == 32 && currentField == 3) { 
+                        phai = !phai;
+                        gotoxy(47, 16);
+                        cout << (phai ? "NAM" : "NU") << "   ";
+                    }
+                    else if (ch == 27) { 
+                        isCancel = true;
+                    } 
+                    else if (isprint(ch)) {
+                        if ((isalnum(ch) || ch == '-' || ch == '_') && currentField == 0 && ma.length() < MAX_MASV) {
+                            ma += toupper(ch);
+                            cout << (char)toupper(ch);
+                        } else if (currentField == 1 && ho.length() < MAX_TEN) {
+                            if (ch == ' ' && (ho.length() == 0 || ho.back() == ' ')) continue;
+                            ho += toupper(ch);
+                            cout << (char)toupper(ch);
+                        } else if (currentField == 2 && ten.length() < MAX_TEN) {
+                            if (ch == ' ' && (ten.length() == 0 || ten.back() == ' ')) continue;
+                            ten += toupper(ch);
+                            cout << (char)toupper(ch);
+                        }
+                    } 
+                    else if (ch == 8) { 
+                        if (currentField == 0 && !ma.empty()) {
+                            ma.pop_back();
+                            gotoxy(47 + ma.length(), 10); cout << " \b";
+                        } else if (currentField == 1 && !ho.empty()) {
+                            ho.pop_back();
+                            gotoxy(47 + ho.length(), 12); cout << " \b";
+                        } else if (currentField == 2 && !ten.empty()) {
+                            ten.pop_back();
+                            gotoxy(47 + ten.length(), 14); cout << " \b";
+                        }
+                } else if (ch == 13) { 
+                        if (currentField < 3) {
+                            currentField++; 
+                        } else {
+                            // Kiểm tra điều kiện khi chốt form
+                            if (ma.empty() || ho.empty() || ten.empty()) {
+                                InThongBaoContent("Vui long nhap day du thong tin!", 12, 45, 24);
+                                _getch();
+                                InThongBaoContent("                               ", 12, 45, 24); 
+                            }
+                            else if (ma == maCu && ho == string(svTarget->ho) && ten == string(svTarget->ten) && phai == svTarget->phai) {
+                                InThongBaoContent("Khong co thay doi nao.", 8, 45, 24);
+                                _getch();
+                                isCancel = true;
+                            } 
+                            else if (kiemTraTrungMaSinhVien(dsLop, ma.c_str()) == ERR_SV_DUPLICATE && ma != svTarget->maSV) {
+                                InThongBaoContent("Ma SV da ton tai trong he thong!", 12, 45, 24);
+                                _getch();
+                                InThongBaoContent("                                ", 12, 45, 24);
+                                currentField = 0; 
+                            } 
+                            else {
+                                isDone = true; 
+                            }
+                        }
+                    }
+                }
+                if (isDone) {
+                    if (ho.back() == ' ') ho.pop_back();
+                    if (ten.back() == ' ') ten.pop_back();
+                    SinhVien svSua;
+                    snprintf(svSua.maSV, sizeof(svSua.maSV), "%s", ma.c_str());
+                    snprintf(svSua.ho, sizeof(svSua.ho), "%s", ho.c_str());
+                    snprintf(svSua.ten, sizeof(svSua.ten), "%s", ten.c_str());
+                    svSua.phai = phai;
+                    strcpy(svSua.password, svTarget->password); 
+                    svSua.headDiem = svTarget->headDiem; 
+                    svSua.next = NULL;
+
+                    int res = suaSinhVien(lopHienTai, maCu.c_str(), svSua);
+                    if (res == SUCCESS) {
+                        InThongBaoContent("Sua sinh vien thanh cong!", 10, 45, 24);
+                        SaveLop(dsLop); 
+                    } else {
+                        InThongBaoContent("Loi khi sua sinh vien!", 12, 45, 24);
+                    }
+                    _getch();
+                }
+            }
+            ShowCur(false);
+            forceRedraw = 1;
+        }        
 	}
 }
 MonHoc* TimKiemMonHocThongMinh(DanhSachMonHoc &dsMH) {

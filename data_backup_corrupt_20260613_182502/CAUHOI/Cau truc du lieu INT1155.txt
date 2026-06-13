@@ -1,0 +1,140 @@
+INT1155_0001
+Stack hoat dong theo nguyen tac nao?
+FIFO
+LIFO
+Random
+Priority
+B
+INT1155_0002
+Queue hoat dong theo nguyen tac nao?
+FIFO
+LIFO
+DFS
+Binary
+A
+INT1155_0003
+Node la trong cay la node co dac diem nao?
+Khong co con
+Co mot con
+Co hai con
+La nut goc
+A
+INT1155_0004
+Duyet inorder tren BST cho ket qua nao?
+Giam dan
+Ngau nhien
+Tang dan
+Khong xac dinh
+C
+INT1155_0005
+Tim kiem trung binh tren BST can bang co do phuc tap nao?
+O(1)
+O(log n)
+O(n)
+O(n^2)
+B
+INT1155_0006
+Stack hoat dong theo nguyen tac nao? Cau so 6.
+FIFO
+LIFO
+Random
+Priority
+B
+INT1155_0007
+Queue hoat dong theo nguyen tac nao? Cau so 7.
+FIFO
+LIFO
+DFS
+Binary
+A
+INT1155_0008
+Node la trong cay la node co dac diem nao? Cau so 8.
+Khong co con
+Co mot con
+Co hai con
+La nut goc
+A
+INT1155_0009
+Duyet inorder tren BST cho ket qua nao? Cau so 9.
+Giam dan
+Ngau nhien
+Tang dan
+Khong xac dinh
+C
+INT1155_0010
+Tim kiem trung binh tren BST can bang co do phuc tap nao? Cau so 10.
+O(1)
+O(log n)
+O(n)
+O(n^2)
+B
+INT1155_0011
+Stack hoat dong theo nguyen tac nao? Cau so 11.
+FIFO
+LIFO
+Random
+Priority
+B
+INT1155_0012
+Queue hoat dong theo nguyen tac nao? Cau so 12.
+FIFO
+LIFO
+DFS
+Binary
+A
+INT1155_0013
+Node la trong cay la node co dac diem nao? Cau so 13.
+Khong co con
+Co mot con
+Co hai con
+La nut goc
+A
+INT1155_0014
+Duyet inorder tren BST cho ket qua nao? Cau so 14.
+Giam dan
+Ngau nhien
+Tang dan
+Khong xac dinh
+C
+INT1155_0015
+Tim kiem trung binh tren BST can bang co do phuc tap nao? Cau so 15.
+O(1)
+O(log n)
+O(n)
+O(n^2)
+B
+INT1155_0016
+Stack hoat dong theo nguyen tac nao? Cau so 16.
+FIFO
+LIFO
+Random
+Priority
+B
+INT1155_0017
+Queue hoat dong theo nguyen tac nao? Cau so 17.
+FIFO
+LIFO
+DFS
+Binary
+A
+INT1155_0018
+Node la trong cay la node co dac diem nao? Cau so 18.
+Khong co con
+Co mot con
+Co hai con
+La nut goc
+A
+INT1155_0019
+Duyet inorder tren BST cho ket qua nao? Cau so 19.
+Giam dan
+Ngau nhien
+Tang dan
+Khong xac dinh
+C
+INT1155_0020
+Tim kiem trung binh tren BST can bang co do phuc tap nao? Cau so 20.
+O(1)
+O(log n)
+O(n)
+O(n^2)
+B

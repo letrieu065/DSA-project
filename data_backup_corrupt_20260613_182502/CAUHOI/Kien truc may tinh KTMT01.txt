@@ -1,0 +1,140 @@
+KTMT01_0001
+CPU la viet tat cua cum tu nao?
+Central Processing Unit
+Control Program Unit
+Computer Print Unit
+Central Power Unit
+A
+KTMT01_0002
+RAM co dac diem nao?
+Luu vinh vien
+Chi doc
+Mat du lieu khi mat dien
+Khong the ghi
+C
+KTMT01_0003
+He nhi phan su dung bao nhieu ky tu?
+2
+8
+10
+16
+A
+KTMT01_0004
+Don vi nho nhat cua thong tin la gi?
+Byte
+Bit
+Word
+Sector
+B
+KTMT01_0005
+Thanh ghi nam o dau trong may tinh?
+Trong CPU
+Trong o cung
+Trong man hinh
+Trong ban phim
+A
+KTMT01_0006
+CPU la viet tat cua cum tu nao? Cau so 6.
+Central Processing Unit
+Control Program Unit
+Computer Print Unit
+Central Power Unit
+A
+KTMT01_0007
+RAM co dac diem nao? Cau so 7.
+Luu vinh vien
+Chi doc
+Mat du lieu khi mat dien
+Khong the ghi
+C
+KTMT01_0008
+He nhi phan su dung bao nhieu ky tu? Cau so 8.
+2
+8
+10
+16
+A
+KTMT01_0009
+Don vi nho nhat cua thong tin la gi? Cau so 9.
+Byte
+Bit
+Word
+Sector
+B
+KTMT01_0010
+Thanh ghi nam o dau trong may tinh? Cau so 10.
+Trong CPU
+Trong o cung
+Trong man hinh
+Trong ban phim
+A
+KTMT01_0011
+CPU la viet tat cua cum tu nao? Cau so 11.
+Central Processing Unit
+Control Program Unit
+Computer Print Unit
+Central Power Unit
+A
+KTMT01_0012
+RAM co dac diem nao? Cau so 12.
+Luu vinh vien
+Chi doc
+Mat du lieu khi mat dien
+Khong the ghi
+C
+KTMT01_0013
+He nhi phan su dung bao nhieu ky tu? Cau so 13.
+2
+8
+10
+16
+A
+KTMT01_0014
+Don vi nho nhat cua thong tin la gi? Cau so 14.
+Byte
+Bit
+Word
+Sector
+B
+KTMT01_0015
+Thanh ghi nam o dau trong may tinh? Cau so 15.
+Trong CPU
+Trong o cung
+Trong man hinh
+Trong ban phim
+A
+KTMT01_0016
+CPU la viet tat cua cum tu nao? Cau so 16.
+Central Processing Unit
+Control Program Unit
+Computer Print Unit
+Central Power Unit
+A
+KTMT01_0017
+RAM co dac diem nao? Cau so 17.
+Luu vinh vien
+Chi doc
+Mat du lieu khi mat dien
+Khong the ghi
+C
+KTMT01_0018
+He nhi phan su dung bao nhieu ky tu? Cau so 18.
+2
+8
+10
+16
+A
+KTMT01_0019
+Don vi nho nhat cua thong tin la gi? Cau so 19.
+Byte
+Bit
+Word
+Sector
+B
+KTMT01_0020
+Thanh ghi nam o dau trong may tinh? Cau so 20.
+Trong CPU
+Trong o cung
+Trong man hinh
+Trong ban phim
+A
