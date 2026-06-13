@@ -1,4 +1,4 @@
-6
+5
 D24CQCN01
 Cong nghe thong tin 1
 12
@@ -556,6 +556,3 @@ Dung
 1
 OOP001
 5.7
-AWKR
-FGKSANL
-0
