@@ -144,7 +144,7 @@ bool LoadLop(DanhSachLop &dsLop) {
     for (int i = 0; i < soLop; i++) {
         dsTam.nodes[i] = new Lop;
         if (!fIn.getline(dsTam.nodes[i]->maLop, MAX_MALOP)) return false;
-        if (!fIn.getline(dsTam.nodes[i]->tenLop, MAX_TEN)) return false;
+        if (!fIn.getline(dsTam.nodes[i]->tenLop, MAX_TEN_LOP)) return false;
         dsTam.nodes[i]->headSV = NULL;
         
         int soSV;
@@ -160,8 +160,8 @@ bool LoadLop(DanhSachLop &dsLop) {
 
             SinhVien* svMoi = new SinhVien;
             strcpy(svMoi->maSV, tempMa);
-            if (!fIn.getline(svMoi->ho, MAX_TEN)) return false;
-            if (!fIn.getline(svMoi->ten, MAX_TEN)) return false;
+            if (!fIn.getline(svMoi->ho, MAX_HO)) return false;
+            if (!fIn.getline(svMoi->ten, MAX_TEN_SV)) return false;
             if (!(fIn >> svMoi->phai)) return false;
             fIn.ignore();
             if (!fIn.getline(svMoi->password, MAX_PASS)) return false;
@@ -209,7 +209,7 @@ bool LoadMonHoc(DanhSachMonHoc &dsMH) {
         if (!fIn.getline(dsTam.data[i].maMH, MAX_MAMH)) return false;
         if (!(fIn >> dsTam.data[i].soTinChi)) return false;
         fIn.ignore();
-        if (!fIn.getline(dsTam.data[i].tenMH, MAX_TEN)) return false;
+        if (!fIn.getline(dsTam.data[i].tenMH, MAX_TENMH)) return false;
     }
     dsTam.soLuong = n;
     dsMH = dsTam;

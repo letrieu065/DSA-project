@@ -1,4 +1,4 @@
-10
+12
 INT1154
 3
 Lap trinh C++
@@ -29,3 +29,9 @@ Lap trinh Web
 AI0001
 3
 Nhap mon tri tue nhan tao
+JSABDFJKABSFJKA
+10
+SALKFBASJFBSAFJKSABFJKSAFBASKFBASKF
+TEST
+1
+TEST

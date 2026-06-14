@@ -60,7 +60,7 @@ void flowQuanLyLop_SinhVien(DanhSachLop &dsLop) {
             SetColor(0, 7);
             
             gotoxy(35, 7); SetColor(0, 14);
-            printf(" %-5s %-16s %-35s", "STT", "Ma Lop", "Ten Lop");
+            printf(" %-5s %-20s %-50s", "STT", "Ma Lop", "Ten Lop");
             SetColor(0, 7);
 
             int startIdx = currentPage * itemsPerPage;
@@ -84,7 +84,7 @@ void flowQuanLyLop_SinhVien(DanhSachLop &dsLop) {
                     
                     gotoxy(35, toadoY); 
                     
-                    printf(" %-5d %-16s %-35s", i + 1, dsLop.nodes[i]->maLop, dsLop.nodes[i]->tenLop);
+                    printf(" %-5d %-20s %-50s", i + 1, dsLop.nodes[i]->maLop, dsLop.nodes[i]->tenLop);
                 }
             }
 
@@ -99,21 +99,27 @@ void flowQuanLyLop_SinhVien(DanhSachLop &dsLop) {
         }
 
         else if (oldCursor != cursor) {
-            int startIdx = currentPage * itemsPerPage;
-            
-            if (oldCursor >= startIdx && oldCursor < startIdx + itemsPerPage) {
-                int toadoY_old = 9 + (oldCursor - startIdx) * 2;
+            // CHỈ thực hiện vẽ lại thanh sáng nếu danh sách CÓ phần tử
+            if (totalItems > 0 && cursor >= 0 && cursor < totalItems) {
+                int startIdx = currentPage * itemsPerPage;
+                
+                // Xóa highlight ở dòng cũ (nếu dòng cũ hợp lệ)
+                if (oldCursor >= startIdx && oldCursor < startIdx + itemsPerPage && oldCursor < totalItems) {
+                    int toadoY_old = 9 + (oldCursor - startIdx) * 2;
+                    SetColor(0, 7);
+                    gotoxy(35, toadoY_old);
+                    printf(" %-5d %-20s %-50s", oldCursor + 1, dsLop.nodes[oldCursor]->maLop, dsLop.nodes[oldCursor]->tenLop);
+                }
+                
+                // Vẽ highlight ở dòng mới
+                int toadoY_new = 9 + (cursor - startIdx) * 2;
+                SetColor(11, 0);
+                gotoxy(35, toadoY_new);
+                printf(" %-5d %-20s %-50s", cursor + 1, dsLop.nodes[cursor]->maLop, dsLop.nodes[cursor]->tenLop);
                 SetColor(0, 7);
-                gotoxy(35, toadoY_old);
-                printf(" %-5d %-16s %-35s", oldCursor + 1, dsLop.nodes[oldCursor]->maLop, dsLop.nodes[oldCursor]->tenLop);
             }
             
-            int toadoY_new = 9 + (cursor - startIdx) * 2;
-            SetColor(11, 0);
-            gotoxy(35, toadoY_new);
-            printf(" %-5d %-16s %-35s", cursor + 1, dsLop.nodes[cursor]->maLop, dsLop.nodes[cursor]->tenLop);
-            SetColor(0, 7);
-            
+            // Luôn cập nhật oldCursor để đồng bộ
             oldCursor = cursor;
         }
         
@@ -178,9 +184,9 @@ void flowQuanLyLop_SinhVien(DanhSachLop &dsLop) {
                 } else if (ch == 27) { 
                     isCancel = true;
                 } else if (isprint(ch)) {
-                    if ((isalnum(ch) || ch == '-' || ch == '_') && currentField == 0 && ma.length() < MAX_MALOP) {
+                    if ((isalnum(ch) || ch == '-' || ch == '_') && currentField == 0 && ma.length() < MAX_MALOP - 1) {
                         ma += toupper(ch); cout << (char)toupper(ch);
-                    } else if (currentField == 1 && ten.length() < MAX_TEN) {
+                    } else if (currentField == 1 && ten.length() < MAX_TEN_LOP - 1) {
                         if (ch == ' ' && (ten.length() == 0 || ten.back() == ' ')) continue;
                         ten += toupper(ch); cout << (char)toupper(ch);
                     }
@@ -263,7 +269,7 @@ void flowQuanLyLop_SinhVien(DanhSachLop &dsLop) {
                 } else if (isprint(ch)) {
                     if ((isalnum(ch) || ch == '-' || ch == '_') && currentField == 0 && ma.length() < MAX_MALOP) {
                         ma += toupper(ch); cout << (char)toupper(ch);
-                    } else if (currentField == 1 && ten.length() < MAX_TEN) {
+                    } else if (currentField == 1 && ten.length() < MAX_TEN_LOP - 1) {
                         if (ch == ' ' && (ten.length() == 0 || ten.back() == ' ')) continue;
                         ten += toupper(ch); cout << (char)toupper(ch);
                     }
@@ -565,7 +571,7 @@ void flowQuanLySinhVienCuaLop(DanhSachLop &dsLop, Lop* lopHienTai) {
             gotoxy(105, 27); SetColor(0, 10); cout << "(Trang " << currentPage + 1 << "/" << totalPages << ")"; 
             
             gotoxy(33, 7); SetColor(0, 14);
-            printf(" %-5s %-15s %-25s %-10s", "STT", "Ma SV", "Ho va Ten", "Gioi Tinh"); 
+            printf(" %-5s %-20s %-35s %-10s", "STT", "Ma SV", "Ho va Ten", "Gioi Tinh"); 
             SetColor(0, 7);
             
             SinhVien* p = lopHienTai->headSV;
@@ -591,7 +597,7 @@ void flowQuanLySinhVienCuaLop(DanhSachLop &dsLop, Lop* lopHienTai) {
                     string hoTen = string(p->ho) + " " + string(p->ten);
                     string phaiStr = (p->phai) ? "Nam" : "Nu";
                     
-                    printf(" %-5d %-15s %-25s %-10s", i + 1, p->maSV, hoTen.c_str(), phaiStr.c_str());
+                    printf(" %-5d %-20s %-35s %-10s", i + 1, p->maSV, hoTen.c_str(), phaiStr.c_str());
                     p = p->next; 
                 }
             }
@@ -622,7 +628,7 @@ void flowQuanLySinhVienCuaLop(DanhSachLop &dsLop, Lop* lopHienTai) {
                     gotoxy(33, toadoY_old);
                     string hoTenOld = string(pOld->ho) + " " + string(pOld->ten);
                     string phaiStrOld = (pOld->phai) ? "Nam" : "Nu";
-                    printf(" %-5d %-15s %-25s %-10s", oldCursor + 1, pOld->maSV, hoTenOld.c_str(), phaiStrOld.c_str());
+                    printf(" %-5d %-20s %-35s %-10s", oldCursor + 1, pOld->maSV, hoTenOld.c_str(), phaiStrOld.c_str());
                 }
             }
 
@@ -636,7 +642,7 @@ void flowQuanLySinhVienCuaLop(DanhSachLop &dsLop, Lop* lopHienTai) {
                 gotoxy(33, toadoY_new);
                 string hoTenNew = string(pNew->ho) + " " + string(pNew->ten);
                 string phaiStrNew = (pNew->phai) ? "Nam" : "Nu";
-                printf(" %-5d %-15s %-25s %-10s", cursor + 1, pNew->maSV, hoTenNew.c_str(), phaiStrNew.c_str());
+                printf(" %-5d %-20s %-35s %-10s", cursor + 1, pNew->maSV, hoTenNew.c_str(), phaiStrNew.c_str());
                 SetColor(0, 7);
             }
 
@@ -766,12 +772,12 @@ void flowQuanLySinhVienCuaLop(DanhSachLop &dsLop, Lop* lopHienTai) {
                     isCancel = true;
                 } 
                 else if (isprint(ch)) {
-                    if ((isalnum(ch) || ch == '-' || ch == '_') && currentField == 0 && ma.length() < MAX_MASV) {
+                    if ((isalnum(ch) || ch == '-' || ch == '_') && currentField == 0 && ma.length() < MAX_MASV - 1) {
                         ma += toupper(ch); cout << (char)toupper(ch);
-                    } else if (currentField == 1 && ho.length() < MAX_TEN) {
+                    } else if (currentField == 1 && ho.length() < MAX_HO - 1) {
                         if (ch == ' ' && (ho.length() == 0 || ho.back() == ' ')) continue;
                         ho += toupper(ch); cout << (char)toupper(ch);
-                    } else if (currentField == 2 && ten.length() < MAX_TEN) {
+                    } else if (currentField == 2 && ten.length() < MAX_TEN_SV - 1) {
                         if (ch == ' ' && (ten.length() == 0 || ten.back() == ' ')) continue;
                         ten += toupper(ch); cout << (char)toupper(ch);
                     }
@@ -913,12 +919,12 @@ void flowQuanLySinhVienCuaLop(DanhSachLop &dsLop, Lop* lopHienTai) {
                         isCancel = true;
                     } 
                     else if (isprint(ch)) {
-                        if ((isalnum(ch) || ch == '-' || ch == '_') && currentField == 0 && ma.length() < MAX_MASV) {
+                        if ((isalnum(ch) || ch == '-' || ch == '_') && currentField == 0 && ma.length() < MAX_MASV - 1) {
                             ma += toupper(ch); cout << (char)toupper(ch);
-                        } else if (currentField == 1 && ho.length() < MAX_TEN) {
+                        } else if (currentField == 1 && ho.length() < MAX_HO - 1) {
                             if (ch == ' ' && (ho.length() == 0 || ho.back() == ' ')) continue;
                             ho += toupper(ch); cout << (char)toupper(ch);
-                        } else if (currentField == 2 && ten.length() < MAX_TEN) {
+                        } else if (currentField == 2 && ten.length() < MAX_TEN_SV - 1) {
                             if (ch == ' ' && (ten.length() == 0 || ten.back() == ' ')) continue;
                             ten += toupper(ch); cout << (char)toupper(ch);
                         }
@@ -1109,8 +1115,8 @@ void flowQuanLyMonHoc_CauHoi(DanhSachLop &dsLop, DanhSachMonHoc &dsMH, PTR_CAUHO
             InTitle("DANH SACH MON HOC");
             gotoxy(105, 27);  SetColor(0, 10); cout << "(Trang " << currentPage + 1 << "/" << totalPages << ")";
 
-            gotoxy(35, 8); SetColor(0, 14);
-            printf("%-5s %-15s %-35s %-5s", "STT", "Ma Mon", "Ten Mon Hoc", "STC");
+            gotoxy(35, 7); SetColor(0, 14);
+            printf("%-5s %-20s %-40s %-5s", "STT", "Ma Mon", "Ten Mon Hoc", "STC");
             SetColor(0, 7);
             int startIdx = currentPage * itemsPerPage;
             int endIdx = (startIdx + itemsPerPage > totalItems) ? totalItems : (startIdx + itemsPerPage);
@@ -1122,11 +1128,11 @@ void flowQuanLyMonHoc_CauHoi(DanhSachLop &dsLop, DanhSachMonHoc &dsMH, PTR_CAUHO
                 SetColor(0, 7);
             } else {
                 for (int i = startIdx; i < endIdx; i++) {
-                    int toadoY = 10 + (i - startIdx) * 2;
+                    int toadoY = 9 + (i - startIdx) * 2;
                     if (i == cursor) SetColor(11, 0);
                     else SetColor(0, 7);
                     gotoxy(35, toadoY);
-                    printf("%-5d %-15s %-35s %-5d", i + 1, dsMH.data[i].maMH, dsMH.data[i].tenMH, dsMH.data[i].soTinChi);
+                    printf("%-5d %-20s %-40s %-5d", i + 1, dsMH.data[i].maMH, dsMH.data[i].tenMH, dsMH.data[i].soTinChi);
                 }
             }
             gotoxy(35, 26); SetColor(0, 8);
@@ -1142,15 +1148,15 @@ void flowQuanLyMonHoc_CauHoi(DanhSachLop &dsLop, DanhSachMonHoc &dsMH, PTR_CAUHO
         else if (oldCursor != cursor) {
             int startIdx = currentPage * itemsPerPage;
             if (oldCursor >= startIdx && oldCursor < startIdx + itemsPerPage) {
-                int toadoY_old = 10 + (oldCursor - startIdx) * 2;
+                int toadoY_old = 9 + (oldCursor - startIdx) * 2;
                 SetColor(0, 7);
                 gotoxy(35, toadoY_old);
-                printf("%-5d %-15s %-35s %-5d", oldCursor + 1, dsMH.data[oldCursor].maMH, dsMH.data[oldCursor].tenMH, dsMH.data[oldCursor].soTinChi);
+                printf("%-5d %-20s %-40s %-5d", oldCursor + 1, dsMH.data[oldCursor].maMH, dsMH.data[oldCursor].tenMH, dsMH.data[oldCursor].soTinChi);
             }
-            int toadoY_new = 10 + (cursor - startIdx) * 2;
+            int toadoY_new = 9 + (cursor - startIdx) * 2;
             SetColor(11, 0);
             gotoxy(35, toadoY_new);
-            printf("%-5d %-15s %-35s %-5d", cursor + 1, dsMH.data[cursor].maMH, dsMH.data[cursor].tenMH, dsMH.data[cursor].soTinChi);
+            printf("%-5d %-20s %-40s %-5d", cursor + 1, dsMH.data[cursor].maMH, dsMH.data[cursor].tenMH, dsMH.data[cursor].soTinChi);
             oldCursor = cursor;
         }
         int ch = _getch();
@@ -1185,9 +1191,9 @@ void flowQuanLyMonHoc_CauHoi(DanhSachLop &dsLop, DanhSachMonHoc &dsMH, PTR_CAUHO
                 int keyLog = 0;
                 
                 if (currentField == 0) {
-                    ma = NhapCoDieuHuong(xNhap, 10, 15, 1, ma, keyLog);
+                    ma = NhapCoDieuHuong(xNhap, 10, MAX_MAMH - 1, 1, ma, keyLog);
                 } else if (currentField == 1) {
-                    ten = NhapCoDieuHuong(xNhap, 12, 35, 1, ten, keyLog);
+                    ten = NhapCoDieuHuong(xNhap, 12, MAX_TENMH - 1, 1, ten, keyLog);
                 } else if (currentField == 2) {
                     stc_str = NhapCoDieuHuong(xNhap, 14, 2, 1, stc_str, keyLog);
                 }
@@ -1295,7 +1301,7 @@ void flowQuanLyMonHoc_CauHoi(DanhSachLop &dsLop, DanhSachMonHoc &dsMH, PTR_CAUHO
             while (!isDone) {
                 int keyLog = 0;
                 if (currentField == 0) {
-                    tenMoi = NhapCoDieuHuong(xNhap, 12, 35, 1, tenMoi, keyLog);
+                    tenMoi = NhapCoDieuHuong(xNhap, 12, MAX_TENMH - 1, 1, tenMoi, keyLog);
                 } else if (currentField == 1) {
                     stcMoi_str = NhapCoDieuHuong(xNhap, 14, 2, 1, stcMoi_str, keyLog);
                 }

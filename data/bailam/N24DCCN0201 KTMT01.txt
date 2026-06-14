@@ -1,76 +1,4 @@
-CAU 1: Don vi nho nhat cua thong tin? Cau mo rong so 19.
-A. Byte
-B. Bit
-C. Word
-D. Sector
-Dap an dung: B
-Sinh vien chon: A
-------------------------------------------
-CAU 2: Don vi nho nhat cua thong tin? Cau mo rong so 14.
-A. Byte
-B. Bit
-C. Word
-D. Sector
-Dap an dung: B
-Sinh vien chon:  
-------------------------------------------
-CAU 3: Thanh ghi nam o dau? Cau mo rong so 20.
-A. Trong CPU
-B. Trong o cung
-C. Trong man hinh
-D. Trong ban phim
-Dap an dung: A
-Sinh vien chon: A
-------------------------------------------
-CAU 4: CPU la viet tat cua cum tu nao?
-A. Central Processing Unit
-B. Control Program Unit
-C. Computer Print Unit
-D. Central Power Unit
-Dap an dung: A
-Sinh vien chon: A
-------------------------------------------
-CAU 5: Thanh ghi nam o dau? Cau mo rong so 15.
-A. Trong CPU
-B. Trong o cung
-C. Trong man hinh
-D. Trong ban phim
-Dap an dung: A
-Sinh vien chon: A
-------------------------------------------
-CAU 6: CPU la viet tat cua cum tu nao? Cau mo rong so 26.
-A. Central Processing Unit
-B. Control Program Unit
-C. Computer Print Unit
-D. Central Power Unit
-Dap an dung: A
-Sinh vien chon: A
-------------------------------------------
-CAU 7: Don vi nho nhat cua thong tin? Cau mo rong so 24.
-A. Byte
-B. Bit
-C. Word
-D. Sector
-Dap an dung: B
-Sinh vien chon:  
-------------------------------------------
-CAU 8: He nhi phan dung bao nhieu ky tu? Cau mo rong so 28.
-A. 2
-B. 8
-C. 10
-D. 16
-Dap an dung: A
-Sinh vien chon: A
-------------------------------------------
-CAU 9: Don vi nho nhat cua thong tin?
-A. Byte
-B. Bit
-C. Word
-D. Sector
-Dap an dung: B
-Sinh vien chon: A
-------------------------------------------
-CAU 10: RAM co dac diem nao? Cau mo rong so 17.
+CAU 1: RAM co dac diem nao? Cau mo rong so 27.
 A. Luu vinh vien
 B. Chi doc
 C. Mat du lieu khi mat dien
@@ -78,107 +6,75 @@ D. Khong the ghi
 Dap an dung: C
 Sinh vien chon: A
 ------------------------------------------
-CAU 11: He nhi phan dung bao nhieu ky tu? Cau mo rong so 13.
-A. 2
-B. 8
-C. 10
-D. 16
-Dap an dung: A
-Sinh vien chon: A
-------------------------------------------
-CAU 12: Don vi nho nhat cua thong tin? Cau mo rong so 29.
+CAU 2: Don vi nho nhat cua thong tin? Cau mo rong so 29.
 A. Byte
 B. Bit
 C. Word
 D. Sector
 Dap an dung: B
-Sinh vien chon: A
+Sinh vien chon:  
 ------------------------------------------
-CAU 13: Thanh ghi nam o dau?
+CAU 3: CPU la viet tat cua cum tu nao? Cau mo rong so 6.
+A. Central Processing Unit
+B. Control Program Unit
+C. Computer Print Unit
+D. Central Power Unit
+Dap an dung: A
+Sinh vien chon:  
+------------------------------------------
+CAU 4: CPU la viet tat cua cum tu nao? Cau mo rong so 21.
+A. Central Processing Unit
+B. Control Program Unit
+C. Computer Print Unit
+D. Central Power Unit
+Dap an dung: A
+Sinh vien chon:  
+------------------------------------------
+CAU 5: Thanh ghi nam o dau? Cau mo rong so 15.
 A. Trong CPU
 B. Trong o cung
 C. Trong man hinh
 D. Trong ban phim
 Dap an dung: A
-Sinh vien chon: A
+Sinh vien chon: B
 ------------------------------------------
-CAU 14: He nhi phan dung bao nhieu ky tu?
-A. 2
-B. 8
-C. 10
-D. 16
+CAU 6: CPU la viet tat cua cum tu nao? Cau mo rong so 11.
+A. Central Processing Unit
+B. Control Program Unit
+C. Computer Print Unit
+D. Central Power Unit
 Dap an dung: A
-Sinh vien chon: A
+Sinh vien chon:  
 ------------------------------------------
-CAU 15: He nhi phan dung bao nhieu ky tu? Cau mo rong so 23.
-A. 2
-B. 8
-C. 10
-D. 16
-Dap an dung: A
-Sinh vien chon: A
-------------------------------------------
-CAU 16: Thanh ghi nam o dau? Cau mo rong so 10.
-A. Trong CPU
-B. Trong o cung
-C. Trong man hinh
-D. Trong ban phim
-Dap an dung: A
-Sinh vien chon: A
-------------------------------------------
-CAU 17: Thanh ghi nam o dau? Cau mo rong so 30.
-A. Trong CPU
-B. Trong o cung
-C. Trong man hinh
-D. Trong ban phim
-Dap an dung: A
-Sinh vien chon: A
-------------------------------------------
-CAU 18: He nhi phan dung bao nhieu ky tu? Cau mo rong so 18.
-A. 2
-B. 8
-C. 10
-D. 16
-Dap an dung: A
-Sinh vien chon: A
-------------------------------------------
-CAU 19: Thanh ghi nam o dau? Cau mo rong so 25.
-A. Trong CPU
-B. Trong o cung
-C. Trong man hinh
-D. Trong ban phim
-Dap an dung: A
-Sinh vien chon: A
-------------------------------------------
-CAU 20: Don vi nho nhat cua thong tin? Cau mo rong so 9.
+CAU 7: Don vi nho nhat cua thong tin? Cau mo rong so 14.
 A. Byte
 B. Bit
 C. Word
 D. Sector
 Dap an dung: B
-Sinh vien chon: A
+Sinh vien chon:  
 ------------------------------------------
-CAU 21: CPU la viet tat cua cum tu nao? Cau mo rong so 6.
-A. Central Processing Unit
-B. Control Program Unit
-C. Computer Print Unit
-D. Central Power Unit
+CAU 8: He nhi phan dung bao nhieu ky tu? Cau mo rong so 13.
+A. 2
+B. 8
+C. 10
+D. 16
 Dap an dung: A
-Sinh vien chon: A
+Sinh vien chon:  
 ------------------------------------------
-CAU 22: CPU la viet tat cua cum tu nao? Cau mo rong so 11.
-A. Central Processing Unit
-B. Control Program Unit
-C. Computer Print Unit
-D. Central Power Unit
-Dap an dung: A
-Sinh vien chon: A
+CAU 9: Don vi nho nhat cua thong tin? Cau mo rong so 9.
+A. Byte
+B. Bit
+C. Word
+D. Sector
+Dap an dung: B
+Sinh vien chon:  
 ------------------------------------------
-CAU 23: CPU la viet tat cua cum tu nao? Cau mo rong so 16.
-A. Central Processing Unit
-B. Control Program Unit
-C. Computer Print Unit
-D. Central Power Unit
+CAU 10: Thanh ghi nam o dau? Cau mo rong so 10.
+A. Trong CPU
+B. Trong o cung
+C. Trong man hinh
+D. Trong ban phim
 Dap an dung: A
 Sinh vien chon:  
 ------------------------------------------

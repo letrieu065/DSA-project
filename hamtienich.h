@@ -936,10 +936,7 @@ void TienHanhThiTracNghiem(SinhVien* sv, MonHoc monChon, CauHoi* deThi[], int so
     
     float diemThi = (float)soCauDung / soCau * 10.0f;
     
-    SetColor(0, 10);
-    gotoxy(40, 10); cout << "DA NOP BAI THANH CONG!";
-    gotoxy(40, 12); cout << "So cau dung: " << soCauDung << " / " << soCau;
-    gotoxy(40, 14); cout << "DIEM CUA BAN: " << diemThi;
+    HienThiKetQuaThi(soCauDung, soCau, diemThi);
     
     DiemThi* p = sv->headDiem;
     bool daCoDiem = false;
@@ -975,10 +972,6 @@ void TienHanhThiTracNghiem(SinhVien* sv, MonHoc monChon, CauHoi* deThi[], int so
 	dsDung[i] = deThi[i]->dapAn;
 	}
     SaveBaiLam(sv->maSV, monChon.maMH, dsND, dsDung, dapAnDaChon, soCau);
-
-    gotoxy(40, 16); SetColor(0, 14);
-    cout << "Da luu chi tiet bai lam vao he thong!";
-    SetColor(0, 7);
     
     _getch();
 }
