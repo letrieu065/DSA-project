@@ -1432,12 +1432,18 @@ void flowQuanLyCauHoiCuaMon(const char* maMH, const char* tenMH, PTR_CAUHOI &roo
                 SetColor(0, 8);
                 gotoxy(35, yPos );
                 cout << "Cau: " << (currentPage + 1) << " / " << totalItems;
+
+                SetColor(0, 7);
+                cout << " - ID: ";
         
                 SetColor(0, 14);
-                gotoxy(startX, yPos + 1); cout << "[" << dsTam[i]->id << "] ";
+                cout << "[" << dsTam[i]->id << "] ";
+
+                SetColor(0, 11);
+                gotoxy(35, yPos + 1); cout << "Noi dung: ";
             
                 SetColor(0, 7);
-                InNoiDungCanLe(dsTam[i]->noiDung, contentX, yPos + 1, 63); 
+                InNoiDungCanLe(dsTam[i]->noiDung, 46, yPos + 1, 63); 
         
                 gotoxy(35, yPos + 6);  cout << "A."; InNoiDungCanLe(dsTam[i]->a, 39, yPos + 6, 75);
                 gotoxy(35, yPos + 9);  cout << "B."; InNoiDungCanLe(dsTam[i]->b, 39, yPos + 9, 75);
@@ -1466,6 +1472,7 @@ void flowQuanLyCauHoiCuaMon(const char* maMH, const char* tenMH, PTR_CAUHOI &roo
          
         // --- Logic Them (I) ---
         else if (toupper(ch) == 'I') {
+            char dsDapAn[] = {'A', 'B', 'C', 'D'};
             XoaVungContent();
             ShowCur(true);
             while (_kbhit()) _getch();
@@ -1477,6 +1484,12 @@ void flowQuanLyCauHoiCuaMon(const char* maMH, const char* tenMH, PTR_CAUHOI &roo
             gotoxy(35, 18); cout << "C. ";
             gotoxy(35, 20); cout << "D. ";
             gotoxy(35, 22); cout << "Dap An Dung: ";
+            for (int i = 0; i < 4; i++) {
+                gotoxy(48 + (i * 6), 22);
+                SetColor(0, 7);
+                cout << " " << dsDapAn[i] << " ";
+            }
+            
             
             SetColor(0, 7);
  
@@ -1535,6 +1548,12 @@ void flowQuanLyCauHoiCuaMon(const char* maMH, const char* tenMH, PTR_CAUHOI &roo
                         gotoxy(40, 24); cout << "                                                  ";
                     }
                     continue;
+                }
+
+                if (field == 5) {
+                    ShowCur(false);
+                } else {
+                    ShowCur(true);
                 }
  
                 if (keyLog == 72) {          // Up: chuyen len field truoc

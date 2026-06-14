@@ -356,23 +356,19 @@ unsigned int LCG_Next(unsigned int &seed) {
     return seed;
 }
 
-// Hàm tạo ID Câu Hỏi ngẫu nhiên không trùng lặp
+// Ham tao id ngau nhien 5 chu sao cho moi cau hoi, dang DSA_12345
 void TaoIdCauHoi(char* bufOut, const char* maMH, PTR_CAUHOI root) {
-    // Biến static lưu trạng thái seed trong suốt thời gian app chạy
-    // Khởi tạo 1 lần duy nhất bằng thời gian thực khi gọi hàm lần đầu
     static unsigned int currentSeed = (unsigned int)time(NULL); 
     
     while (true) {
-        unsigned int randomNum = LCG_Next(currentSeed);
+        // Dung phep chia lay du % 100000 de gioi han so ngau nhien trong khoang 0 - 99999
+        unsigned int randomNum = LCG_Next(currentSeed) % 100000;
         
-        // Tạo chuỗi ID (Ví dụ: IT001_8F3A2B1C)
-        // Dùng %08X để in số ngẫu nhiên ra hệ Thập lục phân (Hex) cho ngắn gọn và chuyên nghiệp
-        snprintf(bufOut, 25, "%s_%010u", maMH, randomNum);
+        // Dung snprintf de tao id theo dinh dang "maMH_randomNum", vd: "DSA_12345"
+        snprintf(bufOut, 25, "%s_%05u", maMH, randomNum); 
         
-        // Kiểm tra xem ID sinh ra đã tồn tại trong cây BST chưa?
-        // Xác suất trùng của LCG 32-bit là 1/4 tỷ, nhưng vẫn check cho chuẩn tuyệt đối 100%
         if (TimCauHoi(root, bufOut) == NULL) {
-            break; // Nếu cây chưa có ID này -> Chốt ID và thoát vòng lặp
+            break; 
         }
     }
 }
