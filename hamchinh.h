@@ -41,7 +41,10 @@ CauHoi* LayNhoNhat(CauHoi* node);
 PTR_CAUHOI XoaCauHoi(PTR_CAUHOI root, const char* id);
 void CapNhatSTT(PTR_CAUHOI root);
 
-DiemThi* saoChepDanhSachDiem(DiemThi* src); 
+DiemThi* saoChepDanhSachDiem(DiemThi* src);
+
+void GiaiPhongCauHoi(PTR_CAUHOI &root);
+void GiaiPhongToanBoBoNho(DanhSachLop &dsLop, PTR_CAUHOI &root);
 
 using namespace std;
 
@@ -465,6 +468,37 @@ DiemThi* saoChepDanhSachDiem(DiemThi* src) {
         src = src->next;
     }
     return head;
+}
+
+void GiaiPhongCayCauHoi(PTR_CAUHOI root) {
+    if (root == NULL) return;
+    GiaiPhongCayCauHoi(root->left);
+    GiaiPhongCayCauHoi(root->right);
+    delete root;
+}
+
+void GiaiPhongToanBoBoNho(DanhSachLop &dsLop, PTR_CAUHOI &root) {
+    // Giải phóng Lớp, Sinh Viên và Điểm Thi
+    for (int i = 0; i < dsLop.soLuong; i++) {
+        SinhVien* pSV = dsLop.nodes[i]->headSV;
+        while (pSV != NULL) {
+            DiemThi* pDiem = pSV->headDiem;
+            while (pDiem != NULL) {
+                DiemThi* tempDiem = pDiem;
+                pDiem = pDiem->next;
+                delete tempDiem; // Xóa node điểm
+            }
+            SinhVien* tempSV = pSV;
+            pSV = pSV->next;
+            delete tempSV; // Xóa node sinh viên
+        }
+        delete dsLop.nodes[i]; // Xóa con trỏ lớp
+    }
+    dsLop.soLuong = 0;
+    
+    // Giải phóng cây câu hỏi
+    GiaiPhongCayCauHoi(root);
+    root = NULL;
 }
 
 #endif

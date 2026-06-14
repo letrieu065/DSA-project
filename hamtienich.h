@@ -893,11 +893,6 @@ void TienHanhThiTracNghiem(SinhVien* sv, MonHoc monChon, CauHoi* deThi[], int so
                 SetColor(0, 15);
                 gotoxy(px+2, py+1);
                 cout << "Ban con " << soChuaLam << " cau CHUA tra loi: ";
-                SetColor(0, 14);
-                for (int i = 0; i < soChuaLam; i++) {
-                    cout << "Cau " << chuaLam[i];
-                    if (i < soChuaLam - 1) cout << ", ";
-                }
 
                 SetColor(0, 15);
                 gotoxy(px+2, py+4); cout << "Nop bai luon?";
@@ -946,17 +941,25 @@ void TienHanhThiTracNghiem(SinhVien* sv, MonHoc monChon, CauHoi* deThi[], int so
     gotoxy(40, 12); cout << "So cau dung: " << soCauDung << " / " << soCau;
     gotoxy(40, 14); cout << "DIEM CUA BAN: " << diemThi;
     
-    int lan = 1;
-	DiemThi* p = sv->headDiem;
-	while (p != NULL) {
-	    if (strcmp(p->maMH, monChon.maMH) == 0) lan++;
-	    p = p->next;
-	}
-	DiemThi* newDiem = new DiemThi;
-	strcpy(newDiem->maMH, monChon.maMH);
-	newDiem->diem = diemThi;
-	newDiem->next = sv->headDiem;
-	sv->headDiem = newDiem;
+    DiemThi* p = sv->headDiem;
+    bool daCoDiem = false;
+    while (p != NULL) {
+        if (strcmp(p->maMH, monChon.maMH) == 0) {
+            p->diem = diemThi; // Ghi đè điểm mới
+            daCoDiem = true;
+            break;
+        }
+        p = p->next;
+    }
+    
+    // Nếu sinh viên chưa từng thi môn này, tạo node điểm mới
+    if (!daCoDiem) {
+        DiemThi* newDiem = new DiemThi;
+        strcpy(newDiem->maMH, monChon.maMH);
+        newDiem->diem = diemThi;
+        newDiem->next = sv->headDiem;
+        sv->headDiem = newDiem;
+    }
 	
     string dsND[1000];
 	char dsDung[1000];

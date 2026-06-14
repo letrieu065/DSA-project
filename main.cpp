@@ -25,5 +25,6 @@ int main() {
 		cout << "Loi: Khong the luu day du du lieu. Hay kiem tra file data va quyen ghi." << endl;
 		system("pause");
 	}
+	GiaiPhongToanBoBoNho(DANHSACHLOP, Root);
 	return 0;
 }
