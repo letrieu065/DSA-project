@@ -134,6 +134,7 @@ void flowThiTracNghiem(SinhVien* sv, DanhSachMonHoc &dsMH, PTR_CAUHOI &root, Dan
             CauHoi* khoCauHoi[2000] = {NULL};
             int tongCauHoiKho = 0;
             LayDanhSachCauHoiTheoMon(root, monChon.maMH, khoCauHoi, tongCauHoiKho);
+            int gioiHanChon = (tongCauHoiKho < MAX_CAU_THI) ? tongCauHoiKho : MAX_CAU_THI;
 
             if (tongCauHoiKho == 0) {
                 InThongBaoContent("Mon hoc nay chua co cau hoi!", 12, 45, 24);
@@ -170,7 +171,7 @@ void flowThiTracNghiem(SinhVien* sv, DanhSachMonHoc &dsMH, PTR_CAUHOI &root, Dan
 
             // Nhập Số câu
             while (true) {
-                gotoxy(63, 14); questionCount = NhapSo(-1, 4, 1, tongCauHoiKho);
+                gotoxy(63, 14); questionCount = NhapSo(-1, 4, 1, gioiHanChon);
                 if (questionCount == INPUT_CANCELLED) break; // Bấm ESC
                 if (questionCount > 0 && questionCount <= tongCauHoiKho) break;
                 

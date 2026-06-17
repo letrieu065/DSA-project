@@ -10,7 +10,7 @@ int KiemTraTrungMaLop(DanhSachLop &dsLop, const char* maNhap);
 int KiemTraTrungTenLop(DanhSachLop &dsLop, const char* tenNhap);
 int themLop(DanhSachLop &dsLop, const char* ma, const char* ten);
 int timViTriLop(DanhSachLop &dsLop, const char* maLop_nhap);
-int suaLop(DanhSachLop &dsLop, const char* ma, const char* tenMoi);
+int suaLop(DanhSachLop &dsLop, const char* ma, const char* maMoi, const char* tenMoi);
 int xoaLop(DanhSachLop &dsLop, const char* ma);
 int KiemTraLopCoSinhVien(DanhSachLop &dsLop, const char* maLop);
 
@@ -32,7 +32,6 @@ bool kiemTraTrungMaMonHoc(DanhSachMonHoc &dsMH, const char* ma);
 bool kiemTraMonHocDaCoCauHoi(PTR_CAUHOI root, const char* maMH);
 bool KiemTraMonHocDaDuocThi(DanhSachLop &dsLop, const char* maMH);
 // Ham cau hoi
-
 unsigned int LCG(unsigned int &seed);
 void TaoIdCauHoi(char* id, const char* maMH, PTR_CAUHOI root);
 PTR_CAUHOI ThemCauHoi(PTR_CAUHOI root, CauHoi* node);

@@ -17,8 +17,9 @@ int main() {
 	Root = NULL;
 	bool daLoadDuLieu = loadData(DANHSACHLOP, DANHSACHMONHOC, Root);
 	if (!daLoadDuLieu) {
-		cout << "Loi: Khong the doc day du du lieu tu thu muc data. Chuong trinh se khoa ghi de file de tranh hong data." << endl;
+		cout << "Loi: Khong the doc day du du lieu tu thu muc data. Vui long kiem tra lai." << endl;
 		system("pause");
+		return 1;   // thoat ngay, khong cho dung chuong trinh voi du lieu khong day du
 	}
 	flowChinh(DANHSACHLOP, DANHSACHMONHOC, Root);
 	if (!saveData(DANHSACHLOP, DANHSACHMONHOC, Root)) {

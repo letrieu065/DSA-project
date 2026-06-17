@@ -14,7 +14,7 @@ using namespace std;
 
 void KiemTraVaTaoFileCauHoi(const char* maMH, const char* tenMH);
 bool LuuFileCauHoiTheoMon(const char* maMH, const char* tenMH, PTR_CAUHOI root);
-void LayDanhSachCauHoiTheoMon(PTR_CAUHOI root, const char* maMH, CauHoi* dsTam[], int &n);
+void LayDanhSachCauHoiTheoMon(PTR_CAUHOI root, const char* maMH, CauHoi* dsTam[], int &n, int maxSize = MAX_CAU_HOI_MOI_MON);
 bool LoadCauHoiTuFile(const char* maMH, const char* tenMH, PTR_CAUHOI &root);
 bool saveData(DanhSachLop &dsLop, DanhSachMonHoc &dsMH, PTR_CAUHOI &root);
 void SaveBaiLam(const char* maSV, const char* maMH, string dsNDCauHoi[], char dsDapAnDung[], char dsDapAnChon[], int soCau);
@@ -24,6 +24,7 @@ bool LoadLop(DanhSachLop &dsLop);
 bool SaveMonHoc(DanhSachMonHoc &dsMH);
 bool SaveLop(DanhSachLop &dsLop);
 bool loadData(DanhSachLop &dsLop, DanhSachMonHoc &dsMH, PTR_CAUHOI &root);
+void KhoiTaoThuMucVaFile();
 
 static bool gDaLoadLopThanhCong = false;
 static bool gDaLoadMonHocThanhCong = false;
@@ -133,9 +134,15 @@ bool LoadLop(DanhSachLop &dsLop) {
     ifstream fIn("data/LOP.txt", ios::in); 
     if (!fIn.is_open()) return false;
     
-    int soLop;
-    if (!(fIn >> soLop) || soLop < 0 || soLop > MAX_LOP) return false; 
-    fIn.ignore();
+    int soLop=0;
+    if (!(fIn >> soLop)) {
+        dsLop.soLuong = 0;
+        gDaLoadLopThanhCong = true;
+        fIn.close();
+        return true;
+    }
+    if (soLop < 0 || soLop > MAX_LOP) return false;
+    fIn.ignore(10000, '\n');
     
     DanhSachLop dsTam;
     dsTam.soLuong = 0;
@@ -149,7 +156,7 @@ bool LoadLop(DanhSachLop &dsLop) {
         
         int soSV;
         if (!(fIn >> soSV) || soSV < 0) return false;
-        fIn.ignore();
+        fIn.ignore(10000, '\n');
         
         SinhVien* tailSV = NULL;
         for (int j = 0; j < soSV; j++) {
@@ -163,7 +170,7 @@ bool LoadLop(DanhSachLop &dsLop) {
             if (!fIn.getline(svMoi->ho, MAX_HO)) return false;
             if (!fIn.getline(svMoi->ten, MAX_TEN_SV)) return false;
             if (!(fIn >> svMoi->phai)) return false;
-            fIn.ignore();
+            fIn.ignore(10000, '\n');
             if (!fIn.getline(svMoi->password, MAX_PASS)) return false;
             svMoi->headDiem = NULL;
             svMoi->next = NULL;
@@ -171,13 +178,13 @@ bool LoadLop(DanhSachLop &dsLop) {
 
             int soDiem;
             if (!(fIn >> soDiem) || soDiem < 0) return false;
-            fIn.ignore();
+            fIn.ignore(10000, '\n');
             DiemThi* tailDiem = NULL;
             for (int k = 0; k < soDiem; k++) {
                 DiemThi* diemMoi = new DiemThi;
                 if (!fIn.getline(diemMoi->maMH, MAX_MAMH)) return false;
                 if (!(fIn >> diemMoi->diem)) return false;
-                fIn.ignore();
+                fIn.ignore(10000, '\n');
                 diemMoi->next = NULL;
                 if (svMoi->headDiem == NULL) svMoi->headDiem = diemMoi;
                 else tailDiem->next = diemMoi;
@@ -200,15 +207,21 @@ bool LoadLop(DanhSachLop &dsLop) {
 bool LoadMonHoc(DanhSachMonHoc &dsMH) {
     ifstream fIn("data/MONHOC.txt", ios::in);
     if (!fIn.is_open()) return false;
-    int n;
-    if (!(fIn >> n) || n < 0 || n > MAX_MON_HOC) return false;
-    fIn.ignore();
+    int n=0;
+    if (!(fIn >> n)) {
+        dsMH.soLuong = 0;
+        gDaLoadMonHocThanhCong = true;
+        fIn.close();
+        return true;
+    }
+    if (n < 0 || n > MAX_MON_HOC) return false;
+    fIn.ignore(10000, '\n');
     DanhSachMonHoc dsTam;
     dsTam.soLuong = 0;
     for (int i = 0; i < n; i++) {
         if (!fIn.getline(dsTam.data[i].maMH, MAX_MAMH)) return false;
         if (!(fIn >> dsTam.data[i].soTinChi)) return false;
-        fIn.ignore();
+        fIn.ignore(10000, '\n');
         if (!fIn.getline(dsTam.data[i].tenMH, MAX_TENMH)) return false;
     }
     dsTam.soLuong = n;
@@ -230,13 +243,13 @@ void KiemTraVaTaoFileCauHoi(const char* maMH, const char* tenMH) {
     f.close();
 }
 
-void LayDanhSachCauHoiTheoMon(PTR_CAUHOI root, const char* maMH, CauHoi* dsTam[], int &n) {
-    if (root == NULL) return;
-    LayDanhSachCauHoiTheoMon(root->left, maMH, dsTam, n);
-    if (strcmp(root->maMH, maMH) == 0) {
+void LayDanhSachCauHoiTheoMon(PTR_CAUHOI root, const char* maMH, CauHoi* dsTam[], int &n, int maxSize) {
+    if (root == NULL || n >= maxSize) return;
+    LayDanhSachCauHoiTheoMon(root->left, maMH, dsTam, n, maxSize);
+    if (n < maxSize && strcmp(root->maMH, maMH) == 0) {
         dsTam[n++] = root;
     }
-    LayDanhSachCauHoiTheoMon(root->right, maMH, dsTam, n);
+    LayDanhSachCauHoiTheoMon(root->right, maMH, dsTam, n, maxSize);
 }
 
 bool LuuFileCauHoiTheoMon(const char* maMH, const char* tenMH, PTR_CAUHOI root) {
@@ -284,7 +297,7 @@ bool LoadCauHoiTuFile(const char* maMH, const char* tenMH, PTR_CAUHOI &root) {
         if (!fIn.getline(newNode->c, 200)) return false;
         if (!fIn.getline(newNode->d, 200)) return false;
         if (!(fIn >> newNode->dapAn)) return false;
-        fIn.ignore();
+        fIn.ignore(10000, '\n');
         newNode->left = newNode->right = NULL;
         root = ThemCauHoi(root, newNode);
     }
@@ -316,6 +329,8 @@ bool saveData(DanhSachLop &dsLop, DanhSachMonHoc &dsMH, PTR_CAUHOI &root) {
 }
 
 bool loadData(DanhSachLop &dsLop, DanhSachMonHoc &dsMH, PTR_CAUHOI &root) {
+    KhoiTaoThuMucVaFile();
+
     bool okMonHoc = LoadMonHoc(dsMH);
     bool okLop = LoadLop(dsLop);
     if (!okMonHoc || !okLop) return false;
@@ -344,5 +359,33 @@ void SaveBaiLam(const char* maSV, const char* maMH, string dsNDCauHoi[], char ds
         fOut << "------------------------------------------" << endl; 
     }
     fOut.close();
+}
+
+void KhoiTaoThuMucVaFile() {
+    _mkdir("data");
+    _mkdir("data/CAUHOI");
+    _mkdir("data/bailam");
+
+    ifstream fLop("data/LOP.txt");
+    if (!fLop.is_open()) {
+        ofstream fOutLop("data/LOP.txt");
+        if(fOutLop.is_open()) { 
+            fOutLop << 0 << endl; 
+            fOutLop.close(); 
+        }
+    } else {
+        fLop.close();
+    }
+
+    ifstream fMH("data/MONHOC.txt");
+    if (!fMH.is_open()) {
+        ofstream fOutMH("data/MONHOC.txt");
+        if(fOutMH.is_open()) { 
+            fOutMH << 0 << endl; 
+            fOutMH.close(); 
+        }
+    } else {
+        fMH.close();
+    }
 }
 #endif

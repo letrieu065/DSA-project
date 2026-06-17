@@ -1,37 +1,13 @@
+4
+MAN
+4
+Ba
+HELO
+3
+4
 12
-INT1154
 3
-Lap trinh C++
-INT1155
 3
-Cau truc du lieu
-KTMT01
+A
 3
-Kien truc may tinh
-TOAN01
-2
-Toan roi rac
-CSDL01
-3
-Co so du lieu
-MMT001
-3
-Mang may tinh
-HDH001
-3
-He dieu hanh
-OOP001
-3
-Lap trinh huong doi tuong
-WEB001
-3
-Lap trinh Web
-AI0001
-3
-Nhap mon tri tue nhan tao
-JSABDFJKABSFJKA
-10
-SALKFBASJFBSAFJKSABFJKSAFBASKFBASKF
-TEST
-1
-TEST
+a

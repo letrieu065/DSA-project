@@ -35,6 +35,11 @@ string NhapChuoiChu();
 string NhapTen(string suggest);
 string NhapCoDieuHuong(int X, int Y, int maxCols, int maxRows, string noiDungCu, int &keyLog);
 
+// Tim kiem
+Lop* TimKiemLopThongMinh(DanhSachLop &dsLop);
+SinhVien* TimKiemSinhVienTrongLopThongMinh(Lop* lop);          
+MonHoc*   TimKiemMonHocThongMinh(DanhSachMonHoc &dsMH);         
+
 // Ham nhap lieu
 int NhapSo(int suggest = -1, int maxLength = 6, int minVal = 1, int maxVal = 999999) {
     string strNum = "";
@@ -874,7 +879,7 @@ void TienHanhThiTracNghiem(SinhVien* sv, MonHoc monChon, CauHoi* deThi[], int so
         }
         // ESC nộp bài
         else if (ch == 27) {
-            int chuaLam[200], soChuaLam = 0;
+            int chuaLam[MAX_CAU_THI], soChuaLam = 0;
             for (int i = 0; i < soCau; i++)
                 if (dapAnDaChon[i] == ' ') chuaLam[soChuaLam++] = i + 1;
 
@@ -1035,4 +1040,292 @@ void InSmallTitle(string title) {
     SetColor(0, 7);
 }
 
+
+Lop* TimKiemLopThongMinh(DanhSachLop &dsLop) {
+    string tuKhoa = ""; 
+    int cursor = 0;
+
+    while (true) {
+        XoaVungContent();
+        
+        InTitle("TIM KIEM LOP HOC");
+        gotoxy(35, 8); SetColor(0, 14); cout << "Nhap tu khoa de loc: ";
+        SetColor(0, 15); cout << tuKhoa << "_"; 
+
+        gotoxy(35, 11); SetColor(0, 14); printf(" %-5s %-15s %-30s", "STT", "Ma Lop", "Ten Lop");
+
+        string tuKhoaLow = ToLower(tuKhoa);
+
+        Lop* dsLoc[500]; 
+        int sttGoc[500];
+        int soLuongLoc = 0;
+
+        for (int i = 0; i < dsLop.soLuong; i++) {
+            string maLopLow = ToLower(dsLop.nodes[i]->maLop);
+            string tenLopLow = ToLower(dsLop.nodes[i]->tenLop);
+            
+            if (tuKhoa.empty() || maLopLow.find(tuKhoaLow) != string::npos || tenLopLow.find(tuKhoaLow) != string::npos) {
+                dsLoc[soLuongLoc] = dsLop.nodes[i];
+                sttGoc[soLuongLoc] = i + 1;
+                soLuongLoc++;
+            }
+        }
+
+        if (soLuongLoc == 0) cursor = 0;
+        else if (cursor >= soLuongLoc) cursor = soLuongLoc - 1;
+        else if (cursor < 0) cursor = 0;
+
+        int yPos = 13;
+        int maxDong = 12;
+
+        int batDau = (cursor / maxDong) * maxDong;
+        int ketThuc = batDau + maxDong;
+        if (ketThuc > soLuongLoc) ketThuc = soLuongLoc;
+
+        for (int i = batDau; i < ketThuc; i++) {
+            gotoxy(35, yPos);
+
+            if (i == cursor) {
+                SetColor(15, 0);
+            } else {
+                SetColor(0, 7);
+            }
+
+            string ma = string(dsLoc[i]->maLop).substr(0, 15);
+            string ten = string(dsLoc[i]->tenLop).substr(0, 30);
+            
+            printf(" %-5d %-15s %-30s", sttGoc[i], ma.c_str(), ten.c_str());
+            
+            SetColor(0, 7);
+            yPos++;
+        }
+        
+        if (soLuongLoc == 0) {
+            gotoxy(52, 14); SetColor(0, 12); cout << "(Khong tim thay lop hoc nao)";
+        }
+
+        gotoxy(35, 26); SetColor(0, 8); cout << "Go chu de loc | Phim mui ten LEN/XUONG de chon lop";
+        gotoxy(35, 27); SetColor(0, 11); cout << "ENTER: Mo lop | BACKSPACE: Xoa | ESC: Thoat";
+        SetColor(0, 7);
+
+        int ch = _getch();
+
+        if (ch == 0 || ch == 224) {
+            ch = _getch();
+            if (ch == 72) {
+                if (cursor > 0) cursor--;
+            } 
+            else if (ch == 80) {
+                if (cursor < soLuongLoc - 1) cursor++;
+            }
+            continue;
+        }
+        else if (ch == 27) {
+            return NULL; 
+        }
+        else if (ch == 8) {
+            if (!tuKhoa.empty()) {
+                tuKhoa.pop_back(); 
+                cursor = 0;
+            }
+        }
+        else if (ch == 13) {
+            if (soLuongLoc > 0) {
+                return dsLoc[cursor]; 
+            }
+        }
+        else if (ch >= 32 && ch <= 126) {
+            if (ch == 32 && tuKhoa.empty()) continue; 
+            
+            if (tuKhoa.length() < 20) { 
+                tuKhoa += (char)ch;
+                cursor = 0;
+            }
+        }
+    }
+}
+
+SinhVien* TimKiemSinhVienTrongLopThongMinh(Lop* lop) {
+    if (lop == NULL || lop->headSV == NULL) return NULL;
+    
+    string tuKhoa = "";
+    int cursor = 0;
+
+    SinhVien* arrSV[100];
+    int totalSV = 0;
+    for (SinhVien* p = lop->headSV; p != NULL; p = p->next) {
+        arrSV[totalSV++] = p;
+    }
+
+    while (true) {
+        XoaVungContent();
+        
+        InTitle("TIM KIEM SINH VIEN TRONG LOP");
+        gotoxy(35, 8); SetColor(0, 14); cout << "Nhap (Ma SV/Ho va ten): ";
+        SetColor(0, 15); cout << tuKhoa << "_"; 
+        
+        gotoxy(35, 11); SetColor(0, 14); 
+        printf(" %-5s %-15s %-30s %-10s", "STT", "Ma SV", "Ho va Ten", "Phai");
+        string tuKhoaLow = ToLower(tuKhoa);
+        
+        SinhVien* dsLoc[100]; 
+        int sttGoc[100];
+        int soLuongLoc = 0;
+
+        for (int i = 0; i < totalSV; i++) {
+            string maSVLow = ToLower(arrSV[i]->maSV);
+            string hoTenLow = ToLower(string(arrSV[i]->ho) + " " + string(arrSV[i]->ten));
+            if (tuKhoa.empty() || maSVLow.find(tuKhoaLow) != string::npos || hoTenLow.find(tuKhoaLow) != string::npos) {
+                dsLoc[soLuongLoc] = arrSV[i];
+                sttGoc[soLuongLoc] = i + 1;
+                soLuongLoc++;
+            }
+        }
+        
+        if (soLuongLoc == 0) cursor = 0;
+        else if (cursor >= soLuongLoc) cursor = soLuongLoc - 1;
+        else if (cursor < 0) cursor = 0;
+
+        int yPos = 13;
+        int maxDong = 12; 
+        
+        int batDau = (cursor / maxDong) * maxDong;
+        int ketThuc = batDau + maxDong;
+        if (ketThuc > soLuongLoc) ketThuc = soLuongLoc;
+
+        for (int i = batDau; i < ketThuc; i++) {
+            gotoxy(35, yPos);
+            
+            if (i == cursor) SetColor(15, 0);
+            else SetColor(0, 7); 
+            
+            string phai = (dsLoc[i]->phai == 1) ? "Nam" : "Nu";
+            string hoTen = string(dsLoc[i]->ho) + " " + string(dsLoc[i]->ten);
+            if (hoTen.length() > 30) hoTen = hoTen.substr(0, 27) + "...";
+            
+            printf(" %-5d %-15s %-30s %-10s", sttGoc[i], dsLoc[i]->maSV, hoTen.c_str(), phai.c_str());
+            
+            SetColor(0, 7); 
+            yPos++;
+        }
+
+        gotoxy(35, 27); SetColor(0, 11); cout << "ENTER: Chon | BACKSPACE: Xoa | ESC: Thoat";
+        SetColor(0, 7);
+        
+        int ch = _getch();
+        if (ch == 0 || ch == 224) {
+            ch = _getch(); 
+            if (ch == 72) { if (cursor > 0) cursor--; } 
+            else if (ch == 80) { if (cursor < soLuongLoc - 1) cursor++; }
+            continue; 
+        }
+        else if (ch == 27) return NULL;
+        else if (ch == 8) {
+            if (!tuKhoa.empty()) {
+                tuKhoa.pop_back(); 
+                cursor = 0; 
+            }
+        }
+        else if (ch == 13) { 
+            if (soLuongLoc > 0) return dsLoc[cursor]; 
+        }
+        else if (ch >= 32 && ch <= 126) { 
+            if (ch == 32 && tuKhoa.empty()) continue; 
+            if (tuKhoa.length() < 25) { 
+                tuKhoa += (char)ch;
+                cursor = 0; 
+            }
+        }
+    }
+}
+
+MonHoc* TimKiemMonHocThongMinh(DanhSachMonHoc &dsMH) {
+    string tuKhoa = "";
+    int cursor = 0;
+
+    while (true) {
+        XoaVungContent();
+        InTitle("TIM KIEM MON HOC");
+        gotoxy(35, 8); SetColor(0, 14); cout << "Nhap (Ma MH/Ten MH): ";
+        SetColor(0, 15); cout << tuKhoa << "_"; 
+        
+        gotoxy(35, 11); SetColor(0, 14); 
+
+        printf(" %-5s %-15s %-35s %-10s", "STT", "Ma MH", "Ten Mon Hoc", "Tin Chi");
+        
+        string tuKhoaLow = ToLower(tuKhoa);
+        
+        MonHoc* dsLoc[500]; 
+        int sttGoc[500];
+        int soLuongLoc = 0;
+
+        for (int i = 0; i < dsMH.soLuong; i++) {
+            string maMHLow = ToLower(dsMH.data[i].maMH);
+            string tenMHLow = ToLower(dsMH.data[i].tenMH);
+            
+            if (tuKhoa.empty() || maMHLow.find(tuKhoaLow) != string::npos || tenMHLow.find(tuKhoaLow) != string::npos) {
+                dsLoc[soLuongLoc] = &dsMH.data[i]; 
+                sttGoc[soLuongLoc] = i + 1;
+                soLuongLoc++;
+            }
+        }
+        
+        if (soLuongLoc == 0) cursor = 0;
+        else if (cursor >= soLuongLoc) cursor = soLuongLoc - 1;
+        else if (cursor < 0) cursor = 0;
+
+        int yPos = 13;
+        int maxDong = 12;
+        
+        int batDau = (cursor / maxDong) * maxDong;
+        int ketThuc = batDau + maxDong;
+        if (ketThuc > soLuongLoc) ketThuc = soLuongLoc;
+
+        for (int i = batDau; i < ketThuc; i++) {
+            gotoxy(35, yPos);
+            
+            if (i == cursor) SetColor(15, 0);
+            else SetColor(0, 7); 
+
+            string ma = string(dsLoc[i]->maMH);
+            if (ma.length() > 15) ma = ma.substr(0, 15);
+            
+            string ten = string(dsLoc[i]->tenMH);
+            if (ten.length() > 35) ten = ten.substr(0, 32) + "...";
+            
+            printf(" %-5d %-15s %-35s %-10d", sttGoc[i], ma.c_str(), ten.c_str(), dsLoc[i]->soTinChi);
+            
+            SetColor(0, 7); 
+            yPos++;
+        }
+
+        gotoxy(35, 27); SetColor(0, 11); cout << "ENTER: Chon | BACKSPACE: Xoa | ESC: Thoat";
+        SetColor(0, 7);
+        
+        int ch = _getch();
+        if (ch == 0 || ch == 224) {
+            ch = _getch(); 
+            if (ch == 72) { if (cursor > 0) cursor--; } 
+            else if (ch == 80) { if (cursor < soLuongLoc - 1) cursor++; } 
+            continue; 
+        }
+        else if (ch == 27) return NULL; 
+        else if (ch == 8) { 
+            if (!tuKhoa.empty()) {
+                tuKhoa.pop_back(); 
+                cursor = 0; 
+            }
+        }
+        else if (ch == 13) { 
+            if (soLuongLoc > 0) return dsLoc[cursor]; 
+        }
+        else if (ch >= 32 && ch <= 126) { 
+            if (ch == 32 && tuKhoa.empty()) continue; 
+            if (tuKhoa.length() < 25) { 
+                tuKhoa += (char)ch;
+                cursor = 0; 
+            }
+        }
+    }
+}
 #endif
