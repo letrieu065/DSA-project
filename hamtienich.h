@@ -361,7 +361,7 @@ string xuongdongGioiHan(int X, int Y, int maxCols, int maxRows, int maxChars, ch
     gotoxy(curX, curY);
 
     while (true) {
-        int ch = _getch(); 
+        int ch = _getch();
         if (ch == 0 || ch == 224) {
             int ext = _getch();
             if ((ext == 72 || ext == 80) && keyLog != NULL) {

@@ -1004,6 +1004,9 @@ void flowQuanLyMonHoc_CauHoi(DanhSachLop &dsLop, DanhSachMonHoc &dsMH, PTR_CAUHO
             gotoxy(40, 10); cout << "Ma Mon:";
             gotoxy(40, 12); cout << "Ten Mon Hoc:";
             gotoxy(40, 14); cout << "So Tin Chi:";
+            gotoxy(35, 26); SetColor(0, 8);
+            cout << "ESC: de thoat | UP/DOWN: di chuyen | ENTER: xac nhan";
+            SetColor(0, 7);
             int xNhap = 54;
             string ma = "", ten = "", stc_str = "";
             int currentField = 0;
@@ -1012,17 +1015,39 @@ void flowQuanLyMonHoc_CauHoi(DanhSachLop &dsLop, DanhSachMonHoc &dsMH, PTR_CAUHO
 
             ShowCur(true);
             while (!isDone && !isCancel) {
-                int keyLog = 0;
-                
-                if (currentField == 0) {
-                    ma = NhapCoDieuHuong(xNhap, 10, MAX_MAMH - 1, 1, ma, keyLog);
-                } else if (currentField == 1) {
-                    ten = NhapCoDieuHuong(xNhap, 12, MAX_TENMH - 1, 1, ten, keyLog);
-                } else if (currentField == 2) {
-                    stc_str = NhapCoDieuHuong(xNhap, 14, 2, 1, stc_str, keyLog);
-                }
-                
-                if (keyLog == 27) {
+                if (currentField == 0) gotoxy(xNhap + ma.length(), 10);
+                else if (currentField == 1) gotoxy(xNhap + ten.length(), 12);
+                else if (currentField == 2) gotoxy(xNhap + stc_str.length(), 14);
+
+                char ch = _getch();
+                if (ch == 224 || ch == 0 || ch == -32) { 
+                    char ext = _getch();
+                    if (ext == 72) { // UP
+                        currentField = (currentField > 0) ? currentField - 1 : 2;
+                    } else if (ext == 80) { // DOWN
+                        currentField = (currentField < 2) ? currentField + 1 : 0;
+                    }
+                } 
+                else if (isprint(ch)) {
+                    if ((isalnum(ch) || ch == '-' || ch == '_') && currentField == 0 && ma.length() < MAX_MAMH - 1) {
+                        ma += toupper(ch); cout << (char)toupper(ch);
+                    } else if (currentField == 1 && ten.length() < MAX_TENMH - 1) {
+                        if (ch == ' ' && (ten.empty() || ten.back() == ' ')) continue;
+                        ten += toupper(ch); cout << (char)toupper(ch);
+                    } else if (currentField == 2 && isdigit(ch) && stc_str.length() < 2) { 
+                        stc_str += ch; cout << ch;
+                    }
+                } 
+                else if (ch == 8) { // BACKSPACE
+                    if (currentField == 0 && !ma.empty()) {
+                        ma.pop_back(); gotoxy(xNhap + ma.length(), 10); cout << " \b";
+                    } else if (currentField == 1 && !ten.empty()) {
+                        ten.pop_back(); gotoxy(xNhap + ten.length(), 12); cout << " \b";
+                    } else if (currentField == 2 && !stc_str.empty()) { 
+                        stc_str.pop_back(); gotoxy(xNhap + stc_str.length(), 14); cout << " \b";
+                    }
+                } 
+                else if (ch == 27) { // ESC
                     gotoxy(40, 25); SetColor(0, 14); 
                     string thongBao = "Ban co muon thoat them mon hoc?";
                     cout << thongBao;
@@ -1031,16 +1056,9 @@ void flowQuanLyMonHoc_CauHoi(DanhSachLop &dsLop, DanhSachMonHoc &dsMH, PTR_CAUHO
                     } else {
                         gotoxy(40, 25); cout << "                                                  ";
                         SetColor(0, 7);
-                        continue;
                     }
                 } 
-                else if (keyLog == 72) {
-                    if (currentField > 0) currentField--;
-                } 
-                else if (keyLog == 80) {
-                    if (currentField < 2) currentField++;
-                } 
-                else if (keyLog == 13) {
+                else if (ch == 13) { // ENTER
                     if (currentField < 2) {
                         if (currentField == 0) {
                             while (!ma.empty() && ma.back() == ' ') ma.pop_back();
@@ -1062,120 +1080,130 @@ void flowQuanLyMonHoc_CauHoi(DanhSachLop &dsLop, DanhSachMonHoc &dsMH, PTR_CAUHO
                         if (ma.empty() || ten.empty() || stc_str.empty()) {
                             InThongBaoContent("Vui long nhap day du thong tin!", 12, 40, 25);
                             _getch(); 
-                            gotoxy(40, 25); cout << "                                     ";
+                            InThongBaoContent("                               ", 12, 40, 25);
                             continue;
                         }
 
-                        for (int i = 0; i < ma.length(); i++) ma[i] = toupper(ma[i]);
-
-                        if (kiemTraTrungMaMonHoc(dsMH, (char*)ma.c_str())) {
-                            InThongBaoContent("Loi: Ma mon hoc da ton tai!", 12, 40, 25);
-                            _getch(); 
-                            gotoxy(40, 25); cout << "                                ";
-                            currentField = 0;
-                            continue;
-                        }
                         int stc = atoi(stc_str.c_str());
                         if (stc <= 0 || stc > 10) {
                             InThongBaoContent("So tin chi phai tu 1 den 10!", 12, 40, 25);
                             _getch(); 
-                            gotoxy(40, 25); cout << "                                ";
-                            currentField = 2;
+                            InThongBaoContent("                               ", 12, 40, 25);
+                            currentField = 2; 
                             continue;
                         }
 
-                        else {
-                            gotoxy(40, 25); SetColor(0, 14); 
-                            string thongBao = "Ban co muon them mon nay?";
-                            cout << thongBao;
-                            if (XacNhan(42 + thongBao.length(), 25) == 'Y') {
-                                isDone = true;
-                                gotoxy(40, 25); cout << "                                                   ";
-                            }
-                            else {                                    
-                                gotoxy(40, 25); cout << "                                                   ";
-                                InThongBaoContent("Da huy them mon hoc!", 8, 40, 25);
-                                _getch();
-                                gotoxy(40, 25); cout << "                                                   ";
-                            }
+                        for (int i = 0; i < ma.length(); i++) ma[i] = toupper(ma[i]);
+                        if (kiemTraTrungMaMonHoc(dsMH, (char*)ma.c_str())) {
+                            InThongBaoContent("Loi: Ma mon hoc da ton tai!", 12, 40, 25);
+                            _getch(); 
+                            InThongBaoContent("                               ", 12, 40, 25);
+                            currentField = 0; 
+                            continue;
                         }
 
-                        if (isDone) {
-                            gotoxy(40, 25); cout << "                                                   ";
-                            ShowCur(false);
+                        gotoxy(40, 25); SetColor(0, 14); 
+                        string thongBao = "Ban co muon them mon nay?";
+                        cout << thongBao;
+                        if (XacNhan(42 + thongBao.length(), 25) == 'Y') {
                             MonHoc mhMoi;
                             strcpy(mhMoi.maMH, ma.c_str());
                             strcpy(mhMoi.tenMH, ten.c_str());
                             mhMoi.soTinChi = stc;
+
                             int res = themMonHoc(dsMH, &mhMoi);
+                            gotoxy(40, 25); cout << "                                                                 ";
                             if (res == SUCCESS) {
                                 SaveMonHoc(dsMH);
                                 KiemTraVaTaoFileCauHoi(mhMoi.maMH, mhMoi.tenMH);
                                 InThongBaoContent("Them mon hoc thanh cong!", 10, 40, 25);
-                                cursor = dsMH.soLuong - 1;
+                                cursor = dsMH.soLuong - 1; 
                                 _getch();
                                 isDone = true;
                             } else {
                                 InThongBaoContent(layThongBaoLoi(res), 12, 40, 25);
                                 _getch();
                             }
+                        } else {                                    
+                            gotoxy(40, 25); cout << "                                                                 ";
+                            InThongBaoContent("Da huy them mon hoc!", 8, 40, 25);
+                            _getch();
+                            gotoxy(40, 25); cout << "                                                                 ";
                         }
                     }
                 }
             }
             ShowCur(false);
             forceRedraw = true;
-        }   
+        } 
 
+        // Logic sua mon hoc
         else if (toupper(ch) == 'E' && totalItems > 0) { 
             XoaVungContent();
             gotoxy(100, 27); cout << "ESC: de thoat";
             InTitle("SUA MON HOC");
-        
+            gotoxy(35, 26); SetColor(0, 8);
+            cout << "ESC: de thoat | UP/DOWN: di chuyen | ENTER: xac nhan";
+            SetColor(0, 7);
             gotoxy(40, 10); cout << "Ma mon hoc    : " << dsMH.data[cursor].maMH;
             gotoxy(40, 12); cout << "Ten mon moi   : ";
             gotoxy(40, 14); cout << "So tin chi moi: ";
         
             int xNhap = 56;
-            string tenMoi = dsMH.data[cursor].tenMH;
-
-            char buffer[10];
-            itoa(dsMH.data[cursor].soTinChi, buffer, 10);
-            string stcMoi_str = string(buffer);
+            string tenCu = dsMH.data[cursor].tenMH;
+            string tenMoi = tenCu;
+            int stcCu = dsMH.data[cursor].soTinChi;
+            
+            string stcMoi_str = to_string(stcCu);
             
             int currentField = 0;
             bool isDone = false;
             bool isCancel = false;
+
             gotoxy(xNhap, 12); cout << tenMoi;
             gotoxy(xNhap, 14); cout << stcMoi_str;
+            
             ShowCur(true);
             while (!isDone && !isCancel) {
-                int keyLog = 0;
-                if (currentField == 0) {
-                    tenMoi = NhapCoDieuHuong(xNhap, 12, MAX_TENMH - 1, 1, tenMoi, keyLog);
-                } else if (currentField == 1) {
-                    stcMoi_str = NhapCoDieuHuong(xNhap, 14, 2, 1, stcMoi_str, keyLog);
-                }
+                if (currentField == 0) gotoxy(xNhap + tenMoi.length(), 12);
+                else if (currentField == 1) gotoxy(xNhap + stcMoi_str.length(), 14);
 
-                if (keyLog == 27) {
+                char ch = _getch();
+                if (ch == 224 || ch == 0 || ch == -32) { 
+                    char ext = _getch();
+                    if (ext == 72) { // UP
+                        currentField = (currentField > 0) ? currentField - 1 : 1;
+                    } else if (ext == 80) { // DOWN
+                        currentField = (currentField < 1) ? currentField + 1 : 0;
+                    }
+                } 
+                else if (isprint(ch)) {
+                    if (currentField == 0 && tenMoi.length() < MAX_TENMH - 1) {
+                        if (ch == ' ' && (tenMoi.empty() || tenMoi.back() == ' ')) continue;
+                        tenMoi += toupper(ch); cout << (char)toupper(ch);
+                    } else if (currentField == 1 && isdigit(ch) && stcMoi_str.length() < 2) {
+                        stcMoi_str += ch; cout << ch;
+                    }
+                } 
+                else if (ch == 8) { // BACKSPACE
+                    if (currentField == 0 && !tenMoi.empty()) {
+                        tenMoi.pop_back(); gotoxy(xNhap + tenMoi.length(), 12); cout << " \b";
+                    } else if (currentField == 1 && !stcMoi_str.empty()) {
+                        stcMoi_str.pop_back(); gotoxy(xNhap + stcMoi_str.length(), 14); cout << " \b";
+                    }
+                } 
+                else if (ch == 27) { // ESC
                     gotoxy(40, 25); SetColor(0, 14); 
-                    string thongBao = "Ban co muon thoat them mon hoc?";
+                    string thongBao = "Ban co muon thoat sua mon hoc?";
                     cout << thongBao;
                     if (XacNhan(42 + thongBao.length(), 25) == 'Y') {
                         isCancel = true;
                     } else {
                         gotoxy(40, 25); cout << "                                                  ";
                         SetColor(0, 7);
-                        continue;
                     }
                 } 
-                else if (keyLog == 72) {
-                    if (currentField > 0) currentField--;
-                } 
-                else if (keyLog == 80) {
-                    if (currentField < 1) currentField++;
-                } 
-                else if (keyLog == 13) {
+                else if (ch == 13) { // ENTER
                     if (currentField < 1) {
                         if (currentField == 0) {
                             while (!tenMoi.empty() && tenMoi.back() == ' ') tenMoi.pop_back();
@@ -1192,44 +1220,46 @@ void flowQuanLyMonHoc_CauHoi(DanhSachLop &dsLop, DanhSachMonHoc &dsMH, PTR_CAUHO
                         if (tenMoi.empty() || stcMoi_str.empty()) {
                             InThongBaoContent("Khong duoc de trong thong tin!", 12, 40, 25);
                             _getch(); 
-                            gotoxy(40, 25); cout << "                                     ";
+                            InThongBaoContent("                               ", 12, 40, 25);
                             continue;
                         }
+                        
                         int stcMoi = atoi(stcMoi_str.c_str());
                         if (stcMoi <= 0 || stcMoi > 10) {
                             InThongBaoContent("So tin chi phai tu 1 den 10!", 12, 40, 25);
                             _getch(); 
-                            gotoxy(40, 25); cout << "                                ";
+                            InThongBaoContent("                               ", 12, 40, 25);
                             currentField = 1;
                             continue;
                         }
 
-                        gotoxy(40, 25); SetColor(0, 14); 
-                        string thongBao = "Ban co muon sua mon nay?";
-                        cout << thongBao;
-                        if (XacNhan(42 + thongBao.length(), 25) == 'Y') {
-                            isDone = true;
-                            gotoxy(40, 25); cout << "                                                   ";
-                        }
-                        else {                                    
-                            gotoxy(40, 25); cout << "                                                   ";
-                            InThongBaoContent("Da huy sua mon hoc!", 8, 40, 25);
+                        if (tenMoi == tenCu && stcMoi == stcCu) {
+                            InThongBaoContent("Khong co thay doi de cap nhat!", 8, 40, 25);
                             _getch();
-                            gotoxy(40, 25); cout << "                                                   ";
+                            isCancel = true; 
+                            continue;
                         }
 
-                        if (isDone) {
-                            ShowCur(false);
+                        gotoxy(40, 25); SetColor(0, 14); 
+                        string thongBao = "Ban co muon luu thay doi mon nay?";
+                        cout << thongBao;
+                        if (XacNhan(42 + thongBao.length(), 25) == 'Y') {
                             int res = suaMonHoc(dsMH, dsMH.data[cursor].maMH, tenMoi.c_str(), stcMoi);
+                            gotoxy(40, 25); cout << "                                                                 ";
                             if (res == SUCCESS) {
                                 SaveMonHoc(dsMH);
-                                InThongBaoContent("Cap nhat thanh cong!", 10, 40, 25);
+                                InThongBaoContent("Cap nhat mon hoc thanh cong!", 10, 40, 25);
                                 _getch();
                                 isDone = true;
                             } else {
                                 InThongBaoContent(layThongBaoLoi(res), 12, 40, 25);
                                 _getch();
                             }
+                        } else {                                    
+                            gotoxy(40, 25); cout << "                                                                 ";
+                            InThongBaoContent("Da huy sua mon hoc!", 8, 40, 25);
+                            _getch();
+                            gotoxy(40, 25); cout << "                                                                 ";
                         }
                     }
                 }
@@ -1397,12 +1427,8 @@ void flowQuanLyCauHoiCuaMon(const char* maMH, const char* tenMH, PTR_CAUHOI &roo
             bool huyBo = false;
  
             while (!exitForm) {
-
-                if (field == 5) {
-                    ShowCur(false);
-                } else {
-                    ShowCur(true);
-                }
+                if (field == 5) ShowCur(false);
+                else ShowCur(true);
 
                 // Highlight label cua field hien tai
                 SetColor(0, 11);
@@ -1492,7 +1518,10 @@ void flowQuanLyCauHoiCuaMon(const char* maMH, const char* tenMH, PTR_CAUHOI &roo
                             InThongBaoContent("Them cau hoi thanh cong!", 10, 45, 25);
                             exitForm = true;
                         } else {
-                            _getch();
+                            int waitKey = _getch();
+                            if (waitKey == 224 || waitKey == 0 || waitKey == -32) {
+                                _getch(); 
+                            }
                             gotoxy(45, 25); cout << "                                        ";
                         }
                     } else {
@@ -1529,7 +1558,7 @@ void flowQuanLyCauHoiCuaMon(const char* maMH, const char* tenMH, PTR_CAUHOI &roo
                 gotoxy(35, 18); cout << "C. ";
                 gotoxy(35, 20); cout << "D. ";
                 gotoxy(35, 22); cout << "Dap An Dung: ";
-                gotoxy(35, 25); SetColor(0, 8);
+                gotoxy(35, 26); SetColor(0, 8);
                 cout << "Up/Down/Enter: Chuyen truong | Enter o Dap An: Luu | ESC: Huy";
                 SetColor(0, 7);
  
@@ -1553,6 +1582,11 @@ void flowQuanLyCauHoiCuaMon(const char* maMH, const char* tenMH, PTR_CAUHOI &roo
                 bool exitForm = false;
  
                 while (!exitForm) {
+                    if (field == 5) ShowCur(false);
+                    else ShowCur(true);
+
+                    if (keyLog == 75 || keyLog == 77) continue;
+
                     // Highlight label field dang active
                     SetColor(0, 11);
                     switch (field) {
@@ -1635,7 +1669,10 @@ void flowQuanLyCauHoiCuaMon(const char* maMH, const char* tenMH, PTR_CAUHOI &roo
                                 Sleep(1500);
                                 exitForm = true;
                             } else {
-                                _getch();
+                                int waitKey = _getch();
+                                if (waitKey == 224 || waitKey == 0 || waitKey == -32) {
+                                    _getch(); 
+                                }
                                 gotoxy(45, 25); cout << "                                        ";
                             }
                         } else {
