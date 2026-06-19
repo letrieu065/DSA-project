@@ -1,8 +1,0 @@
-CAU 1: Don vi nho nhat cua thong tin?
-A. Byte
-B. Bit
-C. Word
-D. Sector
-Dap an dung: B
-Sinh vien chon: B
-------------------------------------------

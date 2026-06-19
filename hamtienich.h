@@ -370,8 +370,11 @@ string xuongdongGioiHan(int X, int Y, int maxCols, int maxRows, int maxChars, ch
     gotoxy(curX, curY); 
     while (true) {
         int ch = _getch();
+<<<<<<< HEAD
 
         // Phim dieu huong (mui ten, INS, DEL...)
+=======
+>>>>>>> c2d8f9310c9f88c9481b200127ced131b1703c3a
         if (ch == 0 || ch == 224) {
             int ext = _getch();
             if (keyLog != NULL && (ext == 72 || ext == 80)) {
@@ -1320,4 +1323,8 @@ MonHoc* TimKiemMonHocThongMinh(DanhSachMonHoc &dsMH) {
         }
     }
 }
+<<<<<<< HEAD
 #endif
+=======
+#endif
+>>>>>>> c2d8f9310c9f88c9481b200127ced131b1703c3a

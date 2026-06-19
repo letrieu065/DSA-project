@@ -253,7 +253,7 @@ void LayDanhSachCauHoiTheoMon(PTR_CAUHOI root, const char* maMH, CauHoi* dsTam[]
 }
 
 bool LuuFileCauHoiTheoMon(const char* maMH, const char* tenMH, PTR_CAUHOI root) {
-    CauHoi* dsTam[1000];
+    CauHoi* dsTam[MAX_CAU_HOI_MOI_MON];
     int n = 0;
     LayDanhSachCauHoiTheoMon(root, maMH, dsTam, n); 
     _mkdir("data");
@@ -306,7 +306,7 @@ bool LoadCauHoiTuFile(const char* maMH, const char* tenMH, PTR_CAUHOI &root) {
 }
 
 void XoaFileNeuTrong(const char* maMH, const char* tenMH, PTR_CAUHOI root) {
-    CauHoi* dsTam[1000];
+    CauHoi* dsTam[MAX_CAU_HOI_MOI_MON];
     int n = 0;
     LayDanhSachCauHoiTheoMon(root, maMH, dsTam, n);
 
@@ -388,4 +388,8 @@ void KhoiTaoThuMucVaFile() {
         fMH.close();
     }
 }
+<<<<<<< HEAD
 #endif
+=======
+#endif
+>>>>>>> c2d8f9310c9f88c9481b200127ced131b1703c3a

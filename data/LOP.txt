@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 7
 D24CQCN01
 Cong nghe thong tin 1
@@ -568,3 +569,17 @@ ND DDH
 FSDFSD
 FBSHDBFD
 0
+=======
+1
+HELLO
+HELLO
+1
+HELLOAEA
+CHAO
+MAN
+1
+123
+1
+MAN
+5
+>>>>>>> c2d8f9310c9f88c9481b200127ced131b1703c3a

@@ -1,0 +1,16 @@
+CAU 1: AI
+A. SI
+B. BA
+C. CON
+D. TRA
+Dap an dung: A
+Sinh vien chon: A
+------------------------------------------
+CAU 2: IA
+A. A
+B. AB
+C. C
+D. V
+Dap an dung: A
+Sinh vien chon: B
+------------------------------------------
