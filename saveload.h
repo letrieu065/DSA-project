@@ -388,8 +388,4 @@ void KhoiTaoThuMucVaFile() {
         fMH.close();
     }
 }
-<<<<<<< HEAD
 #endif
-=======
-#endif
->>>>>>> c2d8f9310c9f88c9481b200127ced131b1703c3a

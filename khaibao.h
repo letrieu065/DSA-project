@@ -18,11 +18,7 @@ const int MAX_TEN_SV = 8;
 const int MAX_PASS = 21;
 const int MAX_TENMH = 36;
 const int MAX_CAU_HOI_MOI_MON = 2000;   // ngan hang cau hoi toi da cho 1 mon
-<<<<<<< HEAD
 const int MAX_CAU_THI          = 200;   // so cau toi da trong 1 de thi
-=======
-const int MAX_CAU_THI = 200;   // so cau toi da trong 1 de thi
->>>>>>> c2d8f9310c9f88c9481b200127ced131b1703c3a
 
 struct DiemThi {
     char maMH[MAX_MAMH];

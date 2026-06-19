@@ -365,25 +365,11 @@ unsigned int LCG_Next(unsigned int &seed) {
     return seed;
 }
 
-<<<<<<< HEAD
-
-=======
-// Ham tao id ngau nhien 5 chu sao cho moi cau hoi, dang DSA_12345
->>>>>>> c2d8f9310c9f88c9481b200127ced131b1703c3a
 void TaoIdCauHoi(char* bufOut, const char* maMH, PTR_CAUHOI root) {
     static unsigned int currentSeed = (unsigned int)time(NULL); 
     while (true) {
-<<<<<<< HEAD
         unsigned int randomNum = LCG_Next(currentSeed) % 100000;
         snprintf(bufOut, 25, "%s_%05u", maMH, randomNum); 
-=======
-        // Dung phep chia lay du % 100000 de gioi han so ngau nhien trong khoang 0 - 99999
-        unsigned int randomNum = LCG_Next(currentSeed) % 100000;
-        
-        // Dung snprintf de tao id theo dinh dang "maMH_randomNum", vd: "DSA_12345"
-        snprintf(bufOut, 25, "%s_%05u", maMH, randomNum); 
-        
->>>>>>> c2d8f9310c9f88c9481b200127ced131b1703c3a
         if (TimCauHoi(root, bufOut) == NULL) {
             break; 
         }
@@ -505,8 +491,4 @@ void GiaiPhongToanBoBoNho(DanhSachLop &dsLop, PTR_CAUHOI &root) {
     root = NULL;
 }
 
-<<<<<<< HEAD
 #endif
-=======
-#endif
->>>>>>> c2d8f9310c9f88c9481b200127ced131b1703c3a
