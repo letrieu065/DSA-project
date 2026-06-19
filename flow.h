@@ -57,13 +57,22 @@ int flowDangNhap(DanhSachLop &dsLop, SinhVien* &svLogined) {
         int role = kiemTraTaiKhoan(dsLop, user, svHienTai);
 
         if (role != 1 && role != 2) {
-            InThongBaoContent(layThongBaoLoi(role), 12, 43, 18); 
+            InThongBaoLoiDangNhap(layThongBaoLoi(role));
             _getch();
             continue;
         }
 
         gotoxy(52, 16);
-        string pass = NhapMatKhau(52, 16, 47, 18); 
+        string pass = NhapMatKhau(52, 16, 47, 18);
+        if (pass == "") {
+            gotoxy(38, 26); SetColor(0, 14); cout << "Ban co chac muon thoat khong?";
+            char xn = XacNhan(70, 26);
+            gotoxy(38, 26); cout << "                                                    ";
+            if (xn == 'Y') {
+                return 0;  
+            }
+            continue;
+        } 
         int passCheck = xacThucMatKhau(role, pass, svHienTai);
 
         if (passCheck == SUCCESS) {
@@ -74,7 +83,7 @@ int flowDangNhap(DanhSachLop &dsLop, SinhVien* &svLogined) {
             return role; 
         }
         else {
-            InThongBaoContent(layThongBaoLoi(passCheck), 12, 45, 18);
+            InThongBaoLoiDangNhap(layThongBaoLoi(passCheck));
             _getch();
             continue;
         }

@@ -34,6 +34,7 @@ int NhapSo(int suggest, int maxLength, int minVal, int maxVal);
 string NhapChuoiChu();
 string NhapTen(string suggest);
 string NhapCoDieuHuong(int X, int Y, int maxCols, int maxRows, string noiDungCu, int &keyLog);
+void InThongBaoLoiDangNhap(string error);
 
 // Tim kiem
 Lop* TimKiemLopThongMinh(DanhSachLop &dsLop);
@@ -1046,6 +1047,12 @@ void InTitle(string title) {
 void InSmallTitle(string title) {
     SetColor(0, 11);
     InGiuaKhung(title, 32, 3, 85);
+    SetColor(0, 7);
+}
+
+void InThongBaoLoiDangNhap(string error) {
+    SetColor(0, 12);
+    InGiuaKhung(error, 38, 18, 44);
     SetColor(0, 7);
 }
 

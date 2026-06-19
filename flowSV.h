@@ -48,14 +48,13 @@ void flowThiTracNghiem(SinhVien* sv, DanhSachMonHoc &dsMH, PTR_CAUHOI &root, Dan
     int cursor = 0;
     int itemsPerPage = 8;
 
-    // Vòng lặp tổng bọc bên ngoài (Thay thế cho lệnh goto)
     while (true) {
         int oldCursor = -1;
         int oldPage = -1;
         int forceRedraw = 1;
         bool isSelected = false;
 
-        // VÒNG LẶP 1: CHỌN MÔN HỌC (PARTIAL REDRAW)
+        // Chon mon thi
         while (true) {
             ShowCur(false);
             int totalItems = dsMH.soLuong;
@@ -128,10 +127,10 @@ void flowThiTracNghiem(SinhVien* sv, DanhSachMonHoc &dsMH, PTR_CAUHOI &root, Dan
             else if (ch == 27) return; // Thoát hẳn
         }
 
-        // VÒNG LẶP 2: SETUP THÔNG SỐ SAU KHI ĐÃ CHỌN MÔN
+        // Setup thong so
         if (isSelected) {
             MonHoc monChon = dsMH.data[cursor];
-            CauHoi* khoCauHoi[2000] = {NULL};
+            CauHoi* khoCauHoi[MAX_CAU_HOI_MOI_MON] = {NULL};
             int tongCauHoiKho = 0;
             LayDanhSachCauHoiTheoMon(root, monChon.maMH, khoCauHoi, tongCauHoiKho);
             int gioiHanChon = (tongCauHoiKho < MAX_CAU_THI) ? tongCauHoiKho : MAX_CAU_THI;
@@ -139,7 +138,7 @@ void flowThiTracNghiem(SinhVien* sv, DanhSachMonHoc &dsMH, PTR_CAUHOI &root, Dan
             if (tongCauHoiKho == 0) {
                 InThongBaoContent("Mon hoc nay chua co cau hoi!", 12, 45, 24);
                 _getch();
-                continue; // Lặp lại vòng ngoài cùng để chọn lại môn
+                continue;
             }
 
             XoaVungContent();
@@ -157,40 +156,41 @@ void flowThiTracNghiem(SinhVien* sv, DanhSachMonHoc &dsMH, PTR_CAUHOI &root, Dan
 
             ShowCur(true);
 
-            // Nhập Thời gian
+            // Nhap thoi gian
             while (true) {
-                gotoxy(63, 12); testTime = NhapSo(-1, 3, 1, 180); // Tối đa 180 phút
-                if (testTime == INPUT_CANCELLED) break; // Bấm ESC
+                gotoxy(63, 12); testTime = NhapSo(-1, 3, 1, 180); // Toi da 180
+                if (testTime == INPUT_CANCELLED) break; // ESC
                 if (testTime > 0) break;
                 InThongBaoContent("Thoi gian phai > 0!", 12, 70, 12);
                 Sleep(800); gotoxy(70, 12); cout << "                   ";   
             }
             if (testTime == INPUT_CANCELLED) {
-                continue; // Quay lại bảng chọn môn nếu ấn ESC
+                continue; // Quay lai
             }
 
-            // Nhập Số câu
+            // Nhap so cau
             while (true) {
                 gotoxy(63, 14); questionCount = NhapSo(-1, 4, 1, gioiHanChon);
-                if (questionCount == INPUT_CANCELLED) break; // Bấm ESC
+                if (questionCount == INPUT_CANCELLED) break; // ESC
                 if (questionCount > 0 && questionCount <= tongCauHoiKho) break;
                 
                 InThongBaoContent("So cau vuot qua ngan hang!", 12, 70, 14);
                 _getch(); gotoxy(63, 14); cout << "                                 ";
             }
             if (questionCount == INPUT_CANCELLED) {
-                continue; // Quay lại bảng chọn môn
+                continue; // Quay lai
             }
 
             ShowCur(false);
 
-            // Fisher-Yates Shuffle xáo trộn đề
+            // Fisher-Yates Shuffle xao de
             srand(time(0)); 
             for (int i = 0; i < tongCauHoiKho; i++) {
                 int r = i + rand() % (tongCauHoiKho - i); 
                 swap(khoCauHoi[i], khoCauHoi[r]); 
             }
-            CauHoi* deThi[1000] = {NULL};
+
+            CauHoi* deThi[MAX_CAU_THI] = {NULL};
             for (int i = 0; i < questionCount; i++) {
                 deThi[i] = khoCauHoi[i];
             }
@@ -200,7 +200,7 @@ void flowThiTracNghiem(SinhVien* sv, DanhSachMonHoc &dsMH, PTR_CAUHOI &root, Dan
             _getch();
             
             TienHanhThiTracNghiem(sv, monChon, deThi, questionCount, testTime);
-            return; // Thi xong thì thoát luôn luồng này
+            return;
         }
     }
 }
