@@ -10,7 +10,7 @@ int KiemTraTrungMaLop(DanhSachLop &dsLop, const char* maNhap);
 int KiemTraTrungTenLop(DanhSachLop &dsLop, const char* tenNhap);
 int themLop(DanhSachLop &dsLop, const char* ma, const char* ten);
 int timViTriLop(DanhSachLop &dsLop, const char* maLop_nhap);
-int suaLop(DanhSachLop &dsLop, const char* ma, const char* tenMoi);
+int suaLop(DanhSachLop &dsLop, const char* ma, const char* maMoi, const char* tenMoi);
 int xoaLop(DanhSachLop &dsLop, const char* ma);
 int KiemTraLopCoSinhVien(DanhSachLop &dsLop, const char* maLop);
 
@@ -31,8 +31,9 @@ int timViTriMonHoc(DanhSachMonHoc &dsMH, const char* ma);
 bool kiemTraTrungMaMonHoc(DanhSachMonHoc &dsMH, const char* ma);
 bool kiemTraMonHocDaCoCauHoi(PTR_CAUHOI root, const char* maMH);
 bool KiemTraMonHocDaDuocThi(DanhSachLop &dsLop, const char* maMH);
-// Ham cau hoi
+int kiemTraTrungTenMonHoc(DanhSachMonHoc &dsMH, const char* ten);
 
+// Ham cau hoi
 unsigned int LCG(unsigned int &seed);
 void TaoIdCauHoi(char* id, const char* maMH, PTR_CAUHOI root);
 PTR_CAUHOI ThemCauHoi(PTR_CAUHOI root, CauHoi* node);
@@ -41,7 +42,10 @@ CauHoi* LayNhoNhat(CauHoi* node);
 PTR_CAUHOI XoaCauHoi(PTR_CAUHOI root, const char* id);
 void CapNhatSTT(PTR_CAUHOI root);
 
-DiemThi* saoChepDanhSachDiem(DiemThi* src); 
+DiemThi* saoChepDanhSachDiem(DiemThi* src);
+
+void GiaiPhongCauHoi(PTR_CAUHOI &root);
+void GiaiPhongToanBoBoNho(DanhSachLop &dsLop, PTR_CAUHOI &root);
 
 using namespace std;
 
@@ -278,7 +282,7 @@ int themMonHoc(DanhSachMonHoc &dsMH, MonHoc* mh) {
         return ERR_MH_INVALID_DATA;
 
     if (kiemTraTrungMaMonHoc(dsMH, mh->maMH)) 
-        return ERR_MH_DUPLICATE;
+        return ERR_MH_DUPLICATE_CODE;
         
 
 	dsMH.data[dsMH.soLuong++] = *mh;
@@ -326,6 +330,12 @@ bool kiemTraTrungMaMonHoc(DanhSachMonHoc &dsMH, const char* ma) {
     return timViTriMonHoc(dsMH, ma) != -1;
 }
 
+int kiemTraTrungTenMonHoc(DanhSachMonHoc &dsMH, const char* ten) {
+    for (int i = 0; i < dsMH.soLuong; i++)
+        if (strcmp(dsMH.data[i].tenMH, ten) == 0) return ERR_MH_DUPLICATE_NAME;
+    return -1;
+}
+
 bool kiemTraMonHocDaCoCauHoi(PTR_CAUHOI root, const char* maMH) {
 	if (root == NULL ) return false;
 	
@@ -348,7 +358,6 @@ bool KiemTraMonHocDaDuocThi(DanhSachLop &dsLop, const char* maMH) {
 }
 
 // Hàm sinh số ngẫu nhiên theo thuật toán LCG
-// Dùng unsigned int (32-bit) để tự động tràn (overflow) tương đương phép Modulo 2^32
 unsigned int LCG_Next(unsigned int &seed) {
     unsigned int a = 1664525;
     unsigned int c = 1013904223;
@@ -356,23 +365,14 @@ unsigned int LCG_Next(unsigned int &seed) {
     return seed;
 }
 
-// Hàm tạo ID Câu Hỏi ngẫu nhiên không trùng lặp
+
 void TaoIdCauHoi(char* bufOut, const char* maMH, PTR_CAUHOI root) {
-    // Biến static lưu trạng thái seed trong suốt thời gian app chạy
-    // Khởi tạo 1 lần duy nhất bằng thời gian thực khi gọi hàm lần đầu
     static unsigned int currentSeed = (unsigned int)time(NULL); 
-    
     while (true) {
-        unsigned int randomNum = LCG_Next(currentSeed);
-        
-        // Tạo chuỗi ID (Ví dụ: IT001_8F3A2B1C)
-        // Dùng %08X để in số ngẫu nhiên ra hệ Thập lục phân (Hex) cho ngắn gọn và chuyên nghiệp
-        snprintf(bufOut, 25, "%s_%010u", maMH, randomNum);
-        
-        // Kiểm tra xem ID sinh ra đã tồn tại trong cây BST chưa?
-        // Xác suất trùng của LCG 32-bit là 1/4 tỷ, nhưng vẫn check cho chuẩn tuyệt đối 100%
+        unsigned int randomNum = LCG_Next(currentSeed) % 100000;
+        snprintf(bufOut, 25, "%s_%05u", maMH, randomNum); 
         if (TimCauHoi(root, bufOut) == NULL) {
-            break; // Nếu cây chưa có ID này -> Chốt ID và thoát vòng lặp
+            break; 
         }
     }
 }
@@ -410,31 +410,22 @@ PTR_CAUHOI XoaCauHoi(PTR_CAUHOI root, const char* id) {
         root->right = XoaCauHoi(root->right, id);
     } 
     else {
-        // Trường hợp 1: Node lá (không có con nào)
         if (root->left == NULL && root->right == NULL) {
             delete root;
             return NULL;
         }
-        
-        // Trường hợp 2: Node chỉ có con phải
         if (root->left == NULL) {
             CauHoi* temp = root->right;
             delete root;
             return temp;
         }
-        
-        // Trường hợp 3: Node chỉ có con trái
         if (root->right == NULL) {
             CauHoi* temp = root->left;
             delete root;
             return temp;
         }
- 
-        // Trường hợp 4: Node có 2 con
-        // Tìm node thế mạng (nhỏ nhất bên phải)
         CauHoi* minNode = LayNhoNhat(root->right);
- 
-        // Copy toàn bộ dữ liệu từ minNode sang root
+
         strcpy(root->id, minNode->id);
         strcpy(root->maMH, minNode->maMH);
         strcpy(root->noiDung, minNode->noiDung);
@@ -444,7 +435,6 @@ PTR_CAUHOI XoaCauHoi(PTR_CAUHOI root, const char* id) {
         strcpy(root->d, minNode->d);
         root->dapAn = minNode->dapAn;
  
-        // Xóa node thế mạng ở cây con bên phải
         root->right = XoaCauHoi(root->right, minNode->id);
     }
     return root;
@@ -469,6 +459,37 @@ DiemThi* saoChepDanhSachDiem(DiemThi* src) {
         src = src->next;
     }
     return head;
+}
+
+void GiaiPhongCayCauHoi(PTR_CAUHOI root) {
+    if (root == NULL) return;
+    GiaiPhongCayCauHoi(root->left);
+    GiaiPhongCayCauHoi(root->right);
+    delete root;
+}
+
+void GiaiPhongToanBoBoNho(DanhSachLop &dsLop, PTR_CAUHOI &root) {
+    // Giải phóng Lớp, Sinh Viên và Điểm Thi
+    for (int i = 0; i < dsLop.soLuong; i++) {
+        SinhVien* pSV = dsLop.nodes[i]->headSV;
+        while (pSV != NULL) {
+            DiemThi* pDiem = pSV->headDiem;
+            while (pDiem != NULL) {
+                DiemThi* tempDiem = pDiem;
+                pDiem = pDiem->next;
+                delete tempDiem; // Xóa node điểm
+            }
+            SinhVien* tempSV = pSV;
+            pSV = pSV->next;
+            delete tempSV; // Xóa node sinh viên
+        }
+        delete dsLop.nodes[i]; // Xóa con trỏ lớp
+    }
+    dsLop.soLuong = 0;
+    
+    // Giải phóng cây câu hỏi
+    GiaiPhongCayCauHoi(root);
+    root = NULL;
 }
 
 #endif

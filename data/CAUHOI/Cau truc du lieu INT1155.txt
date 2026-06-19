@@ -1,10 +1,10 @@
 INT1155_0001
-Stack hoat dong theo nguyen tac nao?
+Stack hoat dong theo nguyen tac nao
 FIFO
 LIFO
 Random
 Priority
-B
+A
 INT1155_0002
 Queue hoat dong theo nguyen tac nao?
 FIFO
@@ -208,3 +208,24 @@ O(log n)
 O(n)
 O(n^2)
 B
+INT1155_2188119578
+njdsnjfd
+sffjdnfjnds
+fnsdf
+sdffhdsnf
+sdbfsd
+B
+INT1155_42133
+fnjdnjfds
+fndjsnf
+sdfnjdsnf
+sdfjsd
+fdssjfnsd
+A
+INT1155_84496
+bfbsdf
+sdbfhdsbf
+sdbfjsdbfs
+bfbdf
+sdbfjdsbf
+A

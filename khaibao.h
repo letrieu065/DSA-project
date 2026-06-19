@@ -9,12 +9,16 @@
 const int MAX_MON_HOC = 300;
 const int MAX_LOP = 10000;
 
-const int MAX_MAMH = 15;   
-const int MAX_MALOP = 15;
-const int MAX_MASV = 15;
-const int MAX_TEN = 50;    
-const int MAX_PASS = 20;
-
+const int MAX_MAMH = 16;   
+const int MAX_MALOP = 16;
+const int MAX_TEN_LOP = 36;
+const int MAX_MASV = 16;
+const int MAX_HO = 24;
+const int MAX_TEN_SV = 8;    
+const int MAX_PASS = 21;
+const int MAX_TENMH = 36;
+const int MAX_CAU_HOI_MOI_MON = 2000;   // ngan hang cau hoi toi da cho 1 mon
+const int MAX_CAU_THI          = 200;   // so cau toi da trong 1 de thi
 
 struct DiemThi {
     char maMH[MAX_MAMH];
@@ -22,11 +26,10 @@ struct DiemThi {
     DiemThi* next = NULL;
 };
 
-
 struct SinhVien {
     char maSV[MAX_MASV];
-    char ho[MAX_TEN];
-    char ten[MAX_TEN];   
+    char ho[MAX_HO];
+    char ten[MAX_TEN_SV];   
     bool phai; // true: Nam, false: Nu   
     char password[MAX_PASS];
     DiemThi* headDiem = NULL;
@@ -35,13 +38,13 @@ struct SinhVien {
 
 struct Lop {
     char maLop[MAX_MALOP];
-    char tenLop[MAX_TEN];
+    char tenLop[MAX_TEN_LOP];
     SinhVien* headSV = NULL; 
 };
 
 struct MonHoc {
     char maMH[MAX_MAMH];
-    char tenMH[MAX_TEN];
+    char tenMH[MAX_TENMH];
     int soTinChi;
 };
 

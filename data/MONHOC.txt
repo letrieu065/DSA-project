@@ -1,4 +1,4 @@
-10
+13
 INT1154
 3
 Lap trinh C++
@@ -29,3 +29,12 @@ Lap trinh Web
 AI0001
 3
 Nhap mon tri tue nhan tao
+F SDF
+10
+fnjdsnfj
+FD DSS
+10
+dsjfjds
+12356
+3
+Mon Mon

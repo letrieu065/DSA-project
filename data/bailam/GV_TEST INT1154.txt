@@ -1,0 +1,40 @@
+CAU 1: Lenh giai phong vung nho cap phat bang new? Cau mo rong so 25.
+A. free
+B. delete
+C. remove
+D. clear
+Dap an dung: B
+Sinh vien chon: A
+------------------------------------------
+CAU 2: Tu khoa nao khai bao hang so?
+A. const
+B. static
+C. public
+D. return
+Dap an dung: A
+Sinh vien chon: A
+------------------------------------------
+CAU 3: Ham main thuong tra ve kieu nao? Cau mo rong so 14.
+A. void
+B. char
+C. int
+D. float
+Dap an dung: C
+Sinh vien chon: A
+------------------------------------------
+CAU 4: Ham main thuong tra ve kieu nao? Cau mo rong so 9.
+A. void
+B. char
+C. int
+D. float
+Dap an dung: C
+Sinh vien chon: A
+------------------------------------------
+CAU 5: Lenh giai phong vung nho cap phat bang new? Cau mo rong so 30.
+A. free
+B. delete
+C. remove
+D. clear
+Dap an dung: B
+Sinh vien chon: A
+------------------------------------------
