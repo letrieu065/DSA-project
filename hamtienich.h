@@ -659,25 +659,34 @@ string layThongBaoLoi(int errorCode) {
     switch (errorCode) {
         case SUCCESS: return "Thanh cong!";
         
-        // Nhóm 100: Lớp
+        // Nhom 100: Lop
         case ERR_LOP_FULL: return "Loi 101: Bo nho danh sach lop da day!";
         case ERR_LOP_DUPLICATE: return "Loi 102: Ma lop nay da ton tai!";
         case ERR_LOP_NOT_FOUND: return "Loi 103: Khong tim thay ma lop!";
         case ERR_LOP_EMPTY: return "Loi 104: Danh sach lop dang trong!";
         case ERR_LOP_DUPLICATE_NAME: return "Loi 106: Ten lop nay da ton tai!";
         
-        // Nhóm 200: Sinh viên
+        // Nhom 200: Sinh vien
         case ERR_SV_DUPLICATE: return "Loi 201: Ma sinh vien bi trung!";
         case ERR_SV_NOT_FOUND: return "Loi 202: Khong tim thay sinh vien!";
         case ERR_SV_FULL: return "Loi 203: Khong the them sinh vien vao luc nay!";
         
-        // Nhóm 300: Đăng nhập
+        // Nhom 300: Dang nhap
         case ERR_LOGIN_USER: return "Loi 301: Tai khoan khong ton tai!";
         case ERR_LOGIN_PASS: return "Loi 302: Mat khau khong dung!";
         case ERR_LOGIN_EMPTY: return "Loi 303: Vui long nhap day du thong tin!";
         case ERR_LOGIN_PASS_DUPLICATE: return "Loi 304: Mat khau trung mat khau cu!";
         case ERR_LOGIN_PASS_NOT_MATCH: return "Loi 305: Mat khau moi khong khop";
         case ERR_LOGIN_PASS_WEAK: return "Loi 306: Mat khau yeu";
+
+        // Nhom 400: Mon hoc
+        case ERR_MH_FULL: return "";
+        case ERR_MH_DUPLICATE_CODE: return "";
+        case ERR_MH_NOT_FOUND: return "";
+        case ERR_MH_HAS_QUESTION: return "";
+        case ERR_MH_HAS_POINT: return "";
+        case ERR_MH_INVALID_DATA: return "";
+        case ERR_MH_DUPLICATE_NAME: return "";
         
         default: return "Loi khong xac dinh!";
     }

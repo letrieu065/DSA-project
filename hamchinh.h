@@ -31,6 +31,8 @@ int timViTriMonHoc(DanhSachMonHoc &dsMH, const char* ma);
 bool kiemTraTrungMaMonHoc(DanhSachMonHoc &dsMH, const char* ma);
 bool kiemTraMonHocDaCoCauHoi(PTR_CAUHOI root, const char* maMH);
 bool KiemTraMonHocDaDuocThi(DanhSachLop &dsLop, const char* maMH);
+int kiemTraTrungTenMonHoc(DanhSachMonHoc &dsMH, const char* ten);
+
 // Ham cau hoi
 unsigned int LCG(unsigned int &seed);
 void TaoIdCauHoi(char* id, const char* maMH, PTR_CAUHOI root);
@@ -280,7 +282,7 @@ int themMonHoc(DanhSachMonHoc &dsMH, MonHoc* mh) {
         return ERR_MH_INVALID_DATA;
 
     if (kiemTraTrungMaMonHoc(dsMH, mh->maMH)) 
-        return ERR_MH_DUPLICATE;
+        return ERR_MH_DUPLICATE_CODE;
         
 
 	dsMH.data[dsMH.soLuong++] = *mh;
@@ -326,6 +328,12 @@ int timViTriMonHoc(DanhSachMonHoc &dsMH, const char* ma) {
 
 bool kiemTraTrungMaMonHoc(DanhSachMonHoc &dsMH, const char* ma) {
     return timViTriMonHoc(dsMH, ma) != -1;
+}
+
+int kiemTraTrungTenMonHoc(DanhSachMonHoc &dsMH, const char* ten) {
+    for (int i = 0; i < dsMH.soLuong; i++)
+        if (strcmp(dsMH.data[i].tenMH, ten) == 0) return ERR_MH_DUPLICATE_NAME;
+    return -1;
 }
 
 bool kiemTraMonHocDaCoCauHoi(PTR_CAUHOI root, const char* maMH) {

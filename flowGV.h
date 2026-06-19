@@ -1102,6 +1102,14 @@ void flowQuanLyMonHoc_CauHoi(DanhSachLop &dsLop, DanhSachMonHoc &dsMH, PTR_CAUHO
                             continue;
                         }
 
+                        if (kiemTraTrungTenMonHoc(dsMH, (char*)ten.c_str()) == ERR_MH_DUPLICATE_NAME) {
+                            InThongBaoContent("Loi: Ten mon hoc da ton tai!", 12, 40, 25);
+                            _getch(); 
+                            InThongBaoContent("                               ", 12, 40, 25);
+                            currentField = 1; 
+                            continue;
+                        }
+
                         gotoxy(40, 25); SetColor(0, 14); 
                         string thongBao = "Ban co muon them mon nay?";
                         cout << thongBao;

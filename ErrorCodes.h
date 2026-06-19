@@ -28,10 +28,11 @@ const int ERR_LOGIN_PASS_WEAK = 306;
 
 // Nhom loi 400: loi mon hoc
 const int ERR_MH_FULL      = 401;
-const int ERR_MH_DUPLICATE = 402;
+const int ERR_MH_DUPLICATE_CODE = 402;
 const int ERR_MH_NOT_FOUND = 403;
 const int ERR_MH_HAS_QUESTION = 404;
 const int ERR_MH_HAS_POINT = 405;
 const int ERR_MH_INVALID_DATA = 406;
+const int ERR_MH_DUPLICATE_NAME = 407;
 
 #endif
