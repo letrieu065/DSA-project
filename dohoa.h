@@ -99,7 +99,7 @@ void InDongHo(int soGiay) {
     int phut = soGiay / 60;
     int giay = soGiay % 60;
     gotoxy(85, 2); SetColor(0, 11); cout << "Thoi gian con lai: ";
-    SetColor(0, 12); // Màu đỏ cho nổi bật
+    SetColor(0, 12);
     printf("%02d:%02d", phut, giay);
     SetColor(0, 7);
 }

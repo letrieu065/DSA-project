@@ -148,37 +148,93 @@ void flowThiTracNghiem(SinhVien* sv, DanhSachMonHoc &dsMH, PTR_CAUHOI &root, Dan
             SetColor(0, 14); cout << monChon.tenMH; SetColor(0, 7);
             cout << " (Ngan hang co: " << tongCauHoiKho << " cau)";
             
-            int testTime = 0, questionCount = 0;
             gotoxy(40, 12); cout << "Thoi gian thi (phut): "; 
             gotoxy(40, 14); cout << "So cau hoi          : ";
 
-            gotoxy(35, 27); SetColor(0, 8); cout << "Nhap so | ENTER: Xac nhan | ESC: Quay lai chon mon khac"; SetColor(0, 7);
+            gotoxy(35, 27); SetColor(0, 8); cout << "Nhap so | UP/DOWN: Di chuyen | ENTER: Xac nhan | ESC: Quay lai"; SetColor(0, 7);
 
             ShowCur(true);
 
-            // Nhap thoi gian
-            while (true) {
-                gotoxy(63, 12); testTime = NhapSo(-1, 3, 1, 180); // Toi da 180
-                if (testTime == INPUT_CANCELLED) break; // ESC
-                if (testTime > 0) break;
-                InThongBaoContent("Thoi gian phai > 0!", 12, 70, 12);
-                Sleep(800); gotoxy(70, 12); cout << "                   ";   
-            }
-            if (testTime == INPUT_CANCELLED) {
-                continue; // Quay lai
+            // Cac bien trang thai
+            string time_str = "";
+            string count_str = "";
+            int testTime = 0, questionCount = 0;
+            int currentField = 0; // 0: Thoi gian, 1: So cau
+            bool isDone = false;
+            bool isCancel = false;
+
+            // Dieu huong
+            while (!isDone && !isCancel) {
+                if (currentField == 0) gotoxy(62 + time_str.length(), 12);
+                else if (currentField == 1) gotoxy(62 + count_str.length(), 14);
+
+                char ch = _getch();
+                if (ch == 224 || ch == 0 || ch == -32) {
+                    char ext = _getch();
+                    if (ext == 72) { 
+                        currentField = (currentField > 0) ? currentField - 1 : 1;
+                    } else if (ext == 80) { 
+                        currentField = (currentField < 1) ? currentField + 1 : 0;
+                    }
+                }
+                else if (isprint(ch)) {
+                    if (isdigit(ch)) {
+                        if (currentField == 0 && time_str.length() < 3) {
+                            time_str += ch; cout << ch;
+                        } else if (currentField == 1 && count_str.length() < 3) {
+                            count_str += ch; cout << ch;
+                        }
+                    }
+                }
+                else if (ch == 8) { 
+                    if (currentField == 0 && !time_str.empty()) {
+                        time_str.pop_back(); gotoxy(62 + time_str.length(), 12); cout << " \b";
+                    } else if (currentField == 1 && !count_str.empty()) {
+                        count_str.pop_back(); gotoxy(62 + count_str.length(), 14); cout << " \b";
+                    }
+                }
+                else if (ch == 27) { 
+                    isCancel = true;
+                }
+                else if (ch == 13) { 
+                    if (currentField == 0) {
+                        currentField = 1; 
+                    } else {
+                        if (time_str.empty() || count_str.empty()) {
+                            InThongBaoContent("Vui long nhap day du thong so!", 12, 45, 24);
+                            int waitKey = _getch();
+                            if (waitKey == 224 || waitKey == 0 || waitKey == -32) _getch();
+                            InThongBaoContent("                              ", 12, 45, 24);
+                            continue;
+                        }
+
+                        testTime = stoi(time_str);
+                        questionCount = stoi(count_str);
+
+                        bool ok = true;
+                        if (testTime <= 0 || testTime > 180) {
+                            InThongBaoContent("Thoi gian thi phai tu 1 den 180 phut!", 12, 45, 24);
+                            ok = false; currentField = 0;
+                        } 
+                        else if (questionCount <= 0 || questionCount > gioiHanChon) {
+                            string msg = "So cau phai tu 1 den " + to_string(gioiHanChon) + " cau!";
+                            InThongBaoContent(msg, 12, 45, 24);
+                            ok = false; currentField = 1;
+                        }
+
+                        if (ok) {
+                            isDone = true;
+                        } else {
+                            int waitKey = _getch();
+                            if (waitKey == 224 || waitKey == 0 || waitKey == -32) _getch();
+                            gotoxy(45, 24); cout << "                                             ";
+                        }
+                    }
+                }
             }
 
-            // Nhap so cau
-            while (true) {
-                gotoxy(63, 14); questionCount = NhapSo(-1, 4, 1, gioiHanChon);
-                if (questionCount == INPUT_CANCELLED) break; // ESC
-                if (questionCount > 0 && questionCount <= tongCauHoiKho) break;
-                
-                InThongBaoContent("So cau vuot qua ngan hang!", 12, 70, 14);
-                _getch(); gotoxy(63, 14); cout << "                                 ";
-            }
-            if (questionCount == INPUT_CANCELLED) {
-                continue; // Quay lai
+            if (isCancel) {
+                continue; 
             }
 
             ShowCur(false);
@@ -187,7 +243,9 @@ void flowThiTracNghiem(SinhVien* sv, DanhSachMonHoc &dsMH, PTR_CAUHOI &root, Dan
             srand(time(0)); 
             for (int i = 0; i < tongCauHoiKho; i++) {
                 int r = i + rand() % (tongCauHoiKho - i); 
-                swap(khoCauHoi[i], khoCauHoi[r]); 
+                CauHoi* temp = khoCauHoi[i];
+                khoCauHoi[i] = khoCauHoi[r];
+                khoCauHoi[r] = temp;
             }
 
             CauHoi* deThi[MAX_CAU_THI] = {NULL};
@@ -195,7 +253,7 @@ void flowThiTracNghiem(SinhVien* sv, DanhSachMonHoc &dsMH, PTR_CAUHOI &root, Dan
                 deThi[i] = khoCauHoi[i];
             }
             
-            gotoxy(40, 18); SetColor(0, 10); cout << "Ngan hang de da san sang!"; 
+            gotoxy(40, 18); SetColor(0, 10); cout << "Ngan hang de thi da san sang!"; 
             gotoxy(40, 19); SetColor(0, 14); cout << "An phim bat ky de vao thi..."; SetColor(0, 7);
             _getch();
             

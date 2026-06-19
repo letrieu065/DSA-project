@@ -851,7 +851,7 @@ void TienHanhThiTracNghiem(SinhVien* sv, MonHoc monChon, CauHoi* deThi[], int so
 
         int ch = _getch();
 
-        // Mũi tên chuyển câu
+        // Chuyen cau
         if (ch == 224 || ch == 0 || ch == -32) {
             ch = _getch();
             bool changed = false;
@@ -863,14 +863,14 @@ void TienHanhThiTracNghiem(SinhVien* sv, MonHoc monChon, CauHoi* deThi[], int so
                 VeMiniMap(dapAnDaChon, soCau, cauHienTai);  
             }
         }
-        // Chọn đáp án
+        // Chon dap an
         else if (ch=='a'||ch=='A'||ch=='b'||ch=='B'||ch=='c'||ch=='C'||ch=='d'||ch=='D') {
             dapAnDaChon[cauHienTai] = toupper(ch);
             HienThiCauHoiThi(deThi[cauHienTai], cauHienTai + 1, soCau, dapAnDaChon[cauHienTai]);
             VeMiniMap(dapAnDaChon, soCau, cauHienTai);       
             CapNhatCounter(dapAnDaChon, soCau);              
         }
-        // ESC nộp bài
+        // Nop bai
         else if (ch == 27) {
             int chuaLam[MAX_CAU_THI], soChuaLam = 0;
             for (int i = 0; i < soCau; i++)
@@ -878,7 +878,6 @@ void TienHanhThiTracNghiem(SinhVien* sv, MonHoc monChon, CauHoi* deThi[], int so
 
             int px = 20, py = 10, pw = 76, ph = 6;
 
-            // ✅ Xóa nền bên trong popup trước khi vẽ
             SetColor(0, 0);
             for (int r = py; r <= py + ph; r++) {
                 gotoxy(px, r);
@@ -915,7 +914,6 @@ void TienHanhThiTracNghiem(SinhVien* sv, MonHoc monChon, CauHoi* deThi[], int so
                 if (toupper(confirm) == 'Y') break;
             }
 
-            // Vẽ lại màn hình sau khi hủy popup
             VeKhungPhongThi(sv, monChon.tenMH, soCau);
             HienThiCauHoiThi(deThi[cauHienTai], cauHienTai+1, soCau, dapAnDaChon[cauHienTai]);
             VeMiniMap(dapAnDaChon, soCau, cauHienTai);

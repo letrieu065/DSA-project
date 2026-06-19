@@ -1,8 +1,8 @@
-CAU 1: IA
+CAU 1: A
 A. A
-B. AB
-C. C
-D. V
+B. A
+C. A
+D. A
 Dap an dung: A
-Sinh vien chon: C
+Sinh vien chon: A
 ------------------------------------------

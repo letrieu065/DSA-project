@@ -2125,7 +2125,6 @@ void flowThiThuGV(DanhSachMonHoc &dsMH, PTR_CAUHOI &root) {
             else if (ch == 27) return; // Nhấn ESC thoát hẳn ra Menu chính
         }
 
-        // VÒNG LẶP 2: SETUP THÔNG SỐ CẤU HÌNH THI THỬ
         if (isSelected) {
             MonHoc monChon = dsMH.data[cursor];
             CauHoi* khoCauHoi[MAX_CAU_HOI_MOI_MON] = {NULL};
@@ -2136,7 +2135,7 @@ void flowThiThuGV(DanhSachMonHoc &dsMH, PTR_CAUHOI &root) {
             if (tongCauHoiKho == 0) {
                 InThongBaoContent("Mon hoc nay chua co cau hoi de test!", 12, 45, 24);
                 _getch();
-                continue; // Quay lại vòng lặp ngoài để chọn môn khác
+                continue;
             }
 
             XoaVungContent();
@@ -2150,49 +2149,109 @@ void flowThiThuGV(DanhSachMonHoc &dsMH, PTR_CAUHOI &root) {
             gotoxy(40, 12); cout << "Thoi gian thi (phut): "; 
             gotoxy(40, 14); cout << "So cau hoi          : ";
 
-            gotoxy(35, 27); SetColor(0, 8); cout << "Nhap so | ENTER: Xac nhan | ESC: Quay lai danh sach mon"; SetColor(0, 7);
+            gotoxy(35, 27); SetColor(0, 8); cout << "Nhap so | UP/DOWN: Di chuyen | ENTER: Xac nhan | ESC: Quay lai"; SetColor(0, 7);
 
             ShowCur(true);
 
-            // Nhập Thời gian
-            while (true) {
-                gotoxy(63, 12); testTime = NhapSo(-1, 3, 1, 180); 
-                if (testTime == INPUT_CANCELLED) break; 
-                if (testTime > 0) break;
-                InThongBaoContent("Thoi gian phai > 0!", 12, 70, 12);
-                Sleep(800); gotoxy(70, 12); cout << "                   ";   
-            }
-            if (testTime == INPUT_CANCELLED) continue; // Quay lại chọn môn
+            string time_str = "";
+            string count_str = "";
+            int currentField = 0; // 0: Thoi gian, 1: So cau
+            bool isDone = false;
+            bool isCancel = false;
 
-            // Nhập Số câu
-            while (true) {
-                gotoxy(63, 14); questionCount = NhapSo(-1, 4, 1, gioiHanChon);
-                if (questionCount == INPUT_CANCELLED) break; 
-                if (questionCount > 0 && questionCount <= tongCauHoiKho) break;
-                
-                InThongBaoContent("So cau vuot qua ngan hang!", 12, 70, 14);
-                _getch(); gotoxy(63, 14); cout << "                                 ";
+            while (!isDone && !isCancel) {
+                if (currentField == 0) gotoxy(63 + time_str.length(), 12);
+                else if (currentField == 1) gotoxy(63 + count_str.length(), 14);
+
+                char ch = _getch();
+                if (ch == 224 || ch == 0 || ch == -32) {
+                    char ext = _getch();
+                    if (ext == 72) { 
+                        currentField = (currentField > 0) ? currentField - 1 : 1;
+                    } else if (ext == 80) { 
+                        currentField = (currentField < 1) ? currentField + 1 : 0;
+                    }
+                }
+                else if (isprint(ch)) {
+                    if (isdigit(ch)) { 
+                        if (currentField == 0 && time_str.length() < 3) {
+                            time_str += ch; cout << ch;
+                        } else if (currentField == 1 && count_str.length() < 3) {
+                            count_str += ch; cout << ch;
+                        }
+                    }
+                }
+                else if (ch == 8) { 
+                    if (currentField == 0 && !time_str.empty()) {
+                        time_str.pop_back(); gotoxy(63 + time_str.length(), 12); cout << " \b";
+                    } else if (currentField == 1 && !count_str.empty()) {
+                        count_str.pop_back(); gotoxy(63 + count_str.length(), 14); cout << " \b";
+                    }
+                }
+                else if (ch == 27) { 
+                    isCancel = true;
+                }
+                else if (ch == 13) { 
+                    if (currentField == 0) {
+                        currentField = 1; 
+                    } else {
+                        if (time_str.empty() || count_str.empty()) {
+                            InThongBaoContent("Vui long nhap day du thong so!", 12, 45, 24);
+                            int waitKey = _getch();
+                            if (waitKey == 224 || waitKey == 0 || waitKey == -32) _getch(); 
+                            InThongBaoContent("                              ", 12, 45, 24);
+                            continue;
+                        }
+
+                        testTime = stoi(time_str);
+                        questionCount = stoi(count_str);
+
+                        bool ok = true;
+                        if (testTime <= 0 || testTime > 180) {
+                            InThongBaoContent("Thoi gian thi phai tu 1 den 180 phut!", 12, 45, 24);
+                            ok = false; currentField = 0;
+                        } 
+                        else if (questionCount <= 0 || questionCount > gioiHanChon) {
+                            string msg = "So cau phai tu 1 den " + to_string(gioiHanChon) + " cau!";
+                            InThongBaoContent(msg, 12, 45, 24);
+                            ok = false; currentField = 1;
+                        }
+
+                        if (ok) {
+                            isDone = true;
+                        } else {
+                            int waitKey = _getch();
+                            if (waitKey == 224 || waitKey == 0 || waitKey == -32) _getch(); 
+                            gotoxy(45, 24); cout << "                                             ";
+                        }
+                    }
+                }
             }
-            if (questionCount == INPUT_CANCELLED) continue; // Quay lại chọn môn
+
+            if (isCancel) {
+                continue; 
+            }
 
             ShowCur(false);
 
-            // Xáo trộn đề bài (Fisher-Yates Shuffle)
             srand(time(0)); 
             for (int i = 0; i < tongCauHoiKho; i++) {
                 int r = i + rand() % (tongCauHoiKho - i); 
-                swap(khoCauHoi[i], khoCauHoi[r]); 
+                
+                CauHoi* temp = khoCauHoi[i];
+                khoCauHoi[i] = khoCauHoi[r];
+                khoCauHoi[r] = temp;
             }
-            CauHoi* deThi[1000] = {NULL};
+            
+            CauHoi* deThi[MAX_CAU_THI] = {NULL};
             for (int i = 0; i < questionCount; i++) {
                 deThi[i] = khoCauHoi[i];
             }
             
-            gotoxy(40, 18); SetColor(0, 10); cout << "Ngan hang de da san sang!"; 
+            gotoxy(40, 18); SetColor(0, 10); cout << "Ngan hang de thi thu da san sang!"; 
             gotoxy(40, 19); SetColor(0, 14); cout << "An phim bat ky de vao phong thi..."; SetColor(0, 7);
             _getch();
             
-            // Khởi tạo sinh viên giả lập
             SinhVien svGiaoVien;
             strcpy(svGiaoVien.maSV, "GV_TEST");
             strcpy(svGiaoVien.ho, "Giao");
@@ -2200,17 +2259,15 @@ void flowThiThuGV(DanhSachMonHoc &dsMH, PTR_CAUHOI &root) {
             svGiaoVien.phai = true; 
             svGiaoVien.headDiem = NULL;
 
-            // Tiến hành thi
             TienHanhThiTracNghiem(&svGiaoVien, monChon, deThi, questionCount, testTime);
 
-            // Dọn dẹp con trỏ danh sách liên kết điểm sau khi thi xong để tránh rò rỉ RAM
             DiemThi* d = svGiaoVien.headDiem;
             while (d != NULL) {
                 DiemThi* temp = d;
                 d = d->next;
                 delete temp; 
             }
-            return; // Thi thử kết thúc hoàn toàn, quay về Menu chính của GV
+            return;
         }
     }
 }
