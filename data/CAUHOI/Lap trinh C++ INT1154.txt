@@ -1,0 +1,301 @@
+INT1154_0001
+Kieu du lieu nao dung de luu so nguyen?ABC
+int
+float
+char
+bool
+A
+INT1154_0002
+Tu khoa nao khai bao hang so?
+const
+static
+public
+return
+A
+INT1154_0003
+Toan tu truy cap thanh vien qua con tro?
+.
+->
+::
+&
+B
+INT1154_0004
+Ham main thuong tra ve kieu nao?
+void
+char
+int
+float
+C
+INT1154_0005
+Lenh giai phong vung nho cap phat bang new?
+free
+delete
+remove
+clear
+B
+INT1154_0006
+Kieu du lieu nao dung de luu so nguyen? Cau mo rong so 6.
+int
+float
+char
+bool
+A
+INT1154_0007
+Tu khoa nao khai bao hang so? Cau mo rong so 7.
+const
+static
+public
+return
+A
+INT1154_0008
+Toan tu truy cap thanh vien qua con tro? Cau mo rong so 8.
+.
+->
+::
+&
+B
+INT1154_0009
+Ham main thuong tra ve kieu nao? Cau mo rong so 9.
+void
+char
+int
+float
+C
+INT1154_0010
+Lenh giai phong vung nho cap phat bang new? Cau mo rong so 10.
+free
+delete
+remove
+clear
+B
+INT1154_0011
+Kieu du lieu nao dung de luu so nguyen? Cau mo rong so 11.
+int
+float
+char
+bool
+A
+INT1154_0012
+Tu khoa nao khai bao hang so? Cau mo rong so 12.
+const
+static
+public
+return
+A
+INT1154_0013
+Toan tu truy cap thanh vien qua con tro? Cau mo rong so 13.
+.
+->
+::
+&
+B
+INT1154_0014
+Ham main thuong tra ve kieu nao? Cau mo rong so 14.
+void
+char
+int
+float
+C
+INT1154_0015
+Lenh giai phong vung nho cap phat bang new? Cau mo rong so 15.
+free
+delete
+remove
+clear
+B
+INT1154_0016
+Kieu du lieu nao dung de luu so nguyen? Cau mo rong so 16.
+int
+float
+char
+bool
+A
+INT1154_0017
+Tu khoa nao khai bao hang so? Cau mo rong so 17.
+const
+static
+public
+return
+A
+INT1154_0018
+Toan tu truy cap thanh vien qua con tro? Cau mo rong so 18.
+.
+->
+::
+&
+B
+INT1154_0019
+Ham main thuong tra ve kieu nao? Cau mo rong so 19.
+void
+char
+int
+float
+C
+INT1154_0020
+Lenh giai phong vung nho cap phat bang new? Cau mo rong so 20.
+free
+delete
+remove
+clear
+B
+INT1154_0021
+Kieu du lieu nao dung de luu so nguyen? Cau mo rong so 21.
+int
+float
+char
+bool
+A
+INT1154_0022
+Tu khoa nao khai bao hang so? Cau mo rong so 22.
+const
+static
+public
+return
+A
+INT1154_0023
+Toan tu truy cap thanh vien qua con tro? Cau mo rong so 23.
+.
+->
+::
+&
+B
+INT1154_0024
+Ham main thuong tra ve kieu nao? Cau mo rong so 24.
+void
+char
+int
+float
+C
+INT1154_0025
+Lenh giai phong vung nho cap phat bang new? Cau mo rong so 25.
+free
+delete
+remove
+clear
+B
+INT1154_0026
+Kieu du lieu nao dung de luu so nguyen? Cau mo rong so 26.
+int
+float
+char
+bool
+A
+INT1154_0027
+Tu khoa nao khai bao hang so? Cau mo rong so 27.
+const
+static
+public
+return
+A
+INT1154_0028
+Toan tu truy cap thanh vien qua con tro? Cau mo rong so 28.
+.
+->
+::
+&
+B
+INT1154_0029
+Ham main thuong tra ve kieu nao? Cau mo rong so 29.
+void
+char
+int
+float
+C
+INT1154_0030
+Lenh giai phong vung nho cap phat bang new? Cau mo rong so 30.
+free
+delete
+remove
+clear
+B
+INT1154_12555
+fdsfhdsbfhds bhdbdshbc dscdhsbcchsd
+fdshfbhds fdsjbffds fhdssfd s
+fbdshf  fdsuufu ds
+fhnsjd fnjsdf ds
+fnds nf fdsj ds fjidsf nsd
+B
+INT1154_2023272611
+fnsdsnfj sd hufj sdnfj sdnjf nsdjfnj dsnfnsdfj ndf njf sndjd fnjd fn fnsdnf sd
+fdsjf nsd
+f sdjfnsd
+ fdbs
+ddd
+A
+INT1154_2441771311
+IAGKN
+KLFABNLKF
+KFAWN
+KFNAN
+GKALNB
+A
+INT1154_25783
+vai ca 
+vai 
+aaaaaaaaaa
+a
+a
+A
+INT1154_3098412372
+fnjsdnjfnjsdnf sdnfjndjnff sdnjnjds nfj vai a ca chuong luon vai ca chuong luon vai ca chuong lu
+bcdjs
+\d
+d
+d
+A
+INT1154_31383
+fnndjsnjfnjdfjds hfdss bjfbsdhjbfjsdbdshjfb dbfjbdjf hdsb fbd hbf dsbfh dhf sbd f 
+fdsfdssd 
+fsdfdfsdf
+fdsfsdf 
+fdsdfsd 
+A
+INT1154_3398818279
+vai ca chuong lds fhndisi fdsn fujsdn nf nfjksdn fnsjdnfjdsfnjnsdfnjsdjfjsdjnf
+bfsbdhbfhdbsh fsdfjnsd njfnds nfjdsnjfds njfdsnj fdnsj
+fsfd djbsd
+d
+vai
+C
+INT1154_48062
+vai va 
+f
+f
+f
+f
+A
+INT1154_63558
+vai nds vd dsjds jsdk sndjc bbbbvb 
+bfhdsbhf fjdsnfj d 
+fnjndsjfn d f ds
+fjdsnfj 
+ffffff 
+A
+INT1154_66629
+fbhdbhf fhsdb fbsdj dsdjbfhs djf sdbhjf sdhjf sdnj fdjkfd snjf d fn hfuds hd shuif dshui fhdshu fhuds hfuhds hsd hfusd 
+fsjd fudsji 
+ hfds fds
+f djfh]sd
+bhbfd hfdsiu fsd
+D
+INT1154_87487
+v 
+v 
+v 
+v 
+v 
+A
+INT1154_91072
+fbhdsbhf 
+fd
+sf
+f
+f
+A
+INT1154_99625
+fdjnjfd
+fbdshbfd
+sfbhdsf
+sdfdsbfds
+ok
+A

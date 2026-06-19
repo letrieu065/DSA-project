@@ -358,7 +358,6 @@ bool KiemTraMonHocDaDuocThi(DanhSachLop &dsLop, const char* maMH) {
 }
 
 // Hàm sinh số ngẫu nhiên theo thuật toán LCG
-// Dùng unsigned int (32-bit) để tự động tràn (overflow) tương đương phép Modulo 2^32
 unsigned int LCG_Next(unsigned int &seed) {
     unsigned int a = 1664525;
     unsigned int c = 1013904223;
@@ -366,17 +365,11 @@ unsigned int LCG_Next(unsigned int &seed) {
     return seed;
 }
 
-// Ham tao id ngau nhien 5 chu sao cho moi cau hoi, dang DSA_12345
 void TaoIdCauHoi(char* bufOut, const char* maMH, PTR_CAUHOI root) {
     static unsigned int currentSeed = (unsigned int)time(NULL); 
-    
     while (true) {
-        // Dung phep chia lay du % 100000 de gioi han so ngau nhien trong khoang 0 - 99999
         unsigned int randomNum = LCG_Next(currentSeed) % 100000;
-        
-        // Dung snprintf de tao id theo dinh dang "maMH_randomNum", vd: "DSA_12345"
         snprintf(bufOut, 25, "%s_%05u", maMH, randomNum); 
-        
         if (TimCauHoi(root, bufOut) == NULL) {
             break; 
         }
@@ -416,31 +409,22 @@ PTR_CAUHOI XoaCauHoi(PTR_CAUHOI root, const char* id) {
         root->right = XoaCauHoi(root->right, id);
     } 
     else {
-        // Trường hợp 1: Node lá (không có con nào)
         if (root->left == NULL && root->right == NULL) {
             delete root;
             return NULL;
         }
-        
-        // Trường hợp 2: Node chỉ có con phải
         if (root->left == NULL) {
             CauHoi* temp = root->right;
             delete root;
             return temp;
         }
-        
-        // Trường hợp 3: Node chỉ có con trái
         if (root->right == NULL) {
             CauHoi* temp = root->left;
             delete root;
             return temp;
         }
- 
-        // Trường hợp 4: Node có 2 con
-        // Tìm node thế mạng (nhỏ nhất bên phải)
         CauHoi* minNode = LayNhoNhat(root->right);
- 
-        // Copy toàn bộ dữ liệu từ minNode sang root
+
         strcpy(root->id, minNode->id);
         strcpy(root->maMH, minNode->maMH);
         strcpy(root->noiDung, minNode->noiDung);
@@ -450,7 +434,6 @@ PTR_CAUHOI XoaCauHoi(PTR_CAUHOI root, const char* id) {
         strcpy(root->d, minNode->d);
         root->dapAn = minNode->dapAn;
  
-        // Xóa node thế mạng ở cây con bên phải
         root->right = XoaCauHoi(root->right, minNode->id);
     }
     return root;

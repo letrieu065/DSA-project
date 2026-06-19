@@ -320,135 +320,118 @@ char ChonDapAn(int x, int y, int* keyLog = NULL) {
 }
 
 
+static bool xuongDong(string& result, int len, int* posX, int* posY, int X, int Y, int maxCols, int maxRows, int& curX, int& curY) {
+    if (curY >= Y + maxRows - 1) return false;
+
+    // Tim dau tu gan nhat de wrap
+    int wordStart = len;
+    while (wordStart > 0 && result[wordStart - 1] != ' ')
+        wordStart--;
+
+    if (wordStart < len) {
+        // Xoa phan tu tren dong cu
+        for (int i = wordStart; i < len; i++) {
+            gotoxy(posX[i], posY[i]); cout << ' ';
+        }
+        curY++; curX = X;
+        // Ve lai tren dong moi
+        for (int i = wordStart; i < len; i++) {
+            posX[i] = curX; posY[i] = curY;
+            gotoxy(curX, curY); cout << result[i];
+            curX++;
+        }
+    } else {
+        curY++; curX = X;
+    }
+    return true;
+}
+
 string xuongdongGioiHan(int X, int Y, int maxCols, int maxRows, int maxChars, char* noiDungCu = NULL, int* keyLog = NULL) {
     int curX = X, curY = Y, len = 0;
     int posX[230], posY[230];
-    string result = "";
+    string result;
 
+    // --- Pre-load noi dung cu ---
     if (noiDungCu != NULL && noiDungCu[0] != '\0') {
-        string src = noiDungCu;
-        for (int si = 0; si < (int)src.size() && len < maxChars; si++) {
-            char c = src[si];
-            if (c < 32 || c > 126) continue;
-            if (len == 0 && c == ' ') continue;
+        for (int si = 0; noiDungCu[si] != '\0' && len < maxChars; si++) {
+            char c = noiDungCu[si];
+            if (c < 32 || c > 126) continue;               // bo ky tu dac biet
+            if (len == 0 && c == ' ') continue;             // bo space dau
+            if (c == ' ' && !result.empty() && result.back() == ' ') continue; // bo double-space
 
-            if (curX >= X + maxCols) {
-                if (curY >= Y + maxRows - 1) break;
-                int wordStart = len;
-                while (wordStart > 0 && result[wordStart - 1] != ' ')
-                    wordStart--;
-                if (wordStart < len) {
-                    for (int k = wordStart; k < len; k++) {
-                        gotoxy(posX[k], posY[k]); cout << ' ';
-                    }
-                    curY++; curX = X;
-                    for (int k = wordStart; k < len; k++) {
-                        posX[k] = curX; posY[k] = curY;
-                        gotoxy(curX, curY); cout << result[k];
-                        curX++;
-                    }
-                } else {
-                    curY++; curX = X;
-                }
-            }
+            if (curX >= X + maxCols)
+                if (!xuongDong(result, len, posX, posY, X, Y, maxCols, maxRows, curX, curY)) break;
 
             posX[len] = curX; posY[len] = curY;
             gotoxy(curX, curY); cout << c;
-            result += c;
-            len++; curX++;
+            result += c; len++; curX++;
         }
     }
 
-    gotoxy(curX, curY);
-
+    gotoxy(curX, curY); 
     while (true) {
         int ch = _getch();
+
+        // Phim dieu huong (mui ten, INS, DEL...)
         if (ch == 0 || ch == 224) {
             int ext = _getch();
-            if ((ext == 72 || ext == 80) && keyLog != NULL) {
+            if (keyLog != NULL && (ext == 72 || ext == 80)) {
                 *keyLog = ext;
                 return result;
             }
-            continue; 
+            continue;
         }
+
+        // ESC
         if (ch == 27) {
-            if (keyLog != NULL) {
-                *keyLog = 27;
-                return result;
-            }
-            int savedX = curX;
-            int savedY = curY;
-            
+            if (keyLog != NULL) { *keyLog = 27; return result; }
             gotoxy(50, 26); SetColor(0, 14); cout << "Ban co chac muon thoat khong?";
             char xn = XacNhan(82, 26);
             gotoxy(50, 26); cout << "                                                                ";
-            if (xn == 'Y') return ""; 
-            else {
-                ShowCur(true);
-                gotoxy(savedX, savedY);
-                continue;
-            }
+            if (xn == 'Y') return "";
+            ShowCur(true); gotoxy(curX, curY);
+            continue;
         }
-        
-        if (ch == '\r'){
-            if (keyLog != NULL) {
-                *keyLog = 13;
-                return result;
-            }
+        // Enter
+		if (ch == '\r') {
+		    // Xoa space o cuoi chuoi neu co
+		    while (!result.empty() && result.back() == ' ') {
+		        len--;
+		        curX = posX[len]; curY = posY[len];
+		        gotoxy(curX, curY); cout << ' ';
+		        result.pop_back();
+		    }
+		    if (keyLog != NULL) { *keyLog = 13; return result; }
 		    break;
 		}
-
-        if (ch == 8) { 
+        // Backspace
+        if (ch == 8) {
             if (len > 0) {
                 len--;
                 curX = posX[len]; curY = posY[len];
-                gotoxy(curX, curY); cout << " "; 
+                gotoxy(curX, curY); cout << ' ';
                 gotoxy(curX, curY);
                 result.pop_back();
             }
             continue;
         }
-
+        // Ky tu in duoc
         if (ch < 32 || ch > 126) continue;
         if (len >= maxChars) continue;
+        if (len == 0 && ch == ' ') continue;                         
+        if (ch == ' ' && !result.empty() && result.back() == ' ') continue; 
+        if (curX >= X + maxCols)
+            if (!xuongDong(result, len, posX, posY, X, Y, maxCols, maxRows, curX, curY)) continue;
 
-        if (curX >= X + maxCols) {
-            if (curY >= Y + maxRows - 1) continue;
-
-		    if (curY >= Y + maxRows - 1)
-		        continue;
-		    int wordStart = len;
-		    while (wordStart > 0 && result[wordStart - 1] != ' ')
-		        wordStart--;
-
-		    if (wordStart < len) {
-		        for (int i = wordStart; i < len; i++) {
-		            gotoxy(posX[i], posY[i]);
-		            cout << ' ';
-		        }
-		        curY++;
-		        curX = X;
-		        
-		        for (int i = wordStart; i < len; i++) {
-		            posX[i] = curX;
-		            posY[i] = curY;
-		            gotoxy(curX, curY);
-		            cout << result[i];
-		            curX++;
-		        }
-		    }
-		    else {
-		        curY++;
-		        curX = X;
-		    }
-		}
         posX[len] = curX; posY[len] = curY;
         gotoxy(curX, curY); cout << (char)ch;
-        result += (char)ch; 
-        len++; curX++;
+        result += (char)ch; len++; curX++;
     }
     return result;
 }
+
+
+
 inline string ToLower(string s) {
     for (int i = 0; i < s.length(); i++) {
         s[i] = tolower((unsigned char)s[i]);

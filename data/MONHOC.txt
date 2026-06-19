@@ -1,5 +1,10 @@
+<<<<<<< HEAD
+13
+INT1154
+=======
 5
 MAN
+>>>>>>> c2d8f9310c9f88c9481b200127ced131b1703c3a
 3
 Ba
 HELO
@@ -10,7 +15,32 @@ HELO
 3
 A
 3
+<<<<<<< HEAD
+Mang may tinh
+HDH001
+3
+He dieu hanh
+OOP001
+3
+Lap trinh huong doi tuong
+WEB001
+3
+Lap trinh Web
+AI0001
+3
+Nhap mon tri tue nhan tao
+F SDF
+10
+fnjdsnfj
+FD DSS
+10
+dsjfjds
+12356
+3
+Mon Mon
+=======
 a
 EW
 9
 ASFDSAFF
+>>>>>>> c2d8f9310c9f88c9481b200127ced131b1703c3a
